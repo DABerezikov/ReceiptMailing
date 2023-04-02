@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace ReceiptMailing.Services
 {
-    internal class UserDialog : IUserDialog
+    public class UserDialog : IUserDialog
     {
         /// <summary>Активное окно приложения</summary>
         protected static Window? ActiveWindow => Application.Current.Windows.Cast<Window>().FirstOrDefault(w => w.IsActive);
@@ -23,7 +23,7 @@ namespace ReceiptMailing.Services
         /// <param name="Filter">Фильтр файлов диалога</param>
         /// <param name="DefaultFilePath">Путь к файлу по умолчанию</param>
         /// <returns>Выбранный файл, либо null, если диалог был отменён</returns>
-        public virtual FileInfo? OpenFile(string Title, string Filter = "Все файлы (*.*)|*.*", string? DefaultFilePath = null)
+        public virtual FileInfo? OpenFile(string Title, string Filter = "PDF(*.pdf)|*.pdf|Excel(*.xls,*.xlsx)|*.xls;*.xlsx|Все файлы (*.*)|*.*", string? DefaultFilePath = null)
         {
             var dialog = new OpenFileDialog
             {

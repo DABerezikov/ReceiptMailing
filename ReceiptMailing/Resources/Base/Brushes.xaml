@@ -7,6 +7,7 @@
     <SolidColorBrush x:Key="WhiteBrush" Color="White" p:Freeze="true"/>
 
     <SolidColorBrush x:Key="RedBrush" Color="Red" p:Freeze="true"/>
+    <SolidColorBrush x:Key="IndianRedBrush" Color="IndianRed" p:Freeze="true"/>
     <SolidColorBrush x:Key="GreenBrush" Color="Green" p:Freeze="true"/>
     <SolidColorBrush x:Key="BlueBrush" Color="Blue" p:Freeze="true"/>
 
