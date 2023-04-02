@@ -44,6 +44,7 @@ namespace ReceiptMailing.ViewModels
         }
 
         #endregion
+
         #region XLSXFilePath : string - Путь к файлу с садоводами
 
         /// <summary>Путь к файлу с садоводами</summary>
@@ -79,6 +80,7 @@ namespace ReceiptMailing.ViewModels
         }
 
         #endregion
+
         #region Command OpenXLSXCommand - команда для открытия файла с садоводами
 
         /// <summary> команда для открытия файла с садоводами </summary>

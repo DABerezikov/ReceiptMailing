@@ -9,7 +9,9 @@ namespace ReceiptMailing.Services.Interfaces
         /// <param name="Filter">Фильтр файлов диалога</param>
         /// <param name="DefaultFilePath">Путь к файлу по умолчанию</param>
         /// <returns>Выбранный файл, либо null, если диалог был отменён</returns>
-        FileInfo? OpenFile(string Title, string Filter = "Все файлы (*.*)|*.*", string? DefaultFilePath = null);
+        FileInfo? OpenFile(string Title, string Filter = "Исходные файлы (*.pdf, *.xls, *.xlsx)|*.pdf; *.xls; *.xlsx|" +
+                                                         " PDF(*.pdf)|*.pdf| Excel(*.xls,*.xlsx)|*.xls;*.xlsx|" +
+                                                         " Все файлы (*.*)|*.*", string? DefaultFilePath = null);
 
         /// <summary>Открыть диалога выбора файла для записи</summary>
         /// <param name="Title">Заголовок диалогового окна</param>
