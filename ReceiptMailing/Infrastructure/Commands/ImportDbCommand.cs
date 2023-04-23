@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ReceiptMailing.Infrastructure.Commands.Base;
+using ReceiptMailing.Views.Windows;
 
 namespace ReceiptMailing.Infrastructure.Commands
 {
@@ -11,7 +12,8 @@ namespace ReceiptMailing.Infrastructure.Commands
     {
         protected override void Execute(object p)
         {
-            throw new NotImplementedException();
+            var import_window = new ImportDBWindow();
+            import_window.Show();
         }
     }
 }

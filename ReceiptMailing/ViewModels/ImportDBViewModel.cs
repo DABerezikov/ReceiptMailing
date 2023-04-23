@@ -14,15 +14,12 @@ namespace ReceiptMailing.ViewModels
     internal class ImportDBViewModel : ViewModel
     {
         private readonly IUserDialog _userDialog;
-
-        private readonly ReceiptsSplitter _splitter;
-        private readonly IMailService _email;
-
+        
 
         #region Title : string - Заголовок окна
 
         /// <summary>Заголовок окна</summary>
-        private string _title = "Биоробот Константин";
+        private string _title = "Импорт базы участков";
 
         /// <summary>Заголовок окна</summary>
         public string Title { get => _title; set => Set(ref _title, value); }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:l="clr-namespace:ReceiptMailing"
-        DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}"
+        DataContext="{Binding ImportDBViewModel, Source={StaticResource Locator}}"
         Title="{Binding Title}"
         MaxWidth="600" Width="600" Height="300">
     <DockPanel>
