@@ -61,22 +61,7 @@ namespace ReceiptMailing.ViewModels
         }
 
         #endregion
-
-
-        #region XLSXFilePath : string - Путь к файлу с садоводами
-
-        /// <summary>Путь к файлу с садоводами</summary>
-        private string? _xlsxFilePath = string.Empty;
-
-        /// <summary>Путь к файлу с садоводами</summary>
-        public string? XlsxFilePath
-        {
-            get => _xlsxFilePath;
-            set => Set(ref _xlsxFilePath, value);
-        }
-
-        #endregion
-
+        
         #region Command OpenPDFCommand - команда для открытия файла с квитанциями
 
         /// <summary> команда для открытия файла с квитанциями </summary>
@@ -98,29 +83,7 @@ namespace ReceiptMailing.ViewModels
         }
 
         #endregion
-
-        #region Command OpenXLSXCommand - команда для открытия файла с садоводами
-
-        /// <summary> команда для открытия файла с садоводами </summary>
-        private ICommand _openXlsxCommand;
-
-        /// <summary> команда для открытия файла с садоводами </summary>
-        public ICommand OpenXlsxCommand => _openXlsxCommand
-            ??= new LambdaCommand(OnOpenXLSXCommandExecuted, CanOpenXlsxCommandExecute);
-
-        /// <summary> Проверка возможности выполнения - команда для открытия файла с садоводами </summary>
-        private bool CanOpenXlsxCommandExecute() => true;
-
-        /// <summary> Логика выполнения - команда для открытия файла с садоводами </summary>
-        private void OnOpenXLSXCommandExecuted()
-        {
-            var temp = _userDialog.OpenFile("Выбор исходного файла с квитанциями");
-            if (temp != null) ;
-            PdfFilePath = temp?.DirectoryName + "\\" + temp?.Name;
-        }
-
-        #endregion
-
+        
         #region Command SplitPDFCommand - Команда разделения файла квитанций
 
         /// <summary> Команда разделения файла квитанций </summary>

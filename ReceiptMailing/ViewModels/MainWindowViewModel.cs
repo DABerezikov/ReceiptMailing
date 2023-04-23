@@ -1,7 +1,11 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using ReceiptMailing.Data.Entities;
 using ReceiptMailing.Infrastructure.Commands;
 using ReceiptMailing.Services;
 using ReceiptMailing.Services.Interfaces;
+using ReceiptMailing.Services.Interfaces.Repositories;
 using ReceiptMailing.ViewModels.Base;
 
 namespace ReceiptMailing.ViewModels
@@ -9,15 +13,16 @@ namespace ReceiptMailing.ViewModels
     internal class MainWindowViewModel : ViewModel
     {
         private readonly IUserDialog _userDialog;
+        private readonly IParcelRepository<Parcel> _Parcel;
+        private readonly IRepository<Gardener> _Gardener;
+
        
-        private readonly ReceiptsSplitter _splitter;
-        private readonly IMailService _email;
         
 
         #region Title : string - Заголовок окна
 
         /// <summary>Заголовок окна</summary>
-        private string _title = "Биоробот Константин";
+        private string _title = "СНТ Тимирязевец";
 
         /// <summary>Заголовок окна</summary>
         public string Title { get => _title; set => Set(ref _title, value); }
@@ -34,111 +39,66 @@ namespace ReceiptMailing.ViewModels
 
         #endregion
 
-        #region PDFFilePath : string - Путь к файлу с квитанциями
+        #region ParcelCollection : ObservableCollection<Parcel> - Description
 
-        /// <summary>Путь к файлу с квитанциями</summary>
-        private string? _pdfFilePath = string.Empty;
+        /// <summary>Коллекция участков</summary>
+        private ObservableCollection<Parcel> _ParcelCollection;
 
-        /// <summary>Путь к файлу с квитанциями</summary>
-        public string? PdfFilePath
+        public ObservableCollection<Parcel> ParcelCollection
         {
-            get => _pdfFilePath;
-            set => Set(ref _pdfFilePath, value);
+            get => _ParcelCollection;
+            set => Set(ref _ParcelCollection, value);
+        }
+        #endregion
+
+        #region GardenerCollection : ObservableCollection<Gardener> - Description
+
+        /// <summary>Коллекция садоводов</summary>
+        public ObservableCollection<Gardener> _GardenerCollection;
+        public ObservableCollection<Gardener> GardenerCollection
+        {
+            get => _GardenerCollection;
+            set => Set(ref _GardenerCollection, value);
         }
 
         #endregion
 
-        #region SplitFilePath : string - Путь к папке с квитанциями
+        #region Command GetParcelCollectionsCommand - Команда получения коллекции участков
 
-        /// <summary>Путь к файлу с квитанциями</summary>
-        private string? _splitFilePath = string.Empty;
+        /// <summary> Команда получения коллекции участков </summary>
+        private ICommand _GetParcelCollectionsCommand;
 
-        /// <summary>Путь к файлу с квитанциями</summary>
-        public string? SplitFilePath
+        /// <summary> Команда получения коллекции участков </summary>
+        public ICommand GetParcelCollectionsCommand => _GetParcelCollectionsCommand
+            ??= new LambdaCommandAsync(OnGetParcelCollectionsCommandExecuted, CanGetParcelCollectionsCommandExecute);
+
+        /// <summary> Проверка возможности выполнения - Команда получения коллекции участков </summary>
+        private bool CanGetParcelCollectionsCommandExecute() => true;
+
+        /// <summary> Логика выполнения - Команда получения коллекции участков </summary>
+        private async Task OnGetParcelCollectionsCommandExecuted()
         {
-            get => _splitFilePath;
-            set => Set(ref _splitFilePath, value);
+            ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
         }
 
         #endregion
 
+        #region Command GetGardenerCollectionsCommand - Команда получения коллекции садоводов
 
-        #region XLSXFilePath : string - Путь к файлу с садоводами
+        /// <summary> Команда получения коллекции садоводов </summary>
+        private ICommand _GetGardenerCollectionsCommand;
 
-        /// <summary>Путь к файлу с садоводами</summary>
-        private string? _xlsxFilePath = string.Empty;
+        /// <summary> Команда получения коллекции садоводов </summary>
+        public ICommand GetGardenerCollectionsCommand => _GetGardenerCollectionsCommand
+            ??= new LambdaCommandAsync(OnGetGardenerCollectionsCommandExecuted, CanGetGardenerCollectionsCommandExecute);
 
-        /// <summary>Путь к файлу с садоводами</summary>
-        public string? XlsxFilePath
+        /// <summary> Проверка возможности выполнения - Команда получения коллекции садоводов </summary>
+        private bool CanGetGardenerCollectionsCommandExecute() => true;
+
+        /// <summary> Логика выполнения - Команда получения коллекции садоводов </summary>
+        private async Task OnGetGardenerCollectionsCommandExecuted()
         {
-            get => _xlsxFilePath;
-            set => Set(ref _xlsxFilePath, value);
-        }
-
-        #endregion
-
-        #region Command OpenPDFCommand - команда для открытия файла с квитанциями
-
-        /// <summary> команда для открытия файла с квитанциями </summary>
-        private ICommand _openPdfCommand;
-
-        /// <summary> команда для открытия файла с квитанциями </summary>
-        public ICommand OpenPdfCommand => _openPdfCommand
-            ??= new LambdaCommand(OnOpenPDFCommandExecuted, CanOpenPdfCommandExecute);
-
-        /// <summary> Проверка возможности выполнения - команда для открытия файла с квитанциями </summary>
-        private bool CanOpenPdfCommandExecute() => true;
-
-        /// <summary> Логика выполнения - команда для открытия файла с квитанциями </summary>
-        private void OnOpenPDFCommandExecuted()
-        {
-            var temp = _userDialog.OpenFile("Выбор исходного файла с квитанциями");
-            if (temp != null);
-                PdfFilePath = temp?.DirectoryName + "\\" + temp?.Name;
-        }
-
-        #endregion
-
-        #region Command OpenXLSXCommand - команда для открытия файла с садоводами
-
-        /// <summary> команда для открытия файла с садоводами </summary>
-        private ICommand _openXlsxCommand;
-
-        /// <summary> команда для открытия файла с садоводами </summary>
-        public ICommand OpenXlsxCommand => _openXlsxCommand
-            ??= new LambdaCommand(OnOpenXLSXCommandExecuted, CanOpenXlsxCommandExecute);
-
-        /// <summary> Проверка возможности выполнения - команда для открытия файла с садоводами </summary>
-        private bool CanOpenXlsxCommandExecute() => true;
-
-        /// <summary> Логика выполнения - команда для открытия файла с садоводами </summary>
-        private void OnOpenXLSXCommandExecuted()
-        {
-            var temp = _userDialog.OpenFile("Выбор исходного файла с квитанциями");
-            if (temp != null);
-                PdfFilePath = temp?.DirectoryName + "\\" + temp?.Name;
-        }
-
-        #endregion
-
-        #region Command SplitPDFCommand - Команда разделения файла квитанций
-
-        /// <summary> Команда разделения файла квитанций </summary>
-        private ICommand _splitPdfCommand;
-
-        /// <summary> Команда разделения файла квитанций </summary>
-        public ICommand SplitPdfCommand => _splitPdfCommand
-            ??= new LambdaCommand(OnSplitPDFCommandExecuted, CanSplitPdfCommandExecute);
-
-        /// <summary> Проверка возможности выполнения - Команда разделения файла квитанций </summary>
-        private bool CanSplitPdfCommandExecute() => PdfFilePath!=string.Empty;
-
-        /// <summary> Логика выполнения - Команда разделения файла квитанций </summary>
-        private void OnSplitPDFCommandExecuted()
-        {
-            _splitter.Path = PdfFilePath;
-            _userDialog.Information(_splitter.PdfSplit(),"Обрезка квитанций");
-            SplitFilePath = _splitter.FileFolderPath;
+            GardenerCollection = new ObservableCollection<Gardener>(await _Gardener.GetAll());
         }
 
         #endregion
@@ -146,12 +106,12 @@ namespace ReceiptMailing.ViewModels
 
         public MainWindowViewModel(
             IUserDialog userDialog,
-            ReceiptsSplitter splitter,
-            IMailService email)
+            IParcelRepository<Parcel> parcel,
+            IRepository<Gardener> gardener)
         {
             _userDialog = userDialog;
-            _splitter = splitter;
-            _email = email;
+            _Parcel = parcel;
+            _Gardener = gardener;
         }
     }
 }

@@ -7,9 +7,9 @@
         xmlns:l="clr-namespace:ReceiptMailing"
         DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}"
         Title="{Binding Title}"
-        MaxWidth="600" Width="600" Height="300">
+        Width="1280" Height="720">
     <DockPanel>
-        <Menu DockPanel.Dock="Top" IsMainMenu="True">
+        <Menu >
             <Menu.ItemsPanel>
                 <ItemsPanelTemplate>
                     <DockPanel LastChildFill="False"/>
@@ -20,48 +20,29 @@
             </MenuItem>
         </Menu>
         
-        <StatusBar DockPanel.Dock="Bottom">
+        <StatusBar >
             <StatusBarItem DockPanel.Dock="Left">
                 <ResizeGrip/>
             </StatusBarItem>
             <StatusBarItem Content="{Binding Status}"/>
         </StatusBar>
         <Grid>
-            
-            <Border Width="540" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0"
-                    BorderBrush="{StaticResource GrayBrush}" BorderThickness="1">
-                <TextBlock 
-                           Text="{Binding  PdfFilePath}"/>
-            </Border>
-            
-            <Button Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="555,20,0,0"
-                    Grid.Column="0" fa5:Awesome.Content="Solid_FilePdf" ToolTip="Выбор файла с квитанциями" Foreground="{StaticResource IndianRedBrush}"
-                    Background="{StaticResource TransparentBrush}" Command="{Binding OpenPdfCommand}"/>
+            <DataGrid ColumnHeaderHeight="40"  AutoGenerateColumns="False" DataContext="{Binding ParcelCollection }" ItemsSource="{Binding}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="4*" Header="Улица" Binding="{Binding Street}" />
+                    <DataGridTextColumn Width="1.5*" Header="№ участка" Binding="{Binding Number}"/>
+                    <DataGridTextColumn Width="1.5*" Header="Площадь участка" Binding="{Binding PlotArea}"/>
+                    <DataGridTextColumn Width="3*" Header="Фамилия" Binding="{Binding Gardener.SurName}"/>
+                    <DataGridTextColumn Width="2*" Header="Имя" Binding="{Binding Gardener.Name}"/>
+                    <DataGridTextColumn Width="3*" Header="Отчество" Binding="{Binding Gardener.Patronymic}"/>
+                    <DataGridTextColumn Width="3*" Header="Основной Email" Binding="{Binding Gardener.FirstEmailAddress}"/>
+                    <DataGridCheckBoxColumn Width="1.5*" Header="Электричество" Binding="{Binding Electrification}"/>
+                    <DataGridCheckBoxColumn Width="1.5*" Header="Дом" Binding="{Binding HavingHouse}"/>
 
-            <Button Width="100" Height="20" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="450,60,0,0"
-                    Content="Разделить" Command="{Binding SplitPdfCommand}"/>
-
-            <Border Width="540" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,100,0,0"
-                    BorderBrush="{StaticResource GrayBrush}" BorderThickness="1">
-                <TextBlock 
-                    Text="{Binding SplitFilePath}"/>
-            </Border>
-
-            <Button Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="555,100,0,0"
-                    Grid.Column="0" fa5:Awesome.Content="Regular_FolderOpen" ToolTip="Выбор файла с садоводами"
-                    Foreground="{StaticResource OrangeBrush}"
-                    Background="{StaticResource TransparentBrush}" Command="{Binding OpenFolderCommand}"/>
+                </DataGrid.Columns>
+                
+            </DataGrid>
             
-            
-            <Border Width="540" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,140,0,0"
-                    BorderBrush="{StaticResource GrayBrush}" BorderThickness="1">
-                <TextBlock 
-                    Text="{Binding XlsxFilePath}"/>
-            </Border>
-
-            <Button Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="555,140,0,0"
-                    Grid.Column="0" fa5:Awesome.Content="Solid_FileExcel" ToolTip="Выбор файла с садоводами" Foreground="{StaticResource GreenBrush}"
-                    Background="{StaticResource TransparentBrush}" Command="{Binding OpenXlsxCommand}"/>
 
         </Grid>
     </DockPanel>
