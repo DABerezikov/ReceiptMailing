@@ -4,8 +4,12 @@ using ReceiptMailing.Services;
 using ReceiptMailing.ViewModels;
 using System;
 using System.Windows;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-
+using ReceiptMailing.Data;
+using ReceiptMailing.Data.Context;
+using ReceiptMailing.Data.Repositories;
+using ReceiptMailing.Services.Interfaces.Repositories;
 
 namespace ReceiptMailing
 {
@@ -14,13 +18,21 @@ namespace ReceiptMailing
        
         private static IHost __Host;
 
-        public static IHost Host => __Host ??= Microsoft.Extensions.Hosting.Host
-            .CreateDefaultBuilder(Environment.GetCommandLineArgs())
+        public static IHost Host => __Host ??= Program
+            .CreateHostBuilder(Environment.GetCommandLineArgs())
             .ConfigureAppConfiguration(cfg => cfg.AddJsonFile("appsettings.json", true, true))
             .ConfigureServices((host, services) => services
                 .Configure<MailSettings>(host.Configuration.GetSection(nameof(MailSettings)))
                 .AddViews()
                 .AddServices()
+                .AddDbContext<ParcelDB>(
+                    opt => opt
+                        .UseSqlite(
+                            host.Configuration.GetConnectionString("Data"),
+                            o => o.MigrationsAssembly("Data")))
+                .AddScoped(typeof(IRepository<>), typeof(DbRepository<>))
+                .AddScoped(typeof(IParcelRepository<>), typeof(DbParcelsRepository<>))
+                .AddTransient<ParcelDBInitializer>()
             )
             .Build();
 
@@ -29,6 +41,12 @@ namespace ReceiptMailing
         protected override async void OnStartup(StartupEventArgs e)
         {
             var host = Host;
+
+            using (var scope = Services.CreateScope())
+            {
+                scope.ServiceProvider.GetRequiredService<ParcelDBInitializer>().Initialize();
+            }
+
             base.OnStartup(e);
             await host.StartAsync();
         }
@@ -39,5 +57,17 @@ namespace ReceiptMailing
             using var host = Host;
             await host.StopAsync();
         }
+
+        internal static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services
+            .AddViews()
+            .AddServices()
+            .AddDbContext<ParcelDB>(
+                opt => opt
+                    .UseSqlite(
+                        host.Configuration.GetConnectionString("Data")))
+            .AddScoped(typeof(IRepository<>), typeof(DbRepository<>))
+            .AddScoped(typeof(IParcelRepository<>), typeof(DbParcelsRepository<>))
+            .AddTransient<ParcelDBInitializer>()
+        ;
     }
 }

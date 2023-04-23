@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using ReceiptMailing.Data.Context;
 using ReceiptMailing.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace ReceiptMailing.Services
 {
@@ -10,6 +13,7 @@ namespace ReceiptMailing.Services
            .AddTransient<IUserDialog, UserDialog>()
            .AddTransient<ReceiptsSplitter>()
            .AddTransient<IMailService, MailService>()
+           
         ;
     }
 }

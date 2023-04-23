@@ -1,6 +1,6 @@
 ﻿namespace ReceiptMailing.Data.Entities.Base
 {
-    public class Address
+    public class Address : Entity
     {
         /// <summary> Почтовый индекс </summary>
         public string? PostalCode { get; set; }

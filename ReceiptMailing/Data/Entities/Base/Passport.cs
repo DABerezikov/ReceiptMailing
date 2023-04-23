@@ -1,6 +1,6 @@
-﻿namespace ReceiptMailing.Data.Entities
+﻿namespace ReceiptMailing.Data.Entities.Base
 {
-    public class Passport
+    public class Passport : Entity
     {
         private string _Series;
 
