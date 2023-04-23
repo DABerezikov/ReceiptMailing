@@ -11,7 +11,8 @@ namespace ReceiptMailing.Services;
 
 public class ReceiptsSplitter
 {
-    public string Path { get; set; } 
+    public string Path { get; set; }
+    public string Folder { get; set; } = Directory.GetCurrentDirectory();
     private const string FolderPath = "documents";
 
     public string PDFSplit()
@@ -37,7 +38,7 @@ public class ReceiptsSplitter
         if (!Directory.Exists(filesPath))
             Directory.CreateDirectory(filesPath);
 
-        return Directory.GetCurrentDirectory() + "\\"+ filesPath;
+        return Folder + "\\"+ filesPath;
     }
 
     private List<string> GetListPDF(string filesPath)
