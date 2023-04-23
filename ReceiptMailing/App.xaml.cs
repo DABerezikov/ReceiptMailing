@@ -3,7 +3,6 @@ using Microsoft.Extensions.Hosting;
 using ReceiptMailing.Services;
 using ReceiptMailing.ViewModels;
 using System;
-using System.Linq;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 

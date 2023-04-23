@@ -1,8 +1,5 @@
-﻿using NETCore.MailKit;
-using Org.BouncyCastle.Asn1.Pkcs;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Threading;
-using NETCore.MailKit.Core;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;

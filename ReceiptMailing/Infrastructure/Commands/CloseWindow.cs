@@ -1,7 +1,5 @@
 ﻿using ReceiptMailing.Infrastructure.Commands.Base;
-using System;
 using System.Windows;
-using ReceiptMailing.Services;
 using System.Linq;
 
 namespace ReceiptMailing.Infrastructure.Commands
