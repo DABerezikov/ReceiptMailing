@@ -14,7 +14,8 @@ namespace ReceiptMailing.ViewModels
     internal class ImportDBViewModel : ViewModel
     {
         private readonly IUserDialog _userDialog;
-        
+        private readonly MainWindowViewModel _MainWindow;
+
 
         #region Title : string - Заголовок окна
 
@@ -78,11 +79,12 @@ namespace ReceiptMailing.ViewModels
 
 
         public ImportDBViewModel(
-            IUserDialog userDialog
+            IUserDialog userDialog,
+            MainWindowViewModel mainWindow
             )
         {
             _userDialog = userDialog;
-           
+            _MainWindow = mainWindow;
         }
     }
 }
