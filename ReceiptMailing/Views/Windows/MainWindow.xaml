@@ -31,20 +31,23 @@
             <Border Width="540" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0"
                     BorderBrush="{StaticResource GrayBrush}" BorderThickness="1">
                 <TextBlock 
-                           Text="{Binding XLSXFilePath}"/>
+                           Text="{Binding  PDFFilePath}"/>
             </Border>
             
             <Button Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="555,20,0,0"
                     Grid.Column="0" fa5:Awesome.Content="Solid_FilePdf" ToolTip="Выбор файла с квитанциями" Foreground="{StaticResource IndianRedBrush}"
                     Background="{StaticResource TransparentBrush}" Command="{Binding OpenPDFCommand}"/>
 
-            <Border Width="540" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,60,0,0"
+            <Button Width="100" Height="20" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="450,60,0,0"
+                    Content="Разделить" Command="{Binding SplitPDFCommand}"/>
+
+            <Border Width="540" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,100,0,0"
                     BorderBrush="{StaticResource GrayBrush}" BorderThickness="1">
                 <TextBlock 
-                    Text="{Binding PDFFilePath}"/>
+                    Text="{Binding XLSXFilePath}"/>
             </Border>
 
-            <Button Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="555,60,0,0"
+            <Button Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="555,100,0,0"
                     Grid.Column="0" fa5:Awesome.Content="Solid_FileExcel" ToolTip="Выбор файла с садоводами" Foreground="{StaticResource GreenBrush}"
                     Background="{StaticResource TransparentBrush}" Command="{Binding OpenXLSXCommand}"/>
 

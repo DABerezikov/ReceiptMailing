@@ -105,6 +105,28 @@ namespace ReceiptMailing.ViewModels
 
         #endregion
 
+        #region Command SplitPDFCommand - Команда разделения файла квитанций
+
+        /// <summary> Команда разделения файла квитанций </summary>
+        private ICommand _SplitPDFCommand;
+
+        /// <summary> Команда разделения файла квитанций </summary>
+        public ICommand SplitPDFCommand => _SplitPDFCommand
+            ??= new LambdaCommand(OnSplitPDFCommandExecuted, CanSplitPDFCommandExecute);
+
+        /// <summary> Проверка возможности выполнения - Команда разделения файла квитанций </summary>
+        private bool CanSplitPDFCommandExecute() => PDFFilePath!=string.Empty;
+
+        /// <summary> Логика выполнения - Команда разделения файла квитанций </summary>
+        private void OnSplitPDFCommandExecuted()
+        {
+            _Splitter.Path = PDFFilePath;
+            _UserDialog.Information(_Splitter.PDFSplit(),"Обрезка квитанций");
+        }
+
+        #endregion
+
+
         public MainWindowViewModel(IUserDialog UserDialog, IDataService DataService, ReceiptsSplitter splitter)
         {
             _UserDialog = UserDialog;
