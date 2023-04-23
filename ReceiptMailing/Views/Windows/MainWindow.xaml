@@ -44,10 +44,22 @@
             <Border Width="540" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,100,0,0"
                     BorderBrush="{StaticResource GrayBrush}" BorderThickness="1">
                 <TextBlock 
-                    Text="{Binding XLSXFilePath}"/>
+                    Text="{Binding SplitFilePath}"/>
             </Border>
 
             <Button Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="555,100,0,0"
+                    Grid.Column="0" fa5:Awesome.Content="Regular_FolderOpen" ToolTip="Выбор файла с садоводами"
+                    Foreground="{StaticResource OrangeBrush}"
+                    Background="{StaticResource TransparentBrush}" Command="{Binding OpenFolderCommand}"/>
+            
+            
+            <Border Width="540" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,140,0,0"
+                    BorderBrush="{StaticResource GrayBrush}" BorderThickness="1">
+                <TextBlock 
+                    Text="{Binding XLSXFilePath}"/>
+            </Border>
+
+            <Button Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="555,140,0,0"
                     Grid.Column="0" fa5:Awesome.Content="Solid_FileExcel" ToolTip="Выбор файла с садоводами" Foreground="{StaticResource GreenBrush}"
                     Background="{StaticResource TransparentBrush}" Command="{Binding OpenXLSXCommand}"/>
 

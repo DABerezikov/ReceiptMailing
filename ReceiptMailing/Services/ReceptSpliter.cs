@@ -11,19 +11,21 @@ namespace ReceiptMailing.Services;
 
 public class ReceiptsSplitter
 {
-    public string Path { get; set; }
+    public string Path { get; set; } = string.Empty;
     public string Folder { get; set; } = Directory.GetCurrentDirectory();
+    public string FileFolderPath { get; set; } = string.Empty;
     private const string FolderPath = "documents";
 
     public string PDFSplit()
     {
         if (Path == string.Empty) return "Не выбран файл с квитанциями";
-        
-        var filesPath = GetFolderPath();
-       
-        var list = GetListPDF(filesPath);
 
-        return RanamePDF(list, filesPath);
+        if (FileFolderPath==string.Empty)
+            FileFolderPath = GetFolderPath();
+        
+        var list = GetListPDF(FileFolderPath);
+
+        return RanamePDF(list, FileFolderPath);
 
     }
 

@@ -47,6 +47,21 @@ namespace ReceiptMailing.ViewModels
 
         #endregion
 
+        #region SplitFilePath : string - Путь к папке с квитанциями
+
+        /// <summary>Путь к файлу с квитанциями</summary>
+        private string? _SplitFilePath = string.Empty;
+
+        /// <summary>Путь к файлу с квитанциями</summary>
+        public string? SplitFilePath
+        {
+            get => _SplitFilePath;
+            set => Set(ref _SplitFilePath, value);
+        }
+
+        #endregion
+
+
         #region XLSXFilePath : string - Путь к файлу с садоводами
 
         /// <summary>Путь к файлу с садоводами</summary>
@@ -122,6 +137,7 @@ namespace ReceiptMailing.ViewModels
         {
             _Splitter.Path = PDFFilePath;
             _UserDialog.Information(_Splitter.PDFSplit(),"Обрезка квитанций");
+            SplitFilePath = _Splitter.FileFolderPath;
         }
 
         #endregion
