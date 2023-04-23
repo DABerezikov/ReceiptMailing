@@ -72,7 +72,7 @@ public class MailService : IMailService
 
             using var smtp = new SmtpClient();
 
-            if (_settings.UseSSL)
+            if (_settings.UseSsl)
             {
                 await smtp.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.SslOnConnect, ct);
             }

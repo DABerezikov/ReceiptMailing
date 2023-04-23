@@ -16,16 +16,16 @@ public class ReceiptsSplitter
     public string FileFolderPath { get; set; } = string.Empty;
     private const string FolderPath = "documents";
 
-    public string PDFSplit()
+    public string PdfSplit()
     {
         if (Path == string.Empty) return "Не выбран файл с квитанциями";
 
         if (FileFolderPath==string.Empty)
             FileFolderPath = GetFolderPath();
         
-        var list = GetListPDF(FileFolderPath);
+        var list = GetListPdf(FileFolderPath);
 
-        return RanamePDF(list, FileFolderPath);
+        return RanamePdf(list, FileFolderPath);
 
     }
 
@@ -43,7 +43,7 @@ public class ReceiptsSplitter
         return Folder + "\\"+ filesPath;
     }
 
-    private List<string> GetListPDF(string filesPath)
+    private List<string> GetListPdf(string filesPath)
     {
        
         var listFile = new List<string>();
@@ -93,7 +93,7 @@ public class ReceiptsSplitter
         return listFile;
     }
 
-    private string RanamePDF(List<string> listFile, string filesPath)
+    private string RanamePdf(List<string> listFile, string filesPath)
     {
         var newFileName = string.Empty;
         for (var i = 0; i < listFile.Count; i++)

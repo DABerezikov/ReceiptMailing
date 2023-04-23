@@ -5,5 +5,6 @@ namespace ReceiptMailing.ViewModels
     internal class ViewModelLocator
     {
         public MainWindowViewModel MainWindowModel => App.Services.GetRequiredService<MainWindowViewModel>();
+        public PdfSplitterViewModel PdfSplitterWindowModel => App.Services.GetRequiredService<PdfSplitterViewModel>();
     }
 }

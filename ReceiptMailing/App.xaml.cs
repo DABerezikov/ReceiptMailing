@@ -16,16 +16,16 @@ namespace ReceiptMailing
     public partial class App
     {
        
-        private static IHost __Host;
+        private static IHost _host;
 
-        public static IHost Host => __Host ??= Program
+        public static IHost Host => _host ??= Program
             .CreateHostBuilder(Environment.GetCommandLineArgs())
             .ConfigureAppConfiguration(cfg => cfg.AddJsonFile("appsettings.json", true, true))
             .ConfigureServices((host, services) => services
                 .Configure<MailSettings>(host.Configuration.GetSection(nameof(MailSettings)))
                 .AddViews()
                 .AddServices()
-                .AddDbContext<ParcelDB>(
+                .AddDbContext<ParcelDb>(
                     opt => opt
                         .UseSqlite(
                             host.Configuration.GetConnectionString("Data"),
@@ -33,7 +33,7 @@ namespace ReceiptMailing
                 .AddScoped(typeof(IRepository<>), typeof(DbRepository<>))
                 .AddScoped(typeof(IParcelRepository<>), typeof(DbParcelsRepository<>))
                 .AddScoped(typeof(IGardenerRepository<>), typeof(DbGardenersRepository<>))
-                .AddTransient<ParcelDBInitializer>()
+                .AddTransient<ParcelDbInitializer>()
             )
             .Build();
 
@@ -45,7 +45,7 @@ namespace ReceiptMailing
 
             using (var scope = Services.CreateScope())
             {
-                scope.ServiceProvider.GetRequiredService<ParcelDBInitializer>().Initialize();
+                scope.ServiceProvider.GetRequiredService<ParcelDbInitializer>().Initialize();
             }
 
             base.OnStartup(e);
@@ -62,14 +62,14 @@ namespace ReceiptMailing
         internal static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services
             .AddViews()
             .AddServices()
-            .AddDbContext<ParcelDB>(
+            .AddDbContext<ParcelDb>(
                 opt => opt
                     .UseSqlite(
                         host.Configuration.GetConnectionString("Data")))
             .AddScoped(typeof(IRepository<>), typeof(DbRepository<>))
             .AddScoped(typeof(IParcelRepository<>), typeof(DbParcelsRepository<>))
             .AddScoped(typeof(IGardenerRepository<>), typeof(DbGardenersRepository<>))
-            .AddTransient<ParcelDBInitializer>()
+            .AddTransient<ParcelDbInitializer>()
         ;
     }
 }

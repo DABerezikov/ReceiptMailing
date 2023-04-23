@@ -10,7 +10,7 @@ using ReceiptMailing.Data.Context;
 
 namespace ReceiptMailing.Migrations
 {
-    [DbContext(typeof(ParcelDB))]
+    [DbContext(typeof(ParcelDb))]
     [Migration("20230423130633_initial")]
     partial class initial
     {

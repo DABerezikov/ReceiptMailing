@@ -9,7 +9,7 @@ using ReceiptMailing.Data.Context;
 
 namespace ReceiptMailing.Migrations
 {
-    [DbContext(typeof(ParcelDB))]
+    [DbContext(typeof(ParcelDb))]
     partial class ParcelDBModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

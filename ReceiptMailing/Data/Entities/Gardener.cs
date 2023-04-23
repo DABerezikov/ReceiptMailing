@@ -6,8 +6,8 @@ namespace ReceiptMailing.Data.Entities
 {
     public class Gardener : GardenerEntity
     {
-        private string? _FirstEmailAddress;
-        private string? _SecondEmailAddress;
+        private string? _firstEmailAddress;
+        private string? _secondEmailAddress;
 
         /// <summary> Лицевой счет </summary>
         [Required]
@@ -30,24 +30,24 @@ namespace ReceiptMailing.Data.Entities
         /// <summary> Адрес основной электронной почты </summary>
         public string? FirstEmailAddress
         {
-            get => _FirstEmailAddress;
+            get => _firstEmailAddress;
             set
             {
                 var email = new EmailAddressAttribute();
                 if (email.IsValid(value))
-                    _FirstEmailAddress = value;
+                    _firstEmailAddress = value;
             }
         }
 
         /// <summary> Адрес дополнительной электронной почты </summary>
         public string? SecondEmailAddress
         {
-            get => _SecondEmailAddress;
+            get => _secondEmailAddress;
             set
             {
                 var email = new EmailAddressAttribute();
                 if (email.IsValid(value))
-                    _SecondEmailAddress = value;
+                    _secondEmailAddress = value;
             }
         }
 

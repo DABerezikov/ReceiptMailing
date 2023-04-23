@@ -1,18 +1,18 @@
-﻿using System.Windows.Input;
-using ReceiptMailing.Infrastructure.Commands;
-using ReceiptMailing.Services;
+﻿using ReceiptMailing.Infrastructure.Commands;
 using ReceiptMailing.Services.Interfaces;
+using ReceiptMailing.Services;
+using System.Windows.Input;
 using ReceiptMailing.ViewModels.Base;
 
 namespace ReceiptMailing.ViewModels
 {
-    internal class MainWindowViewModel : ViewModel
+    internal class PdfSplitterViewModel : ViewModel
     {
         private readonly IUserDialog _userDialog;
-       
+
         private readonly ReceiptsSplitter _splitter;
         private readonly IMailService _email;
-        
+
 
         #region Title : string - Заголовок окна
 
@@ -93,8 +93,8 @@ namespace ReceiptMailing.ViewModels
         private void OnOpenPDFCommandExecuted()
         {
             var temp = _userDialog.OpenFile("Выбор исходного файла с квитанциями");
-            if (temp != null);
-                PdfFilePath = temp?.DirectoryName + "\\" + temp?.Name;
+            if (temp != null) ;
+            PdfFilePath = temp?.DirectoryName + "\\" + temp?.Name;
         }
 
         #endregion
@@ -115,8 +115,8 @@ namespace ReceiptMailing.ViewModels
         private void OnOpenXLSXCommandExecuted()
         {
             var temp = _userDialog.OpenFile("Выбор исходного файла с квитанциями");
-            if (temp != null);
-                PdfFilePath = temp?.DirectoryName + "\\" + temp?.Name;
+            if (temp != null) ;
+            PdfFilePath = temp?.DirectoryName + "\\" + temp?.Name;
         }
 
         #endregion
@@ -131,20 +131,20 @@ namespace ReceiptMailing.ViewModels
             ??= new LambdaCommand(OnSplitPDFCommandExecuted, CanSplitPdfCommandExecute);
 
         /// <summary> Проверка возможности выполнения - Команда разделения файла квитанций </summary>
-        private bool CanSplitPdfCommandExecute() => PdfFilePath!=string.Empty;
+        private bool CanSplitPdfCommandExecute() => PdfFilePath != string.Empty;
 
         /// <summary> Логика выполнения - Команда разделения файла квитанций </summary>
         private void OnSplitPDFCommandExecuted()
         {
             _splitter.Path = PdfFilePath;
-            _userDialog.Information(_splitter.PdfSplit(),"Обрезка квитанций");
+            _userDialog.Information(_splitter.PdfSplit(), "Обрезка квитанций");
             SplitFilePath = _splitter.FileFolderPath;
         }
 
         #endregion
 
 
-        public MainWindowViewModel(
+        public PdfSplitterViewModel(
             IUserDialog userDialog,
             ReceiptsSplitter splitter,
             IMailService email)

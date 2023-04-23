@@ -6,15 +6,15 @@ namespace ReceiptMailing.Services.Interfaces.Repositories;
 
 public interface IGardenerRepository<T> : IRepository<T> where T : IGardenerEntity
 {
-    Task<bool> ExistSurName(string SurName, CancellationToken Cancel = default);
+    Task<bool> ExistSurName(string surName, CancellationToken cancel = default);
 
-    Task<T> GetBySurName(string SurName, CancellationToken Cancel = default);
+    Task<T> GetBySurName(string surName, CancellationToken cancel = default);
 
-    Task<T> DeleteBySurName(string SurName, CancellationToken Cancel = default);
+    Task<T> DeleteBySurName(string surName, CancellationToken cancel = default);
 
-    Task<bool> ExistPatronymic(string Patronymic, CancellationToken Cancel = default);
+    Task<bool> ExistPatronymic(string patronymic, CancellationToken cancel = default);
 
-    Task<T> GetByPatronymic(string Patronymic, CancellationToken Cancel = default);
+    Task<T> GetByPatronymic(string patronymic, CancellationToken cancel = default);
 
-    Task<T> DeleteByPatronymic(string Patronymic, CancellationToken Cancel = default);
+    Task<T> DeleteByPatronymic(string patronymic, CancellationToken cancel = default);
 }

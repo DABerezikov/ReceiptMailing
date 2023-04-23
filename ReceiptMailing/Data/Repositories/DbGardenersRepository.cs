@@ -11,55 +11,55 @@ namespace ReceiptMailing.Data.Repositories;
 public class DbGardenersRepository<T> : DbRepository<T>, IGardenerRepository<T> where T : GardenerEntity, new()
 {
 
-    public DbGardenersRepository(ParcelDB db) : base(db) { }
+    public DbGardenersRepository(ParcelDb db) : base(db) { }
 
-    public async Task<bool> ExistSurName(string SurName, CancellationToken Cancel = default)
+    public async Task<bool> ExistSurName(string surName, CancellationToken cancel = default)
     {
-        return await Items.AnyAsync(item => item.SurName == SurName, Cancel).ConfigureAwait(false);
+        return await Items.AnyAsync(item => item.SurName == surName, cancel).ConfigureAwait(false);
     }
 
-    public async Task<T> GetBySurName(string SurName, CancellationToken Cancel = default)
+    public async Task<T> GetBySurName(string surName, CancellationToken cancel = default)
     {
         //return await Items.SingleOrDefaultAsync(item => item.SurName == SurName, Cancel).ConfigureAwait(false);
-        return await Items.FirstOrDefaultAsync(item => item.SurName == SurName, Cancel).ConfigureAwait(false);
+        return await Items.FirstOrDefaultAsync(item => item.SurName == surName, cancel).ConfigureAwait(false);
     }
 
-    public async Task<T> DeleteBySurName(string SurName, CancellationToken Cancel = default)
+    public async Task<T> DeleteBySurName(string surName, CancellationToken cancel = default)
     {
-        var item = Set.Local.FirstOrDefault(i => i.SurName == SurName);
+        var item = Set.Local.FirstOrDefault(i => i.SurName == surName);
         if (item is null)
             item = await Set
                 .Select(i => new T { Id = i.Id, SurName = i.SurName })
-                .FirstOrDefaultAsync(i => i.SurName == SurName, Cancel)
+                .FirstOrDefaultAsync(i => i.SurName == surName, cancel)
                 .ConfigureAwait(false);
         if (item is null)
             return null;
 
-        return await Delete(item, Cancel).ConfigureAwait(false);
+        return await Delete(item, cancel).ConfigureAwait(false);
     }
 
-    public async Task<bool> ExistPatronymic(string Patronymic, CancellationToken Cancel = default)
+    public async Task<bool> ExistPatronymic(string patronymic, CancellationToken cancel = default)
     {
-        return await Items.AnyAsync(item => item.Patronymic == Patronymic, Cancel).ConfigureAwait(false);
+        return await Items.AnyAsync(item => item.Patronymic == patronymic, cancel).ConfigureAwait(false);
     }
 
-    public async Task<T> GetByPatronymic(string Patronymic, CancellationToken Cancel = default)
+    public async Task<T> GetByPatronymic(string patronymic, CancellationToken cancel = default)
     {
         //return await Items.SingleOrDefaultAsync(item => item.Patronymic == Patronymic, Cancel).ConfigureAwait(false);
-        return await Items.FirstOrDefaultAsync(item => item.Patronymic == Patronymic, Cancel).ConfigureAwait(false);
+        return await Items.FirstOrDefaultAsync(item => item.Patronymic == patronymic, cancel).ConfigureAwait(false);
     }
 
-    public async Task<T> DeleteByPatronymic(string Patronymic, CancellationToken Cancel = default)
+    public async Task<T> DeleteByPatronymic(string patronymic, CancellationToken cancel = default)
     {
-        var item = Set.Local.FirstOrDefault(i => i.Patronymic == Patronymic);
+        var item = Set.Local.FirstOrDefault(i => i.Patronymic == patronymic);
         if (item is null)
             item = await Set
                 .Select(i => new T { Id = i.Id, Patronymic = i.Patronymic })
-                .FirstOrDefaultAsync(i => i.Patronymic == Patronymic, Cancel)
+                .FirstOrDefaultAsync(i => i.Patronymic == patronymic, cancel)
                 .ConfigureAwait(false);
         if (item is null)
             return null;
 
-        return await Delete(item, Cancel).ConfigureAwait(false);
+        return await Delete(item, cancel).ConfigureAwait(false);
     }
 }

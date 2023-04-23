@@ -8,6 +8,6 @@ public class MailSettings
     public string? Password { get; set; }
     public string? Host { get; set; }
     public int Port { get; set; }
-    public bool UseSSL { get; set; }
+    public bool UseSsl { get; set; }
     public bool UseStartTls { get; set; }
 }

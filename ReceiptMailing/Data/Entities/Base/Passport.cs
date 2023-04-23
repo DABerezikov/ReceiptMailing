@@ -2,20 +2,20 @@
 {
     public class Passport : Entity
     {
-        private string _Series;
+        private string _series;
 
         public string Series
         {
             get => "** **";
-            set => _Series = value;
+            set => _series = value;
         }
 
-        private string _Number;
+        private string _number;
 
         public string Number
         {
             get => "******";
-            set => _Number = value;
+            set => _number = value;
         }
 
         public override string ToString()
@@ -23,15 +23,15 @@
             return $"{Series} {Number}";
         }
 
-        public string GetPassportSeries() => _Series;
-        public string GetPassportNumber() => _Number;
+        public string GetPassportSeries() => _series;
+        public string GetPassportNumber() => _number;
 
         public Passport() { }
 
         public Passport(string series, string number)
         {
-            _Series = series;
-            _Number = number;
+            _series = series;
+            _number = number;
         }
 
     }

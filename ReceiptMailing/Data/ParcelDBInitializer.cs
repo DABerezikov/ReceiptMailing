@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ReceiptMailing.Data.Context;
 
 namespace ReceiptMailing.Data
 {
-    public class ParcelDBInitializer
+    public class ParcelDbInitializer
     {
-        private readonly ParcelDB _db;
+        private readonly ParcelDb _db;
 
-        public ParcelDBInitializer(ParcelDB db) => _db = db;
+        public ParcelDbInitializer(ParcelDb db) => _db = db;
 
         public void Initialize()
         {

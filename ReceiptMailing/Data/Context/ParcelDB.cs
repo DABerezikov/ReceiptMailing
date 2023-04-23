@@ -3,11 +3,11 @@ using ReceiptMailing.Data.Entities;
 
 namespace ReceiptMailing.Data.Context
 {
-    public class ParcelDB : DbContext
+    public class ParcelDb : DbContext
     {
         public DbSet<Parcel> Parcels { get; set; }
         public DbSet<Gardener> Gardeners { get; set; }
 
-        public ParcelDB(DbContextOptions<ParcelDB> options) : base(options) { }
+        public ParcelDb(DbContextOptions<ParcelDb> options) : base(options) { }
     }
 }
