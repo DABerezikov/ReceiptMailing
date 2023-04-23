@@ -5,6 +5,7 @@ using System.Windows;
 using System;
 using System.Linq;
 
+
 namespace ReceiptMailing.Services
 {
     public class UserDialog : IUserDialog
@@ -18,6 +19,7 @@ namespace ReceiptMailing.Services
         /// <summary>Текущее окно приложения</summary>
         protected static Window? CurrentWindow => FocusedWindow ?? ActiveWindow;
 
+        
         /// <summary>Открыть диалога выбора файла для чтения</summary>
         /// <param name="Title">Заголовок диалогового окна</param>
         /// <param name="Filter">Фильтр файлов диалога</param>
