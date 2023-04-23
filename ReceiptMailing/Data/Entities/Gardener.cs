@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using ReceiptMailing.Data.Entities.Base;
 
 namespace ReceiptMailing.Data.Entities
@@ -17,6 +18,9 @@ namespace ReceiptMailing.Data.Entities
         
         /// <summary> Почтовый адрес </summary>
         public Address? PostAddress { get; set; }
+        
+        /// <summary> Номер телефона </summary>
+        public string? PhoneNumber { get; set; }
         
         /// <summary> Тип документа </summary>
         public string? Document { get; set; }
@@ -46,5 +50,7 @@ namespace ReceiptMailing.Data.Entities
                     _SecondEmailAddress = value;
             }
         }
+
+        public ICollection<Parcel> Parcels { get; set; } = new HashSet<Parcel>();
     }
 }
