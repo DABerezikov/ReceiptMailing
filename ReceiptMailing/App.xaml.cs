@@ -32,6 +32,7 @@ namespace ReceiptMailing
                             o => o.MigrationsAssembly("Data")))
                 .AddScoped(typeof(IRepository<>), typeof(DbRepository<>))
                 .AddScoped(typeof(IParcelRepository<>), typeof(DbParcelsRepository<>))
+                .AddScoped(typeof(IGardenerRepository<>), typeof(DbGardenersRepository<>))
                 .AddTransient<ParcelDBInitializer>()
             )
             .Build();
@@ -67,6 +68,7 @@ namespace ReceiptMailing
                         host.Configuration.GetConnectionString("Data")))
             .AddScoped(typeof(IRepository<>), typeof(DbRepository<>))
             .AddScoped(typeof(IParcelRepository<>), typeof(DbParcelsRepository<>))
+            .AddScoped(typeof(IGardenerRepository<>), typeof(DbGardenersRepository<>))
             .AddTransient<ParcelDBInitializer>()
         ;
     }
