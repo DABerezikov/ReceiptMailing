@@ -33,5 +33,8 @@ namespace ReceiptMailing.Data.Entities
 
         /// <summary> Статус участка</summary>
         public string? Status { get; set; }
+
+        /// <summary> Примечание</summary>
+        public string? Description { get; set; }
     }
 }
