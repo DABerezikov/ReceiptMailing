@@ -9,7 +9,7 @@
         Title="{Binding Title}"
         Width="1280" Height="720">
     <DockPanel>
-        <Menu >
+        <Menu>
             <Menu.ItemsPanel>
                 <ItemsPanelTemplate>
                     <DockPanel LastChildFill="False"/>
@@ -18,9 +18,10 @@
             <MenuItem Header="Файл">
                 <MenuItem Header="Выход" Command="{StaticResource CloseWindowCommand}"/>
             </MenuItem>
+            <MenuItem Header="Импорт БД" Command="{StaticResource ImportDbCommand}"/>
         </Menu>
         
-        <StatusBar >
+        <StatusBar>
             <StatusBarItem DockPanel.Dock="Left">
                 <ResizeGrip/>
             </StatusBarItem>

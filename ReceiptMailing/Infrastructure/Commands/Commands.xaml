@@ -3,5 +3,6 @@
                     xmlns:l="clr-namespace:ReceiptMailing.Infrastructure.Commands">
     
     <l:CloseWindow x:Key="CloseWindowCommand"/>
+    <l:ImportDbCommand x:Key="ImportDbCommand"></l:ImportDbCommand>
 
 </ResourceDictionary>
