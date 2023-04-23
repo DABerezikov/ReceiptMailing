@@ -12,7 +12,7 @@ namespace ReceiptMailing.Services;
 public class ReceiptsSplitter
 {
     public string Path { get; set; } = string.Empty;
-    public string Folder { get; set; } = Directory.GetCurrentDirectory();
+    private string Folder { get; } = Directory.GetCurrentDirectory();
     public string FileFolderPath { get; set; } = string.Empty;
     private const string FolderPath = "documents";
 

@@ -9,6 +9,7 @@ namespace ReceiptMailing.Services
            .AddTransient<IDataService, DataService>()
            .AddTransient<IUserDialog, UserDialog>()
            .AddTransient<ReceiptsSplitter>()
+           .AddTransient<IMailService, MailService>()
         ;
     }
 }

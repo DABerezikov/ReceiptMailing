@@ -5,6 +5,8 @@ using ReceiptMailing.ViewModels;
 using System;
 using System.Linq;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace ReceiptMailing
 {
@@ -17,6 +19,7 @@ namespace ReceiptMailing
             .CreateDefaultBuilder(Environment.GetCommandLineArgs())
             .ConfigureAppConfiguration(cfg => cfg.AddJsonFile("appsettings.json", true, true))
             .ConfigureServices((host, services) => services
+                .Configure<MailSettings>(host.Configuration.GetSection(nameof(MailSettings)))
                 .AddViews()
                 .AddServices()
             )

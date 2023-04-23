@@ -12,6 +12,8 @@ namespace ReceiptMailing.ViewModels
         private readonly IUserDialog _UserDialog;
         private readonly IDataService _DataService;
         private readonly ReceiptsSplitter _Splitter;
+        private readonly IMailService _Email;
+        
 
         #region Title : string - Заголовок окна
 
@@ -143,11 +145,12 @@ namespace ReceiptMailing.ViewModels
         #endregion
 
 
-        public MainWindowViewModel(IUserDialog UserDialog, IDataService DataService, ReceiptsSplitter splitter)
+        public MainWindowViewModel(IUserDialog UserDialog, IDataService DataService, ReceiptsSplitter splitter, IMailService email)
         {
             _UserDialog = UserDialog;
             _DataService = DataService;
             _Splitter = splitter;
+            _Email = email;
         }
     }
 }
