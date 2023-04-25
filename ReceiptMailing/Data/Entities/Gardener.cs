@@ -11,22 +11,22 @@ namespace ReceiptMailing.Data.Entities
 
         /// <summary> Лицевой счет </summary>
         [Required]
-        public string Account { get; set; }
+        public string? Account { get; set; }
 
         /// <summary> Адрес места жительства </summary>
-        public Address? Address { get; set; }
-        
+        public Address Address { get; set; } = new();
+
         /// <summary> Почтовый адрес </summary>
-        public Address? PostAddress { get; set; }
-        
+        public Address PostAddress { get; set; } = new();
+
         /// <summary> Номер телефона </summary>
         public string? PhoneNumber { get; set; }
         
-        /// <summary> Тип документа </summary>
+        /// <summary> Документ о приеме в члены СНТ </summary>
         public string? Document { get; set; }
-        /// <summary> Серия и номер документа </summary>
-        public Passport? Passport { get; set; }
-        
+        /// <summary> Серия и номер паспорта </summary>
+        public Passport Passport { get; set; } = new();
+
         /// <summary> Адрес основной электронной почты </summary>
         public string? FirstEmailAddress
         {

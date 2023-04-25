@@ -5,9 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:l="clr-namespace:ReceiptMailing"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}"
         Title="{Binding Title}"
         Width="1280" Height="720">
+<i:Interaction.Triggers>
+    <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding GetParcelCollectionsCommand}"></i:InvokeCommandAction>
+    </i:EventTrigger>
+</i:Interaction.Triggers>
+
     <DockPanel>
         <Menu>
             <Menu.ItemsPanel>
@@ -19,6 +26,8 @@
                 <MenuItem Header="Выход" Command="{StaticResource CloseWindowCommand}"/>
             </MenuItem>
             <MenuItem Header="Импорт БД" Command="{StaticResource ImportDbCommand}"/>
+            <MenuItem Header="Обрезка квитанций" Command="{StaticResource PdfSplitterCommand}"/>
+            
         </Menu>
         
         <StatusBar>

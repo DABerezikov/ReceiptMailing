@@ -2,17 +2,17 @@
 {
     public class Passport : Entity
     {
-        private string _series;
+        private string? _series;
 
-        public string Series
+        public string? Series
         {
             get => "** **";
             set => _series = value;
         }
 
-        private string _number;
+        private string? _number;
 
-        public string Number
+        public string? Number
         {
             get => "******";
             set => _number = value;
@@ -23,12 +23,12 @@
             return $"{Series} {Number}";
         }
 
-        public string GetPassportSeries() => _series;
-        public string GetPassportNumber() => _number;
+        public string? GetPassportSeries() => _series;
+        public string? GetPassportNumber() => _number;
 
         public Passport() { }
 
-        public Passport(string series, string number)
+        public Passport(string? series, string? number)
         {
             _series = series;
             _number = number;

@@ -2,7 +2,7 @@
 
 public interface IGardenerEntity : INamedEntity
 {
-    string SurName { get; }
+    string? SurName { get; }
     string? Patronymic { get; }
 
 }

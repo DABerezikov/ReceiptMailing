@@ -7,9 +7,8 @@ namespace ReceiptMailing.Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services) => services
             .AddTransient<IUserDialog, UserDialog>()
-           .AddTransient<ReceiptsSplitter>()
-           .AddTransient<IMailService, MailService>()
-           
-        ;
+            .AddTransient<ReceiptsSplitter>()
+            .AddTransient<IMailService, MailService>()
+            .AddTransient<ExcelReader>();
     }
 }

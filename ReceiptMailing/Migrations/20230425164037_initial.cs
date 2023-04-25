@@ -36,8 +36,8 @@ namespace ReceiptMailing.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Series = table.Column<string>(type: "TEXT", nullable: false),
-                    Number = table.Column<string>(type: "TEXT", nullable: false)
+                    Series = table.Column<string>(type: "TEXT", nullable: true),
+                    Number = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -51,15 +51,16 @@ namespace ReceiptMailing.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Account = table.Column<string>(type: "TEXT", nullable: false),
-                    AddressId = table.Column<int>(type: "INTEGER", nullable: true),
-                    PostAddressId = table.Column<int>(type: "INTEGER", nullable: true),
+                    AddressId = table.Column<int>(type: "INTEGER", nullable: false),
+                    PostAddressId = table.Column<int>(type: "INTEGER", nullable: false),
                     PhoneNumber = table.Column<string>(type: "TEXT", nullable: true),
                     Document = table.Column<string>(type: "TEXT", nullable: true),
-                    PassportId = table.Column<int>(type: "INTEGER", nullable: true),
+                    PassportId = table.Column<int>(type: "INTEGER", nullable: false),
                     FirstEmailAddress = table.Column<string>(type: "TEXT", nullable: true),
                     SecondEmailAddress = table.Column<string>(type: "TEXT", nullable: true),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    SurName = table.Column<string>(type: "TEXT", nullable: false)
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    SurName = table.Column<string>(type: "TEXT", nullable: true),
+                    Patronymic = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -68,17 +69,20 @@ namespace ReceiptMailing.Migrations
                         name: "FK_Gardeners_Address_AddressId",
                         column: x => x.AddressId,
                         principalTable: "Address",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Gardeners_Address_PostAddressId",
                         column: x => x.PostAddressId,
                         principalTable: "Address",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Gardeners_Passport_PassportId",
                         column: x => x.PassportId,
                         principalTable: "Passport",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -88,7 +92,7 @@ namespace ReceiptMailing.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     GardenerId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Street = table.Column<string>(type: "TEXT", nullable: false),
+                    Street = table.Column<string>(type: "TEXT", nullable: true),
                     PlotArea = table.Column<double>(type: "REAL", nullable: false),
                     CadastralNumber = table.Column<string>(type: "TEXT", nullable: true),
                     Details = table.Column<string>(type: "TEXT", nullable: true),

@@ -37,6 +37,8 @@
             <Button Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="555,10,0,0"
                     Grid.Column="0" fa5:Awesome.Content="Solid_FileExcel" ToolTip="Выбор файла с садоводами" Foreground="{StaticResource GreenBrush}"
                     Background="{StaticResource TransparentBrush}" Command="{Binding OpenXlsxCommand}"/>
+            <Button Grid.Column="0" Width="100" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="455,60,0,0"
+                    Content="Импорт" Command="{Binding ImportParcelsCommand}"/>
 
         </Grid>
     </DockPanel>

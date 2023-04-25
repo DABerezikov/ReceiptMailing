@@ -31,15 +31,15 @@
             <Border Width="540" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0"
                     BorderBrush="{StaticResource GrayBrush}" BorderThickness="1">
                 <TextBlock 
-                           Text="{Binding  PDFFilePath}"/>
+                           Text="{Binding  PdfFilePath}"/>
             </Border>
 
             <Button Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="555,20,0,0"
                     Grid.Column="0" fa5:Awesome.Content="Solid_FilePdf" ToolTip="Выбор файла с квитанциями" Foreground="{StaticResource IndianRedBrush}"
-                    Background="{StaticResource TransparentBrush}" Command="{Binding OpenPDFCommand}"/>
+                    Background="{StaticResource TransparentBrush}" Command="{Binding OpenPdfCommand}"/>
 
             <Button Width="100" Height="20" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="450,60,0,0"
-                    Content="Разделить" Command="{Binding SplitPDFCommand}"/>
+                    Content="Разделить" Command="{Binding SplitPdfCommand}"/>
 
             <Border Width="540" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,100,0,0"
                     BorderBrush="{StaticResource GrayBrush}" BorderThickness="1">

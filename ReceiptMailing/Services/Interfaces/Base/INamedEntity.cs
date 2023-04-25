@@ -3,5 +3,5 @@
 public interface INamedEntity : IEntity
 {
    
-    string Name { get; }
+    string? Name { get; }
 }

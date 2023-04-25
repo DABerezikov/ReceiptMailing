@@ -66,9 +66,9 @@ namespace ReceiptMailing
                 opt => opt
                     .UseSqlite(
                         host.Configuration.GetConnectionString("Data")))
-            .AddScoped(typeof(IRepository<>), typeof(DbRepository<>))
-            .AddScoped(typeof(IParcelRepository<>), typeof(DbParcelsRepository<>))
-            .AddScoped(typeof(IGardenerRepository<>), typeof(DbGardenersRepository<>))
+            .AddTransient(typeof(IRepository<>), typeof(DbRepository<>))
+            .AddTransient(typeof(IParcelRepository<>), typeof(DbParcelsRepository<>))
+            .AddTransient(typeof(IGardenerRepository<>), typeof(DbGardenersRepository<>))
             .AddTransient<ParcelDbInitializer>()
         ;
     }

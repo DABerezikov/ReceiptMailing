@@ -3,12 +3,12 @@ using ReceiptMailing.Views.Windows;
 
 namespace ReceiptMailing.Infrastructure.Commands
 {
-    internal class ImportDbCommand : Command
+    internal class PdfSplitterCommand : Command
     {
         protected override void Execute(object p)
         {
-            var import_window = new ImportDBWindow();
-            import_window.Show();
+            var pdfSplitter_window = new PdfSplitterWindow();
+            pdfSplitter_window.Show();
         }
     }
 }
