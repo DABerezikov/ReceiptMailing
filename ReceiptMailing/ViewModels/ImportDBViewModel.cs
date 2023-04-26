@@ -6,6 +6,7 @@ using ReceiptMailing.Data.Entities;
 using ReceiptMailing.Data.Repositories;
 using ReceiptMailing.Services;
 using System;
+using System.Globalization;
 using ReceiptMailing.Services.Interfaces.Repositories;
 
 namespace ReceiptMailing.ViewModels
@@ -175,11 +176,12 @@ namespace ReceiptMailing.ViewModels
 
                 //Получение площади участка
                 var area = data_tables.Rows[i][12].ToString();
-                var plotArea = new_parcel.PlotArea;
-                if (!double.TryParse(area, out plotArea))
+                IFormatProvider formatter = new NumberFormatInfo { NumberDecimalSeparator = "," };
+                if (!double.TryParse(area,NumberStyles.AllowDecimalPoint,formatter ,out var plotArea))
                 {
                     new_parcel.PlotArea = 0.0;
                 }
+                new_parcel.PlotArea = plotArea;
                 //Получение кадастрового номера участка
                 var cadasdral = data_tables.Rows[i][13].ToString();
                 new_parcel.CadastralNumber = cadasdral;

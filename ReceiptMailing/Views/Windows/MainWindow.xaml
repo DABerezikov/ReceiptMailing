@@ -43,7 +43,7 @@
                     <DataGridTextColumn Width="1.5*" Header="№ участка" Binding="{Binding Number}"/>
                     <DataGridTextColumn Width="1.5*" Header="Площадь участка" Binding="{Binding PlotArea}"/>
                     <DataGridTextColumn Width="3*" Header="Фамилия" Binding="{Binding Gardener.SurName}"/>
-                    <DataGridTextColumn Width="2*" Header="Имя" Binding="{Binding Gardener.Name}"/>
+                    <DataGridTextColumn Width="2*" Header="Имя" Binding="{Binding Name}"/>
                     <DataGridTextColumn Width="3*" Header="Отчество" Binding="{Binding Gardener.Patronymic}"/>
                     <DataGridTextColumn Width="3*" Header="Основной Email" Binding="{Binding Gardener.FirstEmailAddress}"/>
                     <DataGridCheckBoxColumn Width="1.5*" Header="Электричество" Binding="{Binding Electrification}"/>
