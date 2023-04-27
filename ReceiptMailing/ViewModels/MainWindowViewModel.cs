@@ -50,6 +50,34 @@ namespace ReceiptMailing.ViewModels
         }
         #endregion
 
+        #region SelectedParcel : Parcel - Выбранный участок
+
+        /// <summary>Выбранный участок</summary>
+        private Parcel _SelectedParcel;
+
+        /// <summary>Выбранный участок</summary>
+        public Parcel SelectedParcel
+        {
+            get => _SelectedParcel;
+            set => Set(ref _SelectedParcel, value);
+        }
+
+        #endregion
+
+        #region SelectedIndex : int - Выбранный участок
+
+        /// <summary>Выбранный участок</summary>
+        private int _SelectedIndex;
+
+        /// <summary>Выбранный участок</summary>
+        public int SelectedIndex
+        {
+            get => _SelectedIndex;
+            set => Set(ref _SelectedIndex, value);
+        }
+
+        #endregion
+
         #region GardenerCollection : ObservableCollection<Gardener> - Description
 
         /// <summary>Коллекция садоводов</summary>
@@ -62,45 +90,28 @@ namespace ReceiptMailing.ViewModels
 
         #endregion
 
-        #region Command GetParcelCollectionsCommand - Команда получения коллекции участков
+        #region Command GetCollectionsCommand - Команда получения коллекции участков
 
         /// <summary> Команда получения коллекции участков </summary>
-        private ICommand _GetParcelCollectionsCommand;
+        private ICommand _GetCollectionsCommand;
 
         /// <summary> Команда получения коллекции участков </summary>
-        public ICommand GetParcelCollectionsCommand => _GetParcelCollectionsCommand
-            ??= new LambdaCommandAsync(OnGetParcelCollectionsCommandExecuted, CanGetParcelCollectionsCommandExecute);
+        public ICommand GetCollectionsCommand => _GetCollectionsCommand
+            ??= new LambdaCommandAsync(OnGetCollectionsCommandExecuted, CanGetCollectionsCommandExecute);
 
         /// <summary> Проверка возможности выполнения - Команда получения коллекции участков </summary>
-        private bool CanGetParcelCollectionsCommandExecute() => true;
+        private bool CanGetCollectionsCommandExecute() => true;
 
         /// <summary> Логика выполнения - Команда получения коллекции участков </summary>
-        private async Task OnGetParcelCollectionsCommandExecuted()
+        private async Task OnGetCollectionsCommandExecuted()
         {
             ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
-        }
-
-        #endregion
-
-        #region Command GetGardenerCollectionsCommand - Команда получения коллекции садоводов
-
-        /// <summary> Команда получения коллекции садоводов </summary>
-        private ICommand _GetGardenerCollectionsCommand;
-
-        /// <summary> Команда получения коллекции садоводов </summary>
-        public ICommand GetGardenerCollectionsCommand => _GetGardenerCollectionsCommand
-            ??= new LambdaCommandAsync(OnGetGardenerCollectionsCommandExecuted, CanGetGardenerCollectionsCommandExecute);
-
-        /// <summary> Проверка возможности выполнения - Команда получения коллекции садоводов </summary>
-        private bool CanGetGardenerCollectionsCommandExecute() => true;
-
-        /// <summary> Логика выполнения - Команда получения коллекции садоводов </summary>
-        private async Task OnGetGardenerCollectionsCommandExecuted()
-        {
             GardenerCollection = new ObservableCollection<Gardener>(await _Gardener.GetAll());
         }
 
         #endregion
+
+        
 
 
         public MainWindowViewModel(

@@ -6,12 +6,13 @@
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:l="clr-namespace:ReceiptMailing"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:e="clr-namespace:ReceiptMailing.Data.Entities"
         DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}"
         Title="{Binding Title}"
         Width="1280" Height="720">
 <i:Interaction.Triggers>
     <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding GetParcelCollectionsCommand}"></i:InvokeCommandAction>
+            <i:InvokeCommandAction Command="{Binding GetCollectionsCommand}"></i:InvokeCommandAction>
     </i:EventTrigger>
 </i:Interaction.Triggers>
 
@@ -37,15 +38,46 @@
             <StatusBarItem Content="{Binding Status}"/>
         </StatusBar>
         <Grid>
-            <DataGrid ColumnHeaderHeight="40"  AutoGenerateColumns="False" DataContext="{Binding ParcelCollection }" ItemsSource="{Binding}">
+            <DataGrid ColumnHeaderHeight="40"  AutoGenerateColumns="False" ItemsSource="{Binding ParcelCollection }"
+                      SelectedIndex="{Binding SelectedIndex}" SelectedItem="{Binding SelectedParcel}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="4*" Header="Улица" Binding="{Binding Street}" />
                     <DataGridTextColumn Width="1.5*" Header="№ участка" Binding="{Binding Number}"/>
                     <DataGridTextColumn Width="1.5*" Header="Площадь участка" Binding="{Binding PlotArea}"/>
-                    <DataGridTextColumn Width="3*" Header="Фамилия" Binding="{Binding Gardener.SurName}"/>
-                    <DataGridTextColumn Width="2*" Header="Имя" Binding="{Binding Name}"/>
-                    <DataGridTextColumn Width="3*" Header="Отчество" Binding="{Binding Gardener.Patronymic}"/>
-                    <DataGridTextColumn Width="3*" Header="Основной Email" Binding="{Binding Gardener.FirstEmailAddress}"/>
+                    <DataGridTemplateColumn Width="3*" Header="Фамилия">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock  Text="{Binding Gardener.SurName}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="2*" Header="Имя">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock DataContext="{Binding Gardener}" Text="{Binding Name}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Width="3*" Header="Отчество">
+                        <DataGridTemplateColumn.CellEditingTemplate>
+                            <DataTemplate>
+                                    <TextBlock DataContext="{Binding Gardener}" Text="{Binding Patronymic}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellEditingTemplate>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock DataContext="{Binding Gardener}" Text="{Binding Patronymic}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Width="3*" Header="Основной Email">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock DataContext="{Binding Gardener}" Text="{Binding FirstEmailAddress}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridCheckBoxColumn Width="1.5*" Header="Электричество" Binding="{Binding Electrification}"/>
                     <DataGridCheckBoxColumn Width="1.5*" Header="Дом" Binding="{Binding HavingHouse}"/>
 
