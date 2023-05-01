@@ -30,16 +30,25 @@
             <MenuItem Header="Обрезка квитанций" Command="{StaticResource PdfSplitterCommand}"/>
             
         </Menu>
-        
+       
         <StatusBar>
-            <StatusBarItem DockPanel.Dock="Left">
-                <ResizeGrip/>
-            </StatusBarItem>
             <StatusBarItem Content="{Binding Status}"/>
         </StatusBar>
+
+        <UniformGrid DockPanel.Dock="Bottom"  Rows="1" Margin="0,5">
+            <Button Style="{StaticResource UniformButtonStyle}"  Content="Добавить участок"/>
+            <Button Style="{StaticResource UniformButtonStyle}" Content="Редактировать участок"/>
+            <Button Style="{StaticResource UniformButtonStyle}" Content="Удалить участок"/>
+            <Button Style="{StaticResource UniformButtonStyle}" Content="Добавить садовода"/>
+            <Button Style="{StaticResource UniformButtonStyle}" Content="Редактировать садовода"/>
+            <Button Style="{StaticResource UniformButtonStyle}" Content="Удалить садовода"/>
+
+        </UniformGrid>
+
         <Grid>
             <DataGrid ColumnHeaderHeight="40"  AutoGenerateColumns="False" ItemsSource="{Binding ParcelCollection }"
-                      SelectedIndex="{Binding SelectedIndex}" SelectedItem="{Binding SelectedParcel}">
+                      SelectedIndex="{Binding SelectedIndex}" SelectedItem="{Binding SelectedParcel}"
+                      IsReadOnly="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="4*" Header="Улица" Binding="{Binding Street}" />
                     <DataGridTextColumn Width="1.5*" Header="№ участка" Binding="{Binding Number}"/>
@@ -59,18 +68,9 @@
                         </DataGridTemplateColumn.CellTemplate>
 
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Width="3*" Header="Отчество">
-                        <DataGridTemplateColumn.CellEditingTemplate>
-                            <DataTemplate>
-                                    <TextBlock DataContext="{Binding Gardener}" Text="{Binding Patronymic}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellEditingTemplate>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock DataContext="{Binding Gardener}" Text="{Binding Patronymic}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Width="3*" Header="Отчество" Binding="{Binding Gardener.Patronymic}">
+                        
+                    </DataGridTextColumn>
                         <DataGridTemplateColumn Width="3*" Header="Основной Email">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>

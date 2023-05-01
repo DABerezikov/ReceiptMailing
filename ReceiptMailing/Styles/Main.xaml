@@ -23,6 +23,40 @@
 
     </Style>
 
+    <Style TargetType="Button" x:Key="UniformButtonStyle">
+       <Setter Property="Margin"  Value="2"/>
+       <Setter Property="Height" Value="30"/>
+       <Setter Property="Padding" Value="1"/>
+       <Setter Property="BorderBrush" Value="DarkGray"/>
+       <Setter Property="Background" Value="WhiteSmoke"/>
+       <Setter Property="Template">
+           <Setter.Value>
+               <ControlTemplate TargetType="Button">
+                   <Border x:Name="border" CornerRadius="8"
+                           Background="{TemplateBinding Background}"
+                           BorderBrush="{TemplateBinding BorderBrush}">
+
+                       <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                   </Border>
+                   <ControlTemplate.Triggers>
+                       <Trigger Property="IsMouseOver" Value="True">
+                           <Setter TargetName="border" Property="Background" Value="LightBlue"></Setter>
+                       </Trigger>
+                       <Trigger Property="IsPressed" Value="True">
+                           <Setter TargetName="border" Property="BorderBrush" Value="CadetBlue"></Setter>
+                       </Trigger>
+                    </ControlTemplate.Triggers>
+                   
+               </ControlTemplate>
+           </Setter.Value>
+       </Setter>
+
+
+
+    </Style>
+
+
     <DataTemplate x:Key="HeaderTemplate">
         <TextBlock Text="{Binding}" TextWrapping="Wrap"  TextAlignment="Center"/>
     </DataTemplate>
@@ -33,5 +67,8 @@
         <Setter Property="ContentTemplate" Value="{StaticResource HeaderTemplate}"/>
 
     </Style>
+
+
+
     
 </ResourceDictionary>
