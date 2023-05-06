@@ -125,6 +125,78 @@ internal class EditGardenerViewModel:ViewModel
 
     #endregion
 
+    #region FirstEmailAddress : string - Адрес основной электронной почты садовода
+
+    /// <summary>Адрес основной электронной почты садовода</summary>
+    private string? _FirstEmailAddress;
+
+    /// <summary>Адрес основной электронной почты садовода</summary>
+    public string? FirstEmailAddress
+    {
+        get => _Gardener.FirstEmailAddress;
+        set
+        {
+            _Gardener.FirstEmailAddress = value;
+            Set(ref _FirstEmailAddress, value);
+        }
+    }
+
+    #endregion
+
+    #region SecondEmailAddress : string - Адрес дополнительной электронной почты садовода
+
+    /// <summary>Адрес дополнительной электронной почты садовода</summary>
+    private string? _SecondEmailAddress;
+
+    /// <summary>Адрес дополнительной электронной почты садовода</summary>
+    public string? SecondEmailAddress
+    {
+        get => _Gardener.SecondEmailAddress;
+        set
+        {
+            _Gardener.SecondEmailAddress = value;
+            Set(ref _SecondEmailAddress, value);
+        }
+    }
+
+    #endregion
+
+    #region Account : string - Лицевой счет садовода
+
+    /// <summary>Лицевой счет садовода</summary>
+    private string? _Account;
+
+    /// <summary>Лицевой счет садовода</summary>
+    public string? Account
+    {
+        get => _Gardener.Account;
+        set
+        {
+            _Gardener.Account = value;
+            Set(ref _Account, value);
+        }
+    }
+
+    #endregion
+
+    #region Document : string - Документ о приеме в члены СНТ
+
+    /// <summary>Документ о приеме в члены СНТ</summary>
+    private string? _Document;
+
+    /// <summary>Документ о приеме в члены СНТ</summary>
+    public string? Document
+    {
+        get => _Gardener.Document;
+        set
+        {
+            _Gardener.Document = value;
+            Set(ref _Document, value);
+        }
+    }
+
+    #endregion
+
     public EditGardenerViewModel(Gardener gardener)
     {
         _Gardener = gardener;

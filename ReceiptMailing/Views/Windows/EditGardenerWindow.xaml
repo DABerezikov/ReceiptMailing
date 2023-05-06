@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ReceiptMailing.Views.Windows"
         DataContext="{Binding EditGardenerViewModel, Source={StaticResource Locator}}"
         Title="{Binding Title}" Height="338" Width="840">
     <Grid>
@@ -30,11 +29,33 @@
 
             </Grid>
         </Border>
+        <Border Margin="5,80,345,170" Style="{StaticResource BorderEditWindowStyle}">
+            <Grid>
+                <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Номер телефона"/>
+                <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PhoneNumber}" />
+
+                <TextBlock Margin="170,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Основной Email"/>
+                <TextBox Margin="170,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding FirstEmailAddress}" />
+
+                <TextBlock Margin="330,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Дополнительный Email"/>
+                <TextBox Margin="330,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding SecondEmailAddress}" />
+
+            </Grid>
+        </Border>
+        <Border Margin="500,80,5,170" Style="{StaticResource BorderEditWindowStyle}">
+            <Grid>
+                <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Лицевой счет"/>
+                <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Account}" />
+
+                <TextBlock Margin="170,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Документ о приеме"/>
+                <TextBox Margin="170,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Document}" />
+
+            </Grid>
+        </Border>
 
         
 
-        <TextBlock Margin="330,70,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Номер телефона"/>
-        <TextBox Margin="330,90,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PhoneNumber}" />
+        
 
     </Grid>
 </Window>
