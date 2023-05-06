@@ -8,6 +8,7 @@ namespace ReceiptMailing.ViewModels
            .AddTransient<MainWindowViewModel>()
            .AddTransient<PdfSplitterViewModel>()
            .AddTransient<ImportDBViewModel>()
+           .AddTransient<EditGardenerViewModel>()
         ;
     }
 }

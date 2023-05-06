@@ -1,0 +1,40 @@
+﻿<Window x:Class="ReceiptMailing.Views.Windows.EditGardenerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" mc:Ignorable="d"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ReceiptMailing.Views.Windows"
+        DataContext="{Binding EditGardenerViewModel, Source={StaticResource Locator}}"
+        Title="{Binding Title}" Height="338" Width="840">
+    <Grid>
+        <Border Margin="5,5,345,250" Style="{StaticResource BorderEditWindowStyle}">
+            <Grid>
+                <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Фамилия"/>
+                <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding SurName}" />
+
+                <TextBlock Margin="170,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Имя"/>
+                <TextBox Margin="170,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Name}" />
+
+                <TextBlock Margin="330,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Отчество"/>
+                <TextBox Margin="330,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Patronymic}" />
+
+            </Grid>
+        </Border>
+        <Border Margin="500,5,5,250" Style="{StaticResource BorderEditWindowStyle}">
+            <Grid>
+                <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Серия паспорта"/>
+                <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PassportSeries}" />
+
+                <TextBlock Margin="170,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Номер паспорта"/>
+                <TextBox Margin="170,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PassportNumber}" />
+
+            </Grid>
+        </Border>
+
+        
+
+        <TextBlock Margin="330,70,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Номер телефона"/>
+        <TextBox Margin="330,90,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PhoneNumber}" />
+
+    </Grid>
+</Window>
