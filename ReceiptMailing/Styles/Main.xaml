@@ -77,10 +77,29 @@
        
 
     </Style>
+
+    <Style TargetType="TextBlock" x:Key="TextBlockAddressEditWindowStyle">
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Width" Value="210"/>
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+
+
+    </Style>
+
     <Style TargetType="TextBox" x:Key="TextBoxEditWindowStyle">
         <Setter Property="VerticalAlignment" Value="Top"/>
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Width" Value="150"/>
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+    </Style>
+
+    <Style TargetType="TextBox" x:Key="TextBoxAddressEditWindowStyle">
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Width" Value="210"/>
         <Setter Property="Height" Value="25"/>
         <Setter Property="TextAlignment" Value="Center"/>
     </Style>

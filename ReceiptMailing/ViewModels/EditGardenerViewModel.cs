@@ -197,6 +197,150 @@ internal class EditGardenerViewModel:ViewModel
 
     #endregion
 
+    #region PostalCode : string - Индекс
+
+    /// <summary>Индекс</summary>
+    private string? _PostalCode;
+
+    /// <summary>Индекс</summary>
+    public string? PostalCode
+    {
+        get => _Gardener.Address.PostalCode;
+        set
+        {
+            _Gardener.Address.PostalCode = value;
+            Set(ref _PostalCode, value);
+        }
+    }
+
+    #endregion
+
+    #region Province : string - Область
+
+    /// <summary>Область</summary>
+    private string? _Province;
+
+    /// <summary>Область</summary>
+    public string? Province
+    {
+        get => _Gardener.Address.Province;
+        set
+        {
+            _Gardener.Address.Province = value;
+            Set(ref _Province, value);
+        }
+    }
+
+    #endregion
+
+    #region Region : string - Округ
+
+    /// <summary>Округ</summary>
+    private string? _Region;
+
+    /// <summary>Округ</summary>
+    public string? Region
+    {
+        get => _Gardener.Address.Region;
+        set
+        {
+            _Gardener.Address.Region = value;
+            Set(ref _Region, value);
+        }
+    }
+
+    #endregion
+
+    #region City : string - Населенный пункт
+
+    /// <summary>Населенный пункт</summary>
+    private string? _City;
+
+    /// <summary>Населенный пункт</summary>
+    public string? City
+    {
+        get => _Gardener.Address.City;
+        set
+        {
+            _Gardener.Address.City = value;
+            Set(ref _City, value);
+        }
+    }
+
+    #endregion
+
+    #region Street : string - Улица
+
+    /// <summary>Улица</summary>
+    private string? _Street;
+
+    /// <summary>Улица</summary>
+    public string? Street
+    {
+        get => _Gardener.Address.Street;
+        set
+        {
+            _Gardener.Address.Street = value;
+            Set(ref _Street, value);
+        }
+    }
+
+    #endregion
+
+    #region House : string - Дом
+
+    /// <summary>Дом</summary>
+    private string? _House;
+
+    /// <summary>Дом</summary>
+    public string? House
+    {
+        get => _Gardener.Address.House;
+        set
+        {
+            _Gardener.Address.House = value;
+            Set(ref _House, value);
+        }
+    }
+
+    #endregion
+
+    #region Building : string - Корпус
+
+    /// <summary>Корпус</summary>
+    private string? _Building;
+
+    /// <summary>Корпус</summary>
+    public string? Building
+    {
+        get => _Gardener.Address.Building;
+        set
+        {
+            _Gardener.Address.Building = value;
+            Set(ref _Building, value);
+        }
+    }
+
+    #endregion
+
+    #region Room : string - Квартира
+
+    /// <summary>Квартира</summary>
+    private string? _Room;
+
+    /// <summary>Квартира</summary>
+    public string? Room
+    {
+        get => _Gardener.Address.Room;
+        set
+        {
+            _Gardener.Address.Room = value;
+            Set(ref _Room, value);
+        }
+    }
+
+    #endregion
+
     public EditGardenerViewModel(Gardener gardener)
     {
         _Gardener = gardener;
