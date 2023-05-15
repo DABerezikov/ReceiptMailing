@@ -1,7 +1,15 @@
-﻿using ReceiptMailing.Infrastructure.Commands;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using ReceiptMailing.Infrastructure.Commands;
 using ReceiptMailing.Services.Interfaces;
 using ReceiptMailing.Services;
 using System.Windows.Input;
+using ReceiptMailing.Data.Entities;
+using ReceiptMailing.Services.Interfaces.Repositories;
 using ReceiptMailing.ViewModels.Base;
 
 namespace ReceiptMailing.ViewModels
@@ -12,7 +20,9 @@ namespace ReceiptMailing.ViewModels
 
         private readonly ReceiptsSplitter _splitter;
         private readonly IMailService _email;
+        private readonly IParcelRepository<Parcel> _parcel;
 
+        private Parcel currentParcel = new();
 
         #region Title : string - Заголовок окна
 
@@ -61,6 +71,20 @@ namespace ReceiptMailing.ViewModels
         }
 
         #endregion
+
+        #region ListNotSendReceipts : List<string> - Список неотправленных файлов
+
+        /// <summary>Список неотправленных файлов</summary>
+        private List<string> _ListNotSendReceipts = new ();
+
+        /// <summary>Список неотправленных файлов</summary>
+        public List<string> ListNotSendReceipts
+        {
+            get => _ListNotSendReceipts;
+            set => Set(ref _ListNotSendReceipts, value);
+        }
+
+        #endregion
         
         #region Command OpenPDFCommand - команда для открытия файла с квитанциями
 
@@ -106,15 +130,73 @@ namespace ReceiptMailing.ViewModels
 
         #endregion
 
+        #region Command SendReceiptCommand - Команда разделения файла квитанций
+
+        /// <summary> Команда разделения файла квитанций </summary>
+        private ICommand _sendReceiptCommand;
+
+        /// <summary> Команда разделения файла квитанций </summary>
+        public ICommand SendReceiptCommand => _sendReceiptCommand
+            ??= new LambdaCommand(OnSendReceiptCommandExecuted, CanSendReceiptCommandExecute);
+
+        /// <summary> Проверка возможности выполнения - Команда разделения файла квитанций </summary>
+        private bool CanSendReceiptCommandExecute() => SplitFilePath != string.Empty;
+
+        /// <summary> Логика выполнения - Команда разделения файла квитанций </summary>
+        private void OnSendReceiptCommandExecuted()
+        {
+            var listFiles = GetFileList(SplitFilePath).ToList();
+            int countSendFile = 0;
+
+            foreach (var filePath in listFiles)
+            {
+                if (!SendReceipt(filePath).Result)
+                    ListNotSendReceipts.Add(filePath);
+                countSendFile++;
+            }
+
+            _userDialog.Information($"Отправлено {countSendFile} из {listFiles.Count}");
+            
+        }
+
+        #endregion
+
+        private IEnumerable<string> GetFileList(string filePath) => Directory.EnumerateFiles(filePath);
+
+        private async Task<string> GetEmailCurrentParcel(string filePath)
+        {
+            var inputString = filePath;
+            var indexStart = inputString.LastIndexOf(" ") + 1;
+            var length = filePath.Length - filePath.LastIndexOf(".") - 1;
+            var parcelNumber = filePath.Substring(indexStart, length);
+            currentParcel = await _parcel.GetByNumber(parcelNumber);
+            return currentParcel.Gardener.FirstEmailAddress;
+
+        }
+
+        private async Task<bool> SendReceipt(string filePath)
+        {
+            var listTo = new List<string>();
+            var receipt = filePath;
+            var email = await GetEmailCurrentParcel(receipt).ConfigureAwait(false);
+            listTo.Add(email);
+            var ct = CancellationToken.None;
+            var msg = new MailData(listTo, receipt, receipt);
+            return await _email.SendAsync(msg, ct);
+        }
+
 
         public PdfSplitterViewModel(
             IUserDialog userDialog,
             ReceiptsSplitter splitter,
-            IMailService email)
+            IMailService email,
+            IParcelRepository<Parcel> parcel)
         {
             _userDialog = userDialog;
             _splitter = splitter;
             _email = email;
+            _parcel = parcel;
+            
         }
     }
 }

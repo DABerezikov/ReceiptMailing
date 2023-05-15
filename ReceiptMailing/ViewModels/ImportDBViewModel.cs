@@ -3,7 +3,6 @@ using ReceiptMailing.Services.Interfaces;
 using ReceiptMailing.ViewModels.Base;
 using System.Windows.Input;
 using ReceiptMailing.Data.Entities;
-using ReceiptMailing.Data.Repositories;
 using ReceiptMailing.Services;
 using System;
 using System.Globalization;

@@ -5,6 +5,9 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using System.Linq;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using MailKit.Net.Smtp;
 
 
@@ -64,7 +67,11 @@ public class MailService : IMailService
             var body = new BodyBuilder();
             mail.Subject = mailData.Subject;
             body.HtmlBody = mailData.Body;
-            mail.Body = body.ToMessageBody();
+            var buffer = File.ReadAllBytes(mailData.Body);
+            var builder = new BodyBuilder();
+            builder.Attachments.Add(Path.GetFileName(mailData.Body), buffer, new ContentType("AdobePDF", "pdf"));
+            mail.Body = builder.ToMessageBody();
+
 
             #endregion
 
@@ -72,9 +79,13 @@ public class MailService : IMailService
 
             using var smtp = new SmtpClient();
 
+            smtp.Timeout = (int)TimeSpan.FromSeconds(5).TotalMilliseconds;
+
             if (_settings.UseSsl)
             {
-                await smtp.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.SslOnConnect, ct);
+                Debug.WriteLine(smtp.IsConnected);
+                await smtp.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.SslOnConnect, ct).ConfigureAwait(false);
+                Debug.WriteLine(smtp.IsConnected);
             }
             else if (_settings.UseStartTls)
             {

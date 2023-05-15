@@ -43,7 +43,7 @@
 
             <Border Width="540" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,100,0,0"
                     BorderBrush="{StaticResource GrayBrush}" BorderThickness="1">
-                <TextBlock 
+                <TextBox 
                     Text="{Binding SplitFilePath}"/>
             </Border>
 
@@ -51,6 +51,9 @@
                     Grid.Column="0" fa5:Awesome.Content="Regular_FolderOpen" ToolTip="Выбор файла с садоводами"
                     Foreground="{StaticResource OrangeBrush}"
                     Background="{StaticResource TransparentBrush}" Command="{Binding OpenFolderCommand}"/>
+
+            <Button Width="100" Height="20" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="450,140,0,0"
+                    Content="Разослать" Command="{Binding SendReceiptCommand}"/>
 
 
            
