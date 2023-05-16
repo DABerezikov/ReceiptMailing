@@ -48,7 +48,9 @@ public class MailData
 
     public string? Body { get; }
 
-    public MailData(List<string> to, string subject, string? body = null, string? from = null, string? displayName = null, string? replyTo = null, string? replyToName = null, List<string>? bcc = null, List<string>? cc = null)
+    public List<string>? Attachment { get; }
+
+    public MailData(List<string> to, string subject, string? body = null, List<string>? attachment = null, string? from = null, string? displayName = null, string? replyTo = null, string? replyToName = null, List<string>? bcc = null, List<string>? cc = null)
     {
         // Receiver
         To = to;
@@ -64,5 +66,6 @@ public class MailData
         // Content
         Subject = subject;
         Body = body;
+        Attachment = attachment;
     }
 }

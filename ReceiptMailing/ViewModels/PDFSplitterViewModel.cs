@@ -22,7 +22,6 @@ namespace ReceiptMailing.ViewModels
         private readonly IMailService _email;
         private readonly IParcelRepository<Parcel> _parcel;
 
-        private Parcel currentParcel = new();
 
         #region Title : string - Заголовок окна
 
@@ -163,13 +162,13 @@ namespace ReceiptMailing.ViewModels
 
         private IEnumerable<string> GetFileList(string filePath) => Directory.EnumerateFiles(filePath);
 
-        private async Task<string> GetEmailCurrentParcel(string filePath)
+        private async Task<string?> GetEmailCurrentParcel(string filePath)
         {
             var inputString = filePath;
             var indexStart = inputString.LastIndexOf(" ") + 1;
             var length = filePath.Length - filePath.LastIndexOf(".") - 1;
             var parcelNumber = filePath.Substring(indexStart, length);
-            currentParcel = await _parcel.GetByNumber(parcelNumber);
+            var currentParcel = await _parcel.GetByNumber(parcelNumber);
             return currentParcel.Gardener.FirstEmailAddress;
 
         }
@@ -179,9 +178,11 @@ namespace ReceiptMailing.ViewModels
             var listTo = new List<string>();
             var receipt = filePath;
             var email = await GetEmailCurrentParcel(receipt).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(email)) return false;
             listTo.Add(email);
+            var attachment = new List<string> {receipt};
             var ct = CancellationToken.None;
-            var msg = new MailData(listTo, receipt, receipt);
+            var msg = new MailData(listTo, "Квитанция СНТ \"Тимирязевец\"", "C уважением, \nПравление СНТ \"Тимирязевец\"", attachment);
             return await _email.SendAsync(msg, ct);
         }
 

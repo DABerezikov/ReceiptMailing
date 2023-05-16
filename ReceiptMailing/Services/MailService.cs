@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using System.Linq;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using MailKit.Net.Smtp;
@@ -67,11 +66,16 @@ public class MailService : IMailService
             var body = new BodyBuilder();
             mail.Subject = mailData.Subject;
             body.HtmlBody = mailData.Body;
-            var buffer = File.ReadAllBytes(mailData.Body);
             var builder = new BodyBuilder();
-            builder.Attachments.Add(Path.GetFileName(mailData.Body), buffer, new ContentType("AdobePDF", "pdf"));
+            if (mailData.Attachment != null)
+                foreach (var filePath in mailData.Attachment)
+                {
+                    var buffer = File.ReadAllBytes(filePath);
+                    
+                    builder.Attachments.Add(Path.GetFileName(filePath), buffer, new ContentType("AdobePDF", "pdf"));
+                   
+                }
             mail.Body = builder.ToMessageBody();
-
 
             #endregion
 
