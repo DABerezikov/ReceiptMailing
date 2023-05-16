@@ -136,25 +136,29 @@ namespace ReceiptMailing.ViewModels
 
         /// <summary> Команда разделения файла квитанций </summary>
         public ICommand SendReceiptCommand => _sendReceiptCommand
-            ??= new LambdaCommand(OnSendReceiptCommandExecuted, CanSendReceiptCommandExecute);
+            ??= new LambdaCommandAsync(OnSendReceiptCommandExecuted, CanSendReceiptCommandExecute);
 
         /// <summary> Проверка возможности выполнения - Команда разделения файла квитанций </summary>
         private bool CanSendReceiptCommandExecute() => SplitFilePath != string.Empty;
 
         /// <summary> Логика выполнения - Команда разделения файла квитанций </summary>
-        private void OnSendReceiptCommandExecuted()
+        private async Task OnSendReceiptCommandExecuted()
         {
             var listFiles = GetFileList(SplitFilePath).ToList();
             int countSendFile = 0;
 
             foreach (var filePath in listFiles)
             {
-                if (!SendReceipt(filePath).Result)
+                if (!await SendReceipt(filePath))
+                {
                     ListNotSendReceipts.Add(filePath);
+                    continue;
+                }
+
                 countSendFile++;
             }
 
-            _userDialog.Information($"Отправлено {countSendFile} из {listFiles.Count}");
+            _userDialog.Information($"Отправлено {countSendFile} из {listFiles.Count}", "Почтальон");
             
         }
 
@@ -166,7 +170,7 @@ namespace ReceiptMailing.ViewModels
         {
             var inputString = filePath;
             var indexStart = inputString.LastIndexOf(" ") + 1;
-            var length = filePath.Length - filePath.LastIndexOf(".") - 1;
+            var length = inputString.LastIndexOf(".") - indexStart;
             var parcelNumber = filePath.Substring(indexStart, length);
             var currentParcel = await _parcel.GetByNumber(parcelNumber);
             return currentParcel.Gardener.FirstEmailAddress;
