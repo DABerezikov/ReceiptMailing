@@ -5,7 +5,10 @@ using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using SixLabors.ImageSharp.Formats.Tga;
+using Rectangle = Aspose.Pdf.Rectangle;
 
 namespace ReceiptMailing.Services;
 
@@ -85,7 +88,7 @@ public class ReceiptsSplitter
 
             listFile.Add(file1);
             listFile.Add(file2);
-
+            
             doc1.Save(file1);
             doc2.Save(file2);
         }
