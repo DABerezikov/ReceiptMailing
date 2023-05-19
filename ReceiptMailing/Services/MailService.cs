@@ -65,7 +65,6 @@ public class MailService : IMailService
             // Add Content to Mime Message
             var body = new BodyBuilder();
             mail.Subject = mailData.Subject;
-            body.TextBody = mailData.Body;
             var builder = new BodyBuilder();
             if (mailData.Attachment != null)
                 foreach (var filePath in mailData.Attachment)
@@ -73,7 +72,8 @@ public class MailService : IMailService
                     var buffer = File.ReadAllBytes(filePath);
                     
                     builder.Attachments.Add(Path.GetFileName(filePath), buffer, new ContentType("AdobePDF", "pdf"));
-                   
+                    builder.TextBody = mailData.Body;
+
                 }
             mail.Body = builder.ToMessageBody();
 
