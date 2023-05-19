@@ -98,6 +98,8 @@ public class MailService : IMailService
             await smtp.AuthenticateAsync(_settings.UserName, _settings.Password, ct);
             await smtp.SendAsync(mail, ct);
             await smtp.DisconnectAsync(true, ct);
+            var i = 0;
+            Debug.WriteLine($"Отправка {i++}");
 
             #endregion
 

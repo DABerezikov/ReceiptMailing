@@ -173,6 +173,7 @@ namespace ReceiptMailing.ViewModels
             var length = inputString.LastIndexOf(".") - indexStart;
             var parcelNumber = filePath.Substring(indexStart, length);
             var currentParcel = await _parcel.GetByNumber(parcelNumber);
+            if (currentParcel==null) return null;
             return currentParcel.Gardener.FirstEmailAddress;
 
         }
