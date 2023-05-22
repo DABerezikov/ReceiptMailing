@@ -8,7 +8,7 @@ namespace ReceiptMailing.ViewModels
         public PdfSplitterViewModel PdfSplitterWindowModel => App.Services.GetRequiredService<PdfSplitterViewModel>();
         public ImportDBViewModel ImportDbViewModel => App.Services.GetRequiredService<ImportDBViewModel>();
 
-        public EditGardenerViewModel EditGardenerViewModel => App.Services.GetRequiredService<EditGardenerViewModel>();
+        //public EditGardenerViewModel EditGardenerViewModel => App.Services.GetRequiredService<EditGardenerViewModel>();
 
     }
 }

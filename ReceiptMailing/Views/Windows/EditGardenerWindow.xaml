@@ -3,10 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        DataContext="{Binding EditGardenerViewModel, Source={StaticResource Locator}}"
-        Title="{Binding Title}" Height="680" Width="840">
+        
+        Title="{Binding Title}" Height="540" Width="840">
     <Grid>
-        <Border Margin="5,5,345,590" Style="{StaticResource BorderEditWindowStyle}">
+        <Border Margin="5,5,345,450" Style="{StaticResource BorderEditWindowStyle}">
             <Grid>
                 <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Фамилия"/>
                 <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding SurName}" />
@@ -19,7 +19,7 @@
 
             </Grid>
         </Border>
-        <Border Margin="505,5,5,590" Style="{StaticResource BorderEditWindowStyle}">
+        <Border Margin="505,5,5,450" Style="{StaticResource BorderEditWindowStyle}">
             <Grid>
                 <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Серия паспорта"/>
                 <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PassportSeries}" />
@@ -29,7 +29,7 @@
 
             </Grid>
         </Border>
-        <Border Margin="5,85,345,515" Style="{StaticResource BorderEditWindowStyle}">
+        <Border Margin="5,85,345,375" Style="{StaticResource BorderEditWindowStyle}">
             <Grid>
                 <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Номер телефона"/>
                 <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PhoneNumber}" />
@@ -42,7 +42,7 @@
 
             </Grid>
         </Border>
-        <Border Margin="505,85,5,515" Style="{StaticResource BorderEditWindowStyle}">
+        <Border Margin="505,85,5,375" Style="{StaticResource BorderEditWindowStyle}">
             <Grid>
                 <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Лицевой счет"/>
                 <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Account}" />
@@ -52,7 +52,7 @@
 
             </Grid>
         </Border>
-        <Border Margin="5,160,5,355" Style="{StaticResource BorderEditWindowStyle}">
+        <Border Margin="5,160,5,215" Style="{StaticResource BorderEditWindowStyle}">
             <Grid>
                 <TextBlock Margin="330,5,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text="Адрес проживания"/>
 
@@ -90,10 +90,59 @@
 
             </Grid>
         </Border>
+        <Border Margin="5,320,5,55" Style="{StaticResource BorderEditWindowStyle}">
+            <Grid>
+                <TextBlock Margin="330,5,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text="Адрес прописки"/>
+                <CheckBox Margin="10,5,0,0" Height="25" Width="150" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Совпадают"
+                          Command="{Binding MatchAddressCommand}"/>
+
+                <TextBlock Margin="10,30,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Индекс"/>
+                <TextBox Margin="10,50,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                         Text="{Binding PostPostalCode}" />
+
+                <TextBlock Margin="170,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Область"/>
+                <TextBox Margin="170,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}" 
+                         Text="{Binding PostProvince}" />
+
+                <TextBlock Margin="390,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Округ/Район"/>
+                <TextBox Margin="390,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}"
+                         Text="{Binding PostRegion}" />
+
+                <TextBlock Margin="610,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Населенный пункт"/>
+                <TextBox Margin="610,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}"
+                         Text="{Binding PostCity}" />
+
+                <TextBlock Margin="10,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Улица"/>
+                <TextBox Margin="10,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                         Text="{Binding PostStreet}" />
+
+                <TextBlock Margin="200,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Дом"/>
+                <TextBox Margin="200,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                         Text="{Binding PostHouse}" />
+
+                <TextBlock Margin="420,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Корпус"/>
+                <TextBox Margin="420,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                         Text="{Binding PostBuilding}" />
+
+                <TextBlock Margin="640,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Квартира"/>
+                <TextBox Margin="640,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                         Text="{Binding PostRoom}" />
+
+            </Grid>
+        </Border>
+        <Button VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="150" Height="25" Margin="505,0,0,15" IsDefault="True"
+                Background="{StaticResource WhiteBrush}" BorderBrush="{StaticResource DarkGrayBrush}" 
+                Content="Сохранить" Command="{Binding AcceptCommand}"
+                CommandParameter="{Binding RelativeSource= {RelativeSource AncestorType=Window}}"/>
+        
+        <Button VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="150" Height="25" Margin="670,0,0,15" IsCancel="True"
+                Background="{StaticResource WhiteBrush}" BorderBrush="{StaticResource DarkGrayBrush}" 
+                Content="Отменить" Command="{Binding CancelCommand}"
+                CommandParameter="{Binding RelativeSource= {RelativeSource AncestorType=Window}}"/>
 
 
 
 
 
-</Grid>
+    </Grid>
 </Window>

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using ReceiptMailing.Data.Entities;
+using System.IO;
 
 namespace ReceiptMailing.Services.Interfaces
 {
@@ -46,5 +47,9 @@ namespace ReceiptMailing.Services.Interfaces
         /// <param name="text">Заголовок окна диалога</param>
         /// <param name="title">Текст в окне диалога</param>
         void Error(string text, string title = "Вопрос...");
+
+        /// <summary>Диалог создания или редактирования садовода</summary>
+        /// <param name="gardener">Садовод</param>
+        bool CreateOrEditGardener(Gardener gardener);
     }
 }

@@ -4,6 +4,9 @@ using System.IO;
 using System.Windows;
 using System;
 using System.Linq;
+using ReceiptMailing.Data.Entities;
+using ReceiptMailing.ViewModels;
+using ReceiptMailing.Views.Windows;
 
 
 namespace ReceiptMailing.Services
@@ -119,6 +122,17 @@ namespace ReceiptMailing.Services
                 MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Error);
             else
                 MessageBox.Show(CurrentWindow, text, title, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        public virtual bool CreateOrEditGardener(Gardener gardener)
+        {
+            var tempGardener = gardener;
+            var viewModel = new EditGardenerViewModel(tempGardener);
+            var window = new EditGardenerWindow { DataContext = viewModel };
+            var result = window.ShowDialog();
+            return result ?? false;
+
+
         }
     }
 }

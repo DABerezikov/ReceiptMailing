@@ -111,7 +111,49 @@ namespace ReceiptMailing.ViewModels
 
         #endregion
 
-        
+        #region Command EditGardenerCommand - Команда редактирования данных садовода
+
+        /// <summary> Команда редактирования данных садовода </summary>
+        private ICommand _EditGardenerCommand;
+
+        /// <summary> Команда редактирования данных садовода </summary>
+        public ICommand EditGardenerCommand => _EditGardenerCommand
+            ??= new LambdaCommandAsync(OnEditGardenerCommandExecuted, CanEditGardenerCommandExecute);
+
+        /// <summary> Проверка возможности выполнения - Команда редактирования данных садовода </summary>
+        private bool CanEditGardenerCommandExecute() => SelectedParcel!=null;
+
+        /// <summary> Логика выполнения - Команда редактирования данных садовода </summary>
+        private async Task OnEditGardenerCommandExecuted()
+        {
+            var tempGardener = new Gardener();
+            var selectedGardener = SelectedParcel.Gardener;
+            CopyInfoGardener(selectedGardener, tempGardener);
+            if (!_userDialog.CreateOrEditGardener(tempGardener)) return;
+            CopyInfoGardener(tempGardener, selectedGardener);
+            await _Gardener.Update(selectedGardener);
+
+
+
+
+        }
+
+        #endregion
+
+        private void CopyInfoGardener(Gardener gardenerFrom, Gardener gardenerTo)
+        {
+            gardenerTo.Address = gardenerFrom.Address;
+            gardenerTo.PostAddress = gardenerFrom.PostAddress;
+            gardenerTo.Account = gardenerFrom.Account;
+            gardenerTo.Document = gardenerFrom.Document;
+            gardenerTo.FirstEmailAddress = gardenerFrom.FirstEmailAddress;
+            gardenerTo.Passport = gardenerFrom.Passport;
+            gardenerTo.PhoneNumber = gardenerFrom.PhoneNumber;
+            gardenerTo.SecondEmailAddress = gardenerFrom.SecondEmailAddress;
+            gardenerTo.Name = gardenerFrom.Name;
+            gardenerTo.SurName = gardenerFrom.SurName;
+            gardenerTo.Patronymic = gardenerFrom.Patronymic;
+        }
 
 
         public MainWindowViewModel(

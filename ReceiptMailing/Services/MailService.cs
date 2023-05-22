@@ -63,19 +63,19 @@ public class MailService : IMailService
             #region Content
 
             // Add Content to Mime Message
-            var body = new BodyBuilder();
+            var bodyBuilder = new BodyBuilder();
             mail.Subject = mailData.Subject;
-            var builder = new BodyBuilder();
+            bodyBuilder.TextBody = mailData.Body;
+
             if (mailData.Attachment != null)
                 foreach (var filePath in mailData.Attachment)
                 {
                     var buffer = File.ReadAllBytes(filePath);
                     
-                    builder.Attachments.Add(Path.GetFileName(filePath), buffer, new ContentType("AdobePDF", "pdf"));
-                    builder.TextBody = mailData.Body;
+                    bodyBuilder.Attachments.Add(Path.GetFileName(filePath), buffer, new ContentType("AdobePDF", "pdf"));
 
                 }
-            mail.Body = builder.ToMessageBody();
+            mail.Body = bodyBuilder.ToMessageBody();
 
             #endregion
 

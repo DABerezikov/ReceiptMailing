@@ -37,7 +37,8 @@
             <Button Style="{StaticResource UniformButtonStyle}" Content="Редактировать участок"/>
             <Button Style="{StaticResource UniformButtonStyle}" Content="Удалить участок"/>
             <Button Style="{StaticResource UniformButtonStyle}" Content="Добавить садовода"/>
-            <Button Style="{StaticResource UniformButtonStyle}" Content="Редактировать садовода"/>
+            <Button Style="{StaticResource UniformButtonStyle}" Content="Редактировать садовода"
+                    Command="{Binding EditGardenerCommand}"/>
             <Button Style="{StaticResource UniformButtonStyle}" Content="Удалить садовода"/>
 
         </UniformGrid>

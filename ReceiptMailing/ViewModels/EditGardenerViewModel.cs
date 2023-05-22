@@ -1,5 +1,10 @@
 ﻿using ReceiptMailing.Data.Entities;
+using ReceiptMailing.Infrastructure.Commands;
 using ReceiptMailing.ViewModels.Base;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 
 namespace ReceiptMailing.ViewModels;
 
@@ -197,7 +202,150 @@ internal class EditGardenerViewModel:ViewModel
 
     #endregion
 
-    #region PostalCode : string - Индекс
+    #region PostPostPostalCode : string - Индекс прописки
+
+    /// <summary>Индекс прописки</summary>
+    private string? _PostPostalCode;
+
+    /// <summary>Индекс прописки</summary>
+    public string? PostPostalCode
+    {
+        get => _Gardener.PostAddress.PostalCode;
+        set
+        {
+            _Gardener.PostAddress.PostalCode = value;
+            Set(ref _PostPostalCode, value);
+        }
+    }
+
+    #endregion
+
+    #region PostProvince : string - Область прописки
+
+    /// <summary>Область прописки</summary>
+    private string? _PostProvince;
+
+    /// <summary>Область прописки</summary>
+    public string? PostProvince
+    {
+        get => _Gardener.PostAddress.Province;
+        set
+        {
+            _Gardener.PostAddress.Province = value;
+            Set(ref _PostProvince, value);
+        }
+    }
+
+    #endregion
+
+    #region PostRegion : string - Округ прописки
+
+    /// <summary>Округ прописки</summary>
+    private string? _PostRegion;
+
+    /// <summary>Округ прописки</summary>
+    public string? PostRegion
+    {
+        get => _Gardener.PostAddress.Region;
+        set
+        {
+            _Gardener.PostAddress.Region = value;
+            Set(ref _PostRegion, value);
+        }
+    }
+
+    #endregion
+
+    #region PostCity : string - Населенный пункт прописки
+
+    /// <summary>Населенный пункт прописки</summary>
+    private string? _PostCity;
+
+    /// <summary>Населенный пункт прописки</summary>
+    public string? PostCity
+    {
+        get => _Gardener.PostAddress.City;
+        set
+        {
+            _Gardener.PostAddress.City = value;
+            Set(ref _PostCity, value);
+        }
+    }
+
+    #endregion
+
+    #region PostStreet : string - Улица прописки 
+
+    /// <summary>Улица прописки</summary>
+    private string? _PostStreet;
+
+    /// <summary>Улица прописки</summary>
+    public string? PostStreet
+    {
+        get => _Gardener.PostAddress.Street;
+        set
+        {
+            _Gardener.PostAddress.Street = value;
+            Set(ref _PostStreet, value);
+        }
+    }
+
+    #endregion
+
+    #region PostHouse : string - Дом прописки
+
+    /// <summary>Дом прописки</summary>
+    private string? _PostHouse;
+
+    /// <summary>Дом прописки</summary>
+    public string? PostHouse
+    {
+        get => _Gardener.PostAddress.House;
+        set
+        {
+            _Gardener.PostAddress.House = value;
+            Set(ref _PostHouse, value);
+        }
+    }
+
+    #endregion
+
+    #region PostBuilding : string - Корпус прописки
+
+    /// <summary>Корпус прописки</summary>
+    private string? _PostBuilding;
+
+    /// <summary>Корпус прописки</summary>
+    public string? PostBuilding
+    {
+        get => _Gardener.PostAddress.Building;
+        set
+        {
+            _Gardener.PostAddress.Building = value;
+            Set(ref _PostBuilding, value);
+        }
+    }
+
+    #endregion
+
+    #region PostRoom : string - Квартира прописки
+
+    /// <summary>Квартира прописки</summary>
+    private string? _PostRoom;
+
+    /// <summary>Квартира прописки</summary>
+    public string? PostRoom
+    {
+        get => _Gardener.PostAddress.Room;
+        set
+        {
+            _Gardener.PostAddress.Room = value;
+            Set(ref _PostRoom, value);
+        }
+    }
+
+    #endregion
+     #region PostalCode : string - Индекс
 
     /// <summary>Индекс</summary>
     private string? _PostalCode;
@@ -337,6 +485,66 @@ internal class EditGardenerViewModel:ViewModel
             _Gardener.Address.Room = value;
             Set(ref _Room, value);
         }
+    }
+
+    #endregion
+
+    #region Command MatchAddressCommand - Команда приравнивания адресов проживания и прописки
+
+    /// <summary> Команда приравнивания адресов проживания и прописки </summary>
+    private ICommand _MatchAddressCommand;
+
+    /// <summary> Команда приравнивания адресов проживания и прописки </summary>
+    public ICommand MatchAddressCommand => _MatchAddressCommand
+        ??= new LambdaCommandAsync(OnMatchAddressCommandExecuted, CanMatchAddressCommandExecute);
+
+    /// <summary> Проверка возможности выполнения - Команда приравнивания адресов проживания и прописки </summary>
+    private bool CanMatchAddressCommandExecute() => _Gardener.PostAddress!=_Gardener.Address;
+
+    /// <summary> Логика выполнения - Команда приравнивания адресов проживания и прописки </summary>
+    private async Task OnMatchAddressCommandExecuted()
+    {
+        _Gardener.PostAddress = _Gardener.Address;
+    }
+
+    #endregion
+
+    #region Command AcceptCommand - Команда приравнивания адресов проживания и прописки
+
+    /// <summary> Команда приравнивания адресов проживания и прописки </summary>
+    private ICommand _AcceptCommand;
+
+    /// <summary> Команда приравнивания адресов проживания и прописки </summary>
+    public ICommand AcceptCommand => _AcceptCommand
+        ??= new LambdaCommandAsync(OnAcceptCommandExecuted, CanAcceptCommandExecute);
+
+    /// <summary> Проверка возможности выполнения - Команда приравнивания адресов проживания и прописки </summary>
+    private bool CanAcceptCommandExecute(object p) => true;
+
+    /// <summary> Логика выполнения - Команда приравнивания адресов проживания и прописки </summary>
+    private async Task OnAcceptCommandExecuted(object p)
+    {
+        ((Window)p).DialogResult = true;
+    }
+
+    #endregion
+
+    #region Command CancelCommand - Команда приравнивания адресов проживания и прописки
+
+    /// <summary> Команда приравнивания адресов проживания и прописки </summary>
+    private ICommand _CancelCommand;
+
+    /// <summary> Команда приравнивания адресов проживания и прописки </summary>
+    public ICommand CancelCommand => _CancelCommand
+        ??= new LambdaCommandAsync(OnCancelCommandExecuted, CanCancelCommandExecute);
+
+    /// <summary> Проверка возможности выполнения - Команда приравнивания адресов проживания и прописки </summary>
+    private bool CanCancelCommandExecute(object p) => true;
+
+    /// <summary> Логика выполнения - Команда приравнивания адресов проживания и прописки </summary>
+    private async Task OnCancelCommandExecuted(object p)
+    {
+        ((Window)p).DialogResult = false;
     }
 
     #endregion
