@@ -4,9 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         
-        Title="{Binding Title}" Height="540" Width="840">
+        Title="{Binding Title}" MaxHeight="640" MaxWidth="865">
     <Grid>
-        <Border Margin="5,5,345,450" Style="{StaticResource BorderEditWindowStyle}">
+        <Border Margin="5,5,350,525" Style="{StaticResource BorderEditWindowStyle}">
             <Grid>
                 <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Фамилия"/>
                 <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding SurName}" />
@@ -19,7 +19,7 @@
 
             </Grid>
         </Border>
-        <Border Margin="505,5,5,450" Style="{StaticResource BorderEditWindowStyle}">
+        <Border Margin="505,5,5,525" Style="{StaticResource BorderEditWindowStyle}">
             <Grid>
                 <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Серия паспорта"/>
                 <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PassportSeries}" />
@@ -29,7 +29,7 @@
 
             </Grid>
         </Border>
-        <Border Margin="5,85,345,375" Style="{StaticResource BorderEditWindowStyle}">
+        <Border Margin="5,85,350,375" Style="{StaticResource BorderEditWindowStyle}">
             <Grid>
                 <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Номер телефона"/>
                 <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PhoneNumber}" />
