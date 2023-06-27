@@ -11,6 +11,7 @@ using System.Windows.Input;
 using ReceiptMailing.Data.Entities;
 using ReceiptMailing.Services.Interfaces.Repositories;
 using ReceiptMailing.ViewModels.Base;
+using System.Text;
 
 namespace ReceiptMailing.ViewModels
 {
@@ -158,6 +159,8 @@ namespace ReceiptMailing.ViewModels
                 countSendFile++;
             }
 
+            SaveListFileNotSend();
+
             _userDialog.Information($"Отправлено {countSendFile} из {listFiles.Count}", "Почтальон");
             
         }
@@ -191,6 +194,26 @@ namespace ReceiptMailing.ViewModels
             return await _email.SendAsync(msg, ct);
         }
 
+        private void SaveListFileNotSend()
+        {
+            string file = @"NotSend.csv";
+            string separator = ",";
+            StringBuilder output = new StringBuilder();
+            foreach (var notSend in ListNotSendReceipts)
+            {
+               output.AppendLine(string.Join(separator, notSend));
+            }
+
+            try
+            {
+                File.AppendAllText(file, output.ToString(), Encoding.Unicode);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Data could not be written to the CSV file.");
+                return;
+            }
+        }
 
         public PdfSplitterViewModel(
             IUserDialog userDialog,
