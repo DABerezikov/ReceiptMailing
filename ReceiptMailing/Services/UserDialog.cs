@@ -7,6 +7,7 @@ using System.Linq;
 using ReceiptMailing.Data.Entities;
 using ReceiptMailing.ViewModels;
 using ReceiptMailing.Views.Windows;
+using ReceiptMailing.Services.Interfaces.Repositories;
 
 
 namespace ReceiptMailing.Services
@@ -131,15 +132,12 @@ namespace ReceiptMailing.Services
             var window = new EditGardenerWindow { DataContext = viewModel };
             var result = window.ShowDialog();
             return result ?? false;
-
-
         }
 
-        public virtual bool CreateOrEditParcel(Parcel parcel, Gardener gardener)
+        public virtual bool CreateOrEditParcel(Parcel parcel, IRepository<Gardener> gardenerRepository)
         {
             var tempParcel = parcel;
-            var tempGardener = gardener;
-            var viewModel = new EditParcelViewModel(tempParcel,tempGardener);
+            var viewModel = new EditParcelViewModel(tempParcel, gardenerRepository);
             var window = new EditParcelWindow { DataContext = viewModel };
             var result = window.ShowDialog();
             return result ?? false;

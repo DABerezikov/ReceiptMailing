@@ -170,6 +170,8 @@ namespace ReceiptMailing.Data.Repositories
             return await Delete(item, cancel).ConfigureAwait(false);
         }
 
+        
+
         public async Task<int> SaveChanges(CancellationToken cancel = default)
         {
             return await _db.SaveChangesAsync(cancel).ConfigureAwait(false);

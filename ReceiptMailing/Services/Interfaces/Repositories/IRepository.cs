@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using ReceiptMailing.Data.Entities;
 
 namespace ReceiptMailing.Services.Interfaces.Repositories
 {
@@ -30,6 +31,7 @@ namespace ReceiptMailing.Services.Interfaces.Repositories
         Task<T> Delete(T item, CancellationToken cancel = default);
 
         Task<T> DeleteById(int id, CancellationToken cancel = default);
+       
     }
 
     public interface IPage<out T>

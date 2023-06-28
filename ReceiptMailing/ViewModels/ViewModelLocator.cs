@@ -9,6 +9,7 @@ namespace ReceiptMailing.ViewModels
         public ImportDBViewModel ImportDbViewModel => App.Services.GetRequiredService<ImportDBViewModel>();
 
         //public EditGardenerViewModel EditGardenerViewModel => App.Services.GetRequiredService<EditGardenerViewModel>();
+        //public EditParcelViewModel EditParcelViewModel => App.Services.GetRequiredService<EditParcelViewModel>();
 
     }
 }

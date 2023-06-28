@@ -51,6 +51,11 @@ namespace ReceiptMailing.Data.Entities
             }
         }
 
+        public override string ToString()
+        {
+            return $"{SurName} {Name} {Patronymic}";
+        }
+
         public ICollection<Parcel> Parcels { get; set; } = new HashSet<Parcel>();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ReceiptMailing.Data.Entities;
+using ReceiptMailing.Services.Interfaces.Repositories;
 using System.IO;
 
 namespace ReceiptMailing.Services.Interfaces
@@ -51,5 +52,7 @@ namespace ReceiptMailing.Services.Interfaces
         /// <summary>Диалог создания или редактирования садовода</summary>
         /// <param name="gardener">Садовод</param>
         bool CreateOrEditGardener(Gardener gardener);
+
+        bool CreateOrEditParcel(Parcel parcel, IRepository<Gardener> gardenerRepository);
     }
 }

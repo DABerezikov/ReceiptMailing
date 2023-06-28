@@ -213,6 +213,50 @@ namespace ReceiptMailing.ViewModels
 
         #endregion
 
+        #region Command EditParcelCommand - Команда редактирования данных садовода
+
+        /// <summary> Команда редактирования данных садовода </summary>
+        private ICommand _EditParcelCommand;
+
+        /// <summary> Команда редактирования данных садовода </summary>
+        public ICommand EditParcelCommand => _EditParcelCommand
+            ??= new LambdaCommandAsync(OnEditParcelCommandExecuted, CanEditParcelCommandExecute);
+
+        /// <summary> Проверка возможности выполнения - Команда редактирования данных садовода </summary>
+        private bool CanEditParcelCommandExecute() => SelectedParcel != null;
+
+        /// <summary> Логика выполнения - Команда редактирования данных садовода </summary>
+        private async Task OnEditParcelCommandExecuted()
+        {
+            var tempParcel = new Parcel();
+            var selectedParcel = SelectedParcel;
+            CopyInfoParcel(selectedParcel, tempParcel);
+            if (!_userDialog.CreateOrEditParcel(tempParcel, _Gardener)) return;
+            CopyInfoParcel(tempParcel, selectedParcel);
+            await _Parcel.Update(selectedParcel);
+
+            
+        }
+
+        private void CopyInfoParcel(Parcel sourceParcel, Parcel destinationParcel)
+        {
+            destinationParcel.Gardener = sourceParcel.Gardener;
+            destinationParcel.PlotArea = sourceParcel.PlotArea;
+            destinationParcel.CadastralNumber = sourceParcel.CadastralNumber;
+            destinationParcel.Category = sourceParcel.Category;
+            destinationParcel.Description = sourceParcel.Description;
+            destinationParcel.Details = sourceParcel.Details;
+            destinationParcel.Electrification = sourceParcel.Electrification;
+            destinationParcel.HavingHouse = sourceParcel.HavingHouse;
+            destinationParcel.HouseNumber = sourceParcel.HouseNumber;
+            destinationParcel.Status = sourceParcel.Status;
+            destinationParcel.Street = sourceParcel.Street;
+            destinationParcel.Id = sourceParcel.Id;
+            destinationParcel.Number = sourceParcel.Number;
+        }
+
+        #endregion
+
 
         public MainWindowViewModel(
             IUserDialog userDialog,
