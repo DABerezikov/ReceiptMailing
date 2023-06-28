@@ -162,7 +162,7 @@ namespace ReceiptMailing.ViewModels
             ??= new LambdaCommandAsync(OnAddGardenerCommandExecuted, CanAddGardenerCommandExecute);
 
         /// <summary> Проверка возможности выполнения - Команда добавления садовода </summary>
-        private bool CanAddGardenerCommandExecute() => SelectedParcel != null;
+        private bool CanAddGardenerCommandExecute() => true;
 
         /// <summary> Логика выполнения - Команда добавления садовода </summary>
         private async Task OnAddGardenerCommandExecuted()
@@ -173,6 +173,30 @@ namespace ReceiptMailing.ViewModels
         }
 
         #endregion
+
+        #region Command DeleteGardenerCommand - Команда удаления садовода
+
+        /// <summary> Команда удаления садовода </summary>
+        private ICommand _DeleteGardenerCommand;
+
+        /// <summary> Команда удаления садовода </summary>
+        public ICommand DeleteGardenerCommand => _DeleteGardenerCommand
+            ??= new LambdaCommandAsync(OnDeleteGardenerCommandExecuted, CanDeleteGardenerCommandExecute);
+
+        /// <summary> Проверка возможности выполнения - Команда удаления садовода </summary>
+        private bool CanDeleteGardenerCommandExecute() => SelectedParcel != null;
+
+        /// <summary> Логика выполнения - Команда удаления садовода </summary>
+        private async Task OnDeleteGardenerCommandExecuted()
+        {
+            var question = $"Вы действительно хотите удалить садовода {SelectedParcel.Gardener.SurName}" +
+                                 $" {SelectedParcel.Gardener.Name} {SelectedParcel.Gardener.Patronymic}";
+            if (!_userDialog.OkCancelQuestion(question, "Запрос на удаление садовода")) return;
+            await _Gardener.Delete(SelectedParcel.Gardener);
+        }
+
+        #endregion
+
 
         public MainWindowViewModel(
             IUserDialog userDialog,

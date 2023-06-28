@@ -40,7 +40,8 @@
                     Command="{Binding AddGardenerCommand}"/>
             <Button Style="{StaticResource UniformButtonStyle}" Content="Редактировать садовода"
                     Command="{Binding EditGardenerCommand}"/>
-            <Button Style="{StaticResource UniformButtonStyle}" Content="Удалить садовода"/>
+            <Button Style="{StaticResource UniformButtonStyle}" Content="Удалить садовода"
+                    Command="{Binding DeleteGardenerCommand}"/>
 
         </UniformGrid>
 
