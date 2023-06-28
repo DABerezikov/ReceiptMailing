@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ReceiptMailing.Data.Entities;
@@ -132,14 +133,26 @@ namespace ReceiptMailing.ViewModels
             if (!_userDialog.CreateOrEditGardener(tempGardener)) return;
             CopyInfoGardener(tempGardener, selectedGardener);
             await _Gardener.Update(selectedGardener);
+
+            await UpdateCollections(selectedGardener);
+        }
+
+        private async Task UpdateCollections(Gardener selectedGardener)
+        {
+            var index = GardenerCollection.IndexOf(GardenerCollection.First(i => i.Id == selectedGardener.Id));
+            GardenerCollection[index] = selectedGardener;
+            index = ParcelCollection.IndexOf(ParcelCollection.First(i => i.Gardener.Id == selectedGardener.Id));
+            ParcelCollection[index].Gardener = selectedGardener;
+            
+            OnPropertyChanged(nameof(GardenerCollection));
             OnPropertyChanged(nameof(ParcelCollection));
         }
 
         #endregion
 
-        private void CopyInfoGardener(Gardener? gardenerFrom, Gardener gardenerTo)
+        private void CopyInfoGardener(Gardener gardenerFrom, Gardener gardenerTo)
         {
-            if(gardenerFrom==null) return;
+           
             gardenerTo.Address = gardenerFrom.Address;
             gardenerTo.PostAddress = gardenerFrom.PostAddress;
             gardenerTo.Account = gardenerFrom.Account;

@@ -134,5 +134,17 @@ namespace ReceiptMailing.Services
 
 
         }
+
+        public virtual bool CreateOrEditParcel(Parcel parcel, Gardener gardener)
+        {
+            var tempParcel = parcel;
+            var tempGardener = gardener;
+            var viewModel = new EditParcelViewModel(tempParcel,tempGardener);
+            var window = new EditParcelWindow { DataContext = viewModel };
+            var result = window.ShowDialog();
+            return result ?? false;
+
+
+        }
     }
 }

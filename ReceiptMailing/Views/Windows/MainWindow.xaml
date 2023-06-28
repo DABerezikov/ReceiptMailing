@@ -46,7 +46,7 @@
         </UniformGrid>
 
         <Grid>
-            <DataGrid ColumnHeaderHeight="40"  AutoGenerateColumns="False" ItemsSource="{Binding ParcelCollection }"
+            <DataGrid ColumnHeaderHeight="40"  AutoGenerateColumns="False" ItemsSource="{Binding ParcelCollection}"
                       SelectedIndex="{Binding SelectedIndex}" SelectedItem="{Binding SelectedParcel}"
                       IsReadOnly="True">
                 <DataGrid.Columns>
