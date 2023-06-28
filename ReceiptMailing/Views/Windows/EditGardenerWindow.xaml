@@ -4,141 +4,181 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         
-        Title="{Binding Title}" MaxHeight="640" MaxWidth="865">
+        Title="{Binding Title}" MaxHeight="640" MaxWidth="870">
     <Grid>
-        <Border Margin="5,5,350,525" Style="{StaticResource BorderEditWindowStyle}">
-            <Grid>
-                <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Фамилия"/>
-                <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding SurName}" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition Height="3*"></RowDefinition>
+            <RowDefinition Height="3*"></RowDefinition>
+            <RowDefinition Height="1*"></RowDefinition>
+        </Grid.RowDefinitions>
 
-                <TextBlock Margin="170,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Имя"/>
-                <TextBox Margin="170,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Name}" />
+        <Grid Grid.Column="0" Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10*"></ColumnDefinition>
+                <ColumnDefinition Width="7*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
 
-                <TextBlock Margin="330,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Отчество"/>
-                <TextBox Margin="330,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Patronymic}" />
+            <Border Grid.Column="0" Margin="5" Style="{StaticResource BorderEditWindowStyle}">
+                <Grid Margin="5">
+                    <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Фамилия"/>
+                    <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding SurName}" />
 
-            </Grid>
-        </Border>
-        <Border Margin="505,5,5,525" Style="{StaticResource BorderEditWindowStyle}">
-            <Grid>
-                <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Серия паспорта"/>
-                <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PassportSeries}" />
+                    <TextBlock Margin="170,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Имя"/>
+                    <TextBox Margin="170,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Name}" />
 
-                <TextBlock Margin="170,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Номер паспорта"/>
-                <TextBox Margin="170,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PassportNumber}" />
+                    <TextBlock Margin="330,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Отчество"/>
+                    <TextBox Margin="330,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Patronymic}" />
 
-            </Grid>
-        </Border>
-        <Border Margin="5,85,350,375" Style="{StaticResource BorderEditWindowStyle}">
-            <Grid>
-                <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Номер телефона"/>
-                <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PhoneNumber}" />
+                </Grid>
+            </Border>
+            <Border Grid.Column="1" Margin="5" Style="{StaticResource BorderEditWindowStyle}">
+                <Grid Margin="5">
+                    <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Серия паспорта"/>
+                    <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PassportSeries}" />
 
-                <TextBlock Margin="170,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Основной Email"/>
-                <TextBox Margin="170,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding FirstEmailAddress}" />
+                    <TextBlock Margin="170,10,10,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Номер паспорта"/>
+                    <TextBox Margin="170,30,10,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PassportNumber}" />
 
-                <TextBlock Margin="330,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Дополнительный Email"/>
-                <TextBox Margin="330,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding SecondEmailAddress}" />
+                </Grid>
+            </Border>
 
-            </Grid>
-        </Border>
-        <Border Margin="505,85,5,375" Style="{StaticResource BorderEditWindowStyle}">
-            <Grid>
-                <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Лицевой счет"/>
-                <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Account}" />
+        </Grid>
 
-                <TextBlock Margin="170,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Документ о приеме"/>
-                <TextBox Margin="170,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Document}" />
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10*"></ColumnDefinition>
+                <ColumnDefinition Width="7*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Border Grid.Column="0" Margin="5" Style="{StaticResource BorderEditWindowStyle}">
+                <Grid>
+                    <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Номер телефона"/>
+                    <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PhoneNumber}" />
 
-            </Grid>
-        </Border>
-        <Border Margin="5,160,5,215" Style="{StaticResource BorderEditWindowStyle}">
-            <Grid>
-                <TextBlock Margin="330,5,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text="Адрес проживания"/>
+                    <TextBlock Margin="170,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Основной Email"/>
+                    <TextBox Margin="170,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding FirstEmailAddress}" />
 
-                <TextBlock Margin="10,30,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Индекс"/>
-                <TextBox Margin="10,50,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                    <TextBlock Margin="330,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Дополнительный Email"/>
+                    <TextBox Margin="330,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding SecondEmailAddress}" />
+
+                </Grid>
+            </Border>
+            <Border Grid.Column="1" Margin="5" Style="{StaticResource BorderEditWindowStyle}">
+                <Grid Margin="5">
+                    <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Лицевой счет"/>
+                    <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Account}" />
+
+                    <TextBlock Margin="170,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Документ о приеме"/>
+                    <TextBox Margin="170,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Document}" />
+
+                </Grid>
+            </Border>
+
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Border Margin="5" Style="{StaticResource BorderEditWindowStyle}">
+                <Grid Margin="5">
+                    <TextBlock Margin="330,5,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text="Адрес проживания"/>
+
+                    <TextBlock Margin="10,30,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Индекс"/>
+                    <TextBox Margin="10,50,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
                          Text="{Binding PostalCode}" />
 
-                <TextBlock Margin="170,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Область"/>
-                <TextBox Margin="170,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}" 
+                    <TextBlock Margin="170,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Область"/>
+                    <TextBox Margin="170,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}" 
                          Text="{Binding Province}" />
 
-                <TextBlock Margin="390,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Округ/Район"/>
-                <TextBox Margin="390,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}"
+                    <TextBlock Margin="390,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Округ/Район"/>
+                    <TextBox Margin="390,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}"
                          Text="{Binding Region}" />
 
-                <TextBlock Margin="610,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Населенный пункт"/>
-                <TextBox Margin="610,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}"
+                    <TextBlock Margin="610,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Населенный пункт"/>
+                    <TextBox Margin="610,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}"
                          Text="{Binding City}" />
 
-                <TextBlock Margin="10,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Улица"/>
-                <TextBox Margin="10,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                    <TextBlock Margin="10,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Улица"/>
+                    <TextBox Margin="10,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
                          Text="{Binding Street}" />
 
-                <TextBlock Margin="200,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Дом"/>
-                <TextBox Margin="200,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                    <TextBlock Margin="200,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Дом"/>
+                    <TextBox Margin="200,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
                          Text="{Binding House}" />
 
-                <TextBlock Margin="420,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Корпус"/>
-                <TextBox Margin="420,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                    <TextBlock Margin="420,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Корпус"/>
+                    <TextBox Margin="420,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
                          Text="{Binding Building}" />
 
-                <TextBlock Margin="640,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Квартира"/>
-                <TextBox Margin="640,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                    <TextBlock Margin="640,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Квартира"/>
+                    <TextBox Margin="640,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
                          Text="{Binding Room}" />
 
-            </Grid>
-        </Border>
-        <Border Margin="5,320,5,55" Style="{StaticResource BorderEditWindowStyle}">
-            <Grid>
-                <TextBlock Margin="330,5,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text="Адрес прописки"/>
-                <CheckBox Margin="10,5,0,0" Height="25" Width="150" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Совпадают"
+                </Grid>
+            </Border>
+
+        </Grid>
+
+        <Grid Grid.Row="3">
+            <Border Margin="5" Style="{StaticResource BorderEditWindowStyle}">
+                <Grid Margin="5">
+                    <TextBlock Margin="330,5,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text="Адрес прописки"/>
+                    <CheckBox Margin="10,5,0,0" Height="25" Width="150" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Совпадают"
                           Command="{Binding MatchAddressCommand}"/>
 
-                <TextBlock Margin="10,30,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Индекс"/>
-                <TextBox Margin="10,50,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                    <TextBlock Margin="10,30,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Индекс"/>
+                    <TextBox Margin="10,50,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
                          Text="{Binding PostPostalCode}" />
 
-                <TextBlock Margin="170,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Область"/>
-                <TextBox Margin="170,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}" 
+                    <TextBlock Margin="170,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Область"/>
+                    <TextBox Margin="170,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}" 
                          Text="{Binding PostProvince}" />
 
-                <TextBlock Margin="390,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Округ/Район"/>
-                <TextBox Margin="390,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}"
+                    <TextBlock Margin="390,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Округ/Район"/>
+                    <TextBox Margin="390,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}"
                          Text="{Binding PostRegion}" />
 
-                <TextBlock Margin="610,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Населенный пункт"/>
-                <TextBox Margin="610,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}"
+                    <TextBlock Margin="610,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Населенный пункт"/>
+                    <TextBox Margin="610,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}"
                          Text="{Binding PostCity}" />
 
-                <TextBlock Margin="10,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Улица"/>
-                <TextBox Margin="10,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                    <TextBlock Margin="10,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Улица"/>
+                    <TextBox Margin="10,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
                          Text="{Binding PostStreet}" />
 
-                <TextBlock Margin="200,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Дом"/>
-                <TextBox Margin="200,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                    <TextBlock Margin="200,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Дом"/>
+                    <TextBox Margin="200,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
                          Text="{Binding PostHouse}" />
 
-                <TextBlock Margin="420,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Корпус"/>
-                <TextBox Margin="420,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                    <TextBlock Margin="420,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Корпус"/>
+                    <TextBox Margin="420,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
                          Text="{Binding PostBuilding}" />
 
-                <TextBlock Margin="640,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Квартира"/>
-                <TextBox Margin="640,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
+                    <TextBlock Margin="640,80,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Квартира"/>
+                    <TextBox Margin="640,100,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
                          Text="{Binding PostRoom}" />
 
-            </Grid>
-        </Border>
-        <Button VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="150" Height="25" Margin="505,0,0,15" IsDefault="True"
-                Background="{StaticResource WhiteBrush}" BorderBrush="{StaticResource DarkGrayBrush}" 
-                Content="Сохранить" Command="{Binding AcceptCommand}"
-                CommandParameter="{Binding RelativeSource= {RelativeSource AncestorType=Window}}"/>
+                </Grid>
+            </Border>
+
+        </Grid>
+
+        <Grid Grid.Row="4">
+            <Button VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="150" Height="25" Margin="505,10,0,15" IsDefault="True"
+                    Background="{StaticResource WhiteBrush}" BorderBrush="{StaticResource DarkGrayBrush}" 
+                    Content="Сохранить" Command="{Binding AcceptCommand}"
+                    CommandParameter="{Binding RelativeSource= {RelativeSource AncestorType=Window}}"/>
+
+            <Button VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="150" Height="25" Margin="670,10,0,15" IsCancel="True"
+                    Background="{StaticResource WhiteBrush}" BorderBrush="{StaticResource DarkGrayBrush}" 
+                    Content="Отменить" Command="{Binding CancelCommand}"
+                    CommandParameter="{Binding RelativeSource= {RelativeSource AncestorType=Window}}"/>
+
+        </Grid>
+
+
+           
         
-        <Button VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="150" Height="25" Margin="670,0,0,15" IsCancel="True"
-                Background="{StaticResource WhiteBrush}" BorderBrush="{StaticResource DarkGrayBrush}" 
-                Content="Отменить" Command="{Binding CancelCommand}"
-                CommandParameter="{Binding RelativeSource= {RelativeSource AncestorType=Window}}"/>
 
 
 
