@@ -132,6 +132,7 @@ namespace ReceiptMailing.ViewModels
             if (!_userDialog.CreateOrEditGardener(tempGardener)) return;
             CopyInfoGardener(tempGardener, selectedGardener);
             await _Gardener.Update(selectedGardener);
+            OnPropertyChanged(nameof(ParcelCollection));
         }
 
         #endregion
@@ -170,6 +171,7 @@ namespace ReceiptMailing.ViewModels
             var tempGardener = new Gardener();
             if (!_userDialog.CreateOrEditGardener(tempGardener)) return;
             await _Gardener.Add(tempGardener);
+            OnPropertyChanged(nameof(ParcelCollection));
         }
 
         #endregion
@@ -193,6 +195,7 @@ namespace ReceiptMailing.ViewModels
                                  $" {SelectedParcel.Gardener.Name} {SelectedParcel.Gardener.Patronymic}";
             if (!_userDialog.OkCancelQuestion(question, "Запрос на удаление садовода")) return;
             await _Gardener.Delete(SelectedParcel.Gardener);
+            OnPropertyChanged(nameof(ParcelCollection));
         }
 
         #endregion
