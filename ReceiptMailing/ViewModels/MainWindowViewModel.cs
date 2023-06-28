@@ -132,16 +132,13 @@ namespace ReceiptMailing.ViewModels
             if (!_userDialog.CreateOrEditGardener(tempGardener)) return;
             CopyInfoGardener(tempGardener, selectedGardener);
             await _Gardener.Update(selectedGardener);
-
-
-
-
         }
 
         #endregion
 
-        private void CopyInfoGardener(Gardener gardenerFrom, Gardener gardenerTo)
+        private void CopyInfoGardener(Gardener? gardenerFrom, Gardener gardenerTo)
         {
+            if(gardenerFrom==null) return;
             gardenerTo.Address = gardenerFrom.Address;
             gardenerTo.PostAddress = gardenerFrom.PostAddress;
             gardenerTo.Account = gardenerFrom.Account;
@@ -155,6 +152,27 @@ namespace ReceiptMailing.ViewModels
             gardenerTo.Patronymic = gardenerFrom.Patronymic;
         }
 
+        #region Command AddGardenerCommand - Команда добавления садовода
+
+        /// <summary> Команда добавления садовода </summary>
+        private ICommand _AddGardenerCommand;
+
+        /// <summary> Команда добавления садовода </summary>
+        public ICommand AddGardenerCommand => _AddGardenerCommand
+            ??= new LambdaCommandAsync(OnAddGardenerCommandExecuted, CanAddGardenerCommandExecute);
+
+        /// <summary> Проверка возможности выполнения - Команда добавления садовода </summary>
+        private bool CanAddGardenerCommandExecute() => SelectedParcel != null;
+
+        /// <summary> Логика выполнения - Команда добавления садовода </summary>
+        private async Task OnAddGardenerCommandExecuted()
+        {
+            var tempGardener = new Gardener();
+            if (!_userDialog.CreateOrEditGardener(tempGardener)) return;
+            await _Gardener.Add(tempGardener);
+        }
+
+        #endregion
 
         public MainWindowViewModel(
             IUserDialog userDialog,
