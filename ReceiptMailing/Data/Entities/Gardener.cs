@@ -34,7 +34,7 @@ namespace ReceiptMailing.Data.Entities
             set
             {
                 var email = new EmailAddressAttribute();
-                if (email.IsValid(value))
+                if (email.IsValid(value) || value == string.Empty)
                     _firstEmailAddress = value;
             }
         }
@@ -46,7 +46,7 @@ namespace ReceiptMailing.Data.Entities
             set
             {
                 var email = new EmailAddressAttribute();
-                if (email.IsValid(value))
+                if (email.IsValid(value) || value == string.Empty)
                     _secondEmailAddress = value;
             }
         }

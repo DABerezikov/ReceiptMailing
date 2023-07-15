@@ -416,22 +416,6 @@ internal class EditParcelViewModel : ViewModel
 
     #endregion
 
-    public EditParcelViewModel(Parcel parcel, IRepository<Gardener> gardenerRepository)
-    {
-        _Parcel = parcel;
-        
-        _GardenerRepository = gardenerRepository;
-        _GardenerView = new CollectionViewSource
-        {
-            SortDescriptions =
-            {
-                new SortDescription(nameof(Gardener.SurName), ListSortDirection.Ascending)
-            }
-        };
-        _GardenerView.Filter += _GardenerViewSourceFilter;
-        
-    }
-
     #region Command AcceptCommand - Команда приравнивания адресов проживания и прописки
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
@@ -472,6 +456,21 @@ internal class EditParcelViewModel : ViewModel
 
     #endregion
 
+    public EditParcelViewModel(Parcel parcel, IRepository<Gardener> gardenerRepository)
+    {
+        _Parcel = parcel;
+        
+        _GardenerRepository = gardenerRepository;
+        _GardenerView = new CollectionViewSource
+        {
+            SortDescriptions =
+            {
+                new SortDescription(nameof(Gardener.SurName), ListSortDirection.Ascending)
+            }
+        };
+        _GardenerView.Filter += _GardenerViewSourceFilter;
+        
+    }
     private void _GardenerViewSourceFilter(object sender, FilterEventArgs e)
     {
         if (!(e.Item is Gardener gardener) || string.IsNullOrEmpty(GardenerFilter)) return;
@@ -480,4 +479,8 @@ internal class EditParcelViewModel : ViewModel
             !gardener.Patronymic.Contains(GardenerFilter, StringComparison.OrdinalIgnoreCase))
             e.Accepted = false;
     }
+
+   
+
+    
 }
