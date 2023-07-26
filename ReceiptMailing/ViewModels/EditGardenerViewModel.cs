@@ -519,7 +519,7 @@ internal class EditGardenerViewModel:ViewModel
         ??= new LambdaCommandAsync(OnAcceptCommandExecuted, CanAcceptCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private bool CanAcceptCommandExecute(object p) => true;
+    private bool CanAcceptCommandExecute(object p) => !string.IsNullOrWhiteSpace(Account);
 
     /// <summary> Логика выполнения - Команда приравнивания адресов проживания и прописки </summary>
     private async Task OnAcceptCommandExecuted(object p)

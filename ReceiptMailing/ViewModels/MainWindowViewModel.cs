@@ -164,6 +164,7 @@ namespace ReceiptMailing.ViewModels
             gardenerTo.Name = gardenerFrom.Name;
             gardenerTo.SurName = gardenerFrom.SurName;
             gardenerTo.Patronymic = gardenerFrom.Patronymic;
+            gardenerTo.Parcels = gardenerFrom.Parcels;
         }
 
         #region Command AddGardenerCommand - Команда добавления садовода
@@ -182,6 +183,7 @@ namespace ReceiptMailing.ViewModels
         private async Task OnAddGardenerCommandExecuted()
         {
             var tempGardener = new Gardener();
+            //tempGardener.Parcels.Add(new Parcel{Gardener = tempGardener, Electrification = false, HavingHouse = false, Number = "0", PlotArea = 0.0});
             if (!_userDialog.CreateOrEditGardener(tempGardener)) return;
             await _Gardener.Add(tempGardener);
             OnPropertyChanged(nameof(ParcelCollection));
