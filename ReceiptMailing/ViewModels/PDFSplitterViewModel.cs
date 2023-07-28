@@ -12,6 +12,7 @@ using ReceiptMailing.Data.Entities;
 using ReceiptMailing.Services.Interfaces.Repositories;
 using ReceiptMailing.ViewModels.Base;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ReceiptMailing.ViewModels
 {
@@ -199,7 +200,7 @@ namespace ReceiptMailing.ViewModels
 
         private void SaveListFileNotSend()
         {
-            string file = @"NotSend.csv";
+            string file = @$"{SplitFilePath}\NotSend.csv";
             string separator = ",";
             StringBuilder output = new StringBuilder();
             foreach (var notSend in ListNotSendReceipts)
@@ -209,7 +210,10 @@ namespace ReceiptMailing.ViewModels
 
             try
             {
-                File.AppendAllText(file, output.ToString(), Encoding.Unicode);
+                using (StreamWriter writer = new StreamWriter(file, false, Encoding.UTF8))
+                {
+                    writer.WriteLineAsync(output);
+                }
             }
             catch (Exception ex)
             {
