@@ -113,6 +113,10 @@ namespace ReceiptMailing.ViewModels
                 var account = data_tables.Rows[i][1].ToString();
                 new_parcel.Gardener.Account = account;
 
+                //Получения наличия подключения
+                var electric = data_tables.Rows[i][2].ToString();
+                new_parcel.Electrification = electric == "С ЭЭ";
+
                 //Получение и присвоение документа о приеме в члены СНТ садовода
                 var document = data_tables.Rows[i][3].ToString();
                 new_parcel.Gardener.Document = document;
@@ -124,29 +128,30 @@ namespace ReceiptMailing.ViewModels
                    new_parcel.Gardener.Passport.Series = passport?[0];
                    new_parcel.Gardener.Passport.Number = passport?[1]; 
                 }
-                
 
-                //Получение и присвоение адреса садоводу
-                var address = data_tables.Rows[i][5].ToString()?.Split(',');
-                new_parcel.Gardener.Address.PostalCode = address?[0];
-                new_parcel.Gardener.Address.Province = address?[1];
-                new_parcel.Gardener.Address.Region = address?[2];
-                new_parcel.Gardener.Address.City = address?[3];
-                new_parcel.Gardener.Address.Street = address?[4];
-                new_parcel.Gardener.Address.House = address?[5];
-                new_parcel.Gardener.Address.Building = address?[6];
-                new_parcel.Gardener.Address.Room = address?[7];
 
-                //Получение и присвоение почтового адреса садоводу
-                var post_address = data_tables.Rows[i][6].ToString()?.Split(',');
-                new_parcel.Gardener.PostAddress.PostalCode = post_address?[0];
-                new_parcel.Gardener.PostAddress.Province = post_address?[1];
-                new_parcel.Gardener.PostAddress.Region = post_address?[2];
-                new_parcel.Gardener.PostAddress.City = post_address?[3];
-                new_parcel.Gardener.PostAddress.Street = post_address?[4];
-                new_parcel.Gardener.PostAddress.House = post_address?[5];
-                new_parcel.Gardener.PostAddress.Building = post_address?[6];
-                new_parcel.Gardener.PostAddress.Room = post_address?[7];
+                ////Получение и присвоение адреса садоводу
+                //var address = new string[7];
+                //address = data_tables.Rows[i][5].ToString()?.Split(',');
+                //new_parcel.Gardener.Address.PostalCode = address?[0] ?? "";
+                //new_parcel.Gardener.Address.Province = address?[1] ?? "";
+                //new_parcel.Gardener.Address.Region = address?[2] ?? "";
+                //new_parcel.Gardener.Address.City = address?[3] ?? "";
+                //new_parcel.Gardener.Address.Street = address?[4] ?? "";
+                //new_parcel.Gardener.Address.House = address?[5] ?? "";
+                //new_parcel.Gardener.Address.Building = address?[6] ?? "";
+                //new_parcel.Gardener.Address.Room = address?[7] ?? "";
+
+                ////Получение и присвоение почтового адреса садоводу
+                //var post_address = data_tables.Rows[i][6].ToString()?.Split(',');
+                //new_parcel.Gardener.PostAddress.PostalCode = post_address?[0];
+                //new_parcel.Gardener.PostAddress.Province = post_address?[1];
+                //new_parcel.Gardener.PostAddress.Region = post_address?[2];
+                //new_parcel.Gardener.PostAddress.City = post_address?[3];
+                //new_parcel.Gardener.PostAddress.Street = post_address?[4];
+                //new_parcel.Gardener.PostAddress.House = post_address?[5];
+                //new_parcel.Gardener.PostAddress.Building = post_address?[6];
+                //new_parcel.Gardener.PostAddress.Room = post_address?[7];
 
                 //Получение и присвоение адреса электронной почты садоводу
                 var email = data_tables.Rows[i][7].ToString()?.Split(new char[]{' ', ',', ';'}, StringSplitOptions.RemoveEmptyEntries );
@@ -181,6 +186,7 @@ namespace ReceiptMailing.ViewModels
                     new_parcel.PlotArea = 0.0;
                 }
                 new_parcel.PlotArea = plotArea;
+
                 //Получение кадастрового номера участка
                 var cadasdral = data_tables.Rows[i][13].ToString();
                 new_parcel.CadastralNumber = cadasdral;
@@ -189,13 +195,11 @@ namespace ReceiptMailing.ViewModels
                 var details = data_tables.Rows[i][14].ToString();
                 new_parcel.Details = details;
 
-                //Получения наличия подключения
-                var electric = data_tables.Rows[i][15].ToString();
-                new_parcel.Electrification = electric=="да";
+                
 
                 //Получение наличия дома
                 var house = data_tables.Rows[i][16].ToString();
-                new_parcel.HavingHouse = house == "да";
+                new_parcel.HavingHouse = house != "";
 
                 //Получение адреса СНТ
                 var address_SNT = data_tables.Rows[i][17].ToString();
