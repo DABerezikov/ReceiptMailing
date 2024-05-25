@@ -158,11 +158,11 @@ namespace ReceiptMailing.ViewModels
                 switch (email.Length)
                 {
                     case 2:
-                        new_parcel.Gardener.FirstEmailAddress = email?[0];
-                        new_parcel.Gardener.SecondEmailAddress = email?[1];
+                        new_parcel.Gardener.FirstEmailAddress = email?[0].Trim();
+                        new_parcel.Gardener.SecondEmailAddress = email?[1].Trim();
                         break;
                     case 1:
-                        new_parcel.Gardener.FirstEmailAddress = email?[0];
+                        new_parcel.Gardener.FirstEmailAddress = email?[0].Trim();
                         break;
                 }
 

@@ -179,7 +179,7 @@ namespace ReceiptMailing.ViewModels
             parcelNumber = parcelNumber.Replace('_', '/');
             var currentParcel = await _parcel.GetByNumber(parcelNumber);
             if (currentParcel==null) return (null, null);
-            return (currentParcel.Gardener.FirstEmailAddress, currentParcel.Gardener.FirstEmailAddress) ;
+            return (currentParcel.Gardener.FirstEmailAddress, currentParcel.Gardener.SecondEmailAddress) ;
 
         }
 
