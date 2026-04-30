@@ -133,19 +133,8 @@ namespace ReceiptMailing.ViewModels
             if (!_userDialog.CreateOrEditGardener(tempGardener)) return;
             CopyInfoGardener(tempGardener, selectedGardener);
             await _Gardener.Update(selectedGardener);
-
-            await UpdateCollections(selectedGardener);
-        }
-
-        private async Task UpdateCollections(Gardener selectedGardener)
-        {
-            var index = GardenerCollection.IndexOf(GardenerCollection.First(i => i.Id == selectedGardener.Id));
-            GardenerCollection[index] = selectedGardener;
-            index = ParcelCollection.IndexOf(ParcelCollection.First(i => i.Gardener.Id == selectedGardener.Id));
-            ParcelCollection[index].Gardener = selectedGardener;
-            
-            OnPropertyChanged(nameof(GardenerCollection));
-            OnPropertyChanged(nameof(ParcelCollection));
+            GardenerCollection = new ObservableCollection<Gardener>(await _Gardener.GetAll());
+            ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
         }
 
         #endregion
@@ -183,10 +172,10 @@ namespace ReceiptMailing.ViewModels
         private async Task OnAddGardenerCommandExecuted()
         {
             var tempGardener = new Gardener();
-            //tempGardener.Parcels.Add(new Parcel{Gardener = tempGardener, Electrification = false, HavingHouse = false, Number = "0", PlotArea = 0.0});
             if (!_userDialog.CreateOrEditGardener(tempGardener)) return;
             await _Gardener.Add(tempGardener);
-            OnPropertyChanged(nameof(ParcelCollection));
+            GardenerCollection = new ObservableCollection<Gardener>(await _Gardener.GetAll());
+            ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
         }
 
         #endregion
@@ -207,10 +196,11 @@ namespace ReceiptMailing.ViewModels
         private async Task OnDeleteGardenerCommandExecuted()
         {
             var question = $"Вы действительно хотите удалить садовода {SelectedParcel.Gardener.SurName}" +
-                                 $" {SelectedParcel.Gardener.Name} {SelectedParcel.Gardener.Patronymic}";
+                           $" {SelectedParcel.Gardener.Name} {SelectedParcel.Gardener.Patronymic}?";
             if (!_userDialog.OkCancelQuestion(question, "Запрос на удаление садовода")) return;
             await _Gardener.Delete(SelectedParcel.Gardener);
-            OnPropertyChanged(nameof(ParcelCollection));
+            GardenerCollection = new ObservableCollection<Gardener>(await _Gardener.GetAll());
+            ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
         }
 
         #endregion
@@ -227,7 +217,7 @@ namespace ReceiptMailing.ViewModels
         /// <summary> Проверка возможности выполнения - Команда редактирования данных садовода </summary>
         private bool CanEditParcelCommandExecute() => SelectedParcel != null;
 
-        /// <summary> Логика выполнения - Команда редактирования данных садовода </summary>
+        /// <summary> Логика выполнения - Команда редактирования участка </summary>
         private async Task OnEditParcelCommandExecuted()
         {
             var tempParcel = new Parcel();
@@ -236,9 +226,57 @@ namespace ReceiptMailing.ViewModels
             if (!_userDialog.CreateOrEditParcel(tempParcel, _Gardener)) return;
             CopyInfoParcel(tempParcel, selectedParcel);
             await _Parcel.Update(selectedParcel);
-
-            
+            ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
         }
+
+        #endregion
+
+        #region Command AddParcelCommand - Команда добавления участка
+
+        /// <summary> Команда добавления участка </summary>
+        private ICommand _AddParcelCommand;
+
+        /// <summary> Команда добавления участка </summary>
+        public ICommand AddParcelCommand => _AddParcelCommand
+            ??= new LambdaCommandAsync(OnAddParcelCommandExecuted, CanAddParcelCommandExecute);
+
+        /// <summary> Проверка возможности выполнения - Команда добавления участка </summary>
+        private bool CanAddParcelCommandExecute() => true;
+
+        /// <summary> Логика выполнения - Команда добавления участка </summary>
+        private async Task OnAddParcelCommandExecuted()
+        {
+            var newParcel = new Parcel();
+            if (!_userDialog.CreateOrEditParcel(newParcel, _Gardener)) return;
+            await _Parcel.Add(newParcel);
+            ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
+        }
+
+        #endregion
+
+        #region Command DeleteParcelCommand - Команда удаления участка
+
+        /// <summary> Команда удаления участка </summary>
+        private ICommand _DeleteParcelCommand;
+
+        /// <summary> Команда удаления участка </summary>
+        public ICommand DeleteParcelCommand => _DeleteParcelCommand
+            ??= new LambdaCommandAsync(OnDeleteParcelCommandExecuted, CanDeleteParcelCommandExecute);
+
+        /// <summary> Проверка возможности выполнения - Команда удаления участка </summary>
+        private bool CanDeleteParcelCommandExecute() => SelectedParcel != null;
+
+        /// <summary> Логика выполнения - Команда удаления участка </summary>
+        private async Task OnDeleteParcelCommandExecuted()
+        {
+            var question = $"Вы действительно хотите удалить участок №{SelectedParcel.Number}" +
+                           $" ({SelectedParcel.Street})?";
+            if (!_userDialog.OkCancelQuestion(question, "Запрос на удаление участка")) return;
+            await _Parcel.Delete(SelectedParcel);
+            ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
+        }
+
+        #endregion
 
         private void CopyInfoParcel(Parcel sourceParcel, Parcel destinationParcel)
         {
@@ -256,8 +294,6 @@ namespace ReceiptMailing.ViewModels
             destinationParcel.Id = sourceParcel.Id;
             destinationParcel.Number = sourceParcel.Number;
         }
-
-        #endregion
 
 
         public MainWindowViewModel(
