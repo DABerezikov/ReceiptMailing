@@ -28,8 +28,7 @@ namespace ReceiptMailing
                 .AddDbContext<ParcelDb>(
                     opt => opt
                         .UseSqlite(
-                            host.Configuration.GetConnectionString("Data"),
-                            o => o.MigrationsAssembly("Data")))
+                            host.Configuration.GetConnectionString("Data")))
                 .AddScoped(typeof(IRepository<>), typeof(DbRepository<>))
                 .AddScoped(typeof(IParcelRepository<>), typeof(DbParcelsRepository<>))
                 .AddScoped(typeof(IGardenerRepository<>), typeof(DbGardenersRepository<>))

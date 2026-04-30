@@ -13,6 +13,12 @@ namespace ReceiptMailing.Data.Repositories
         
         public DbParcelsRepository(ParcelDb db) : base(db) { }
 
+    protected override IQueryable<T> Items => Set
+        .Include("Gardener")
+        .Include("Gardener.Address")
+        .Include("Gardener.PostAddress")
+        .Include("Gardener.Passport");
+
         public async Task<bool> ExistNumber(string number, CancellationToken cancel = default)
         {
             return await Items.AnyAsync(item => item.Number == number, cancel).ConfigureAwait(false);

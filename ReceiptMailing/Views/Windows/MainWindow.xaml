@@ -33,10 +33,12 @@
         </StatusBar>
 
         <UniformGrid DockPanel.Dock="Bottom"  Rows="1" Margin="0,5">
-            <Button Style="{StaticResource UniformButtonStyle}"  Content="Добавить участок"/>
+            <Button Style="{StaticResource UniformButtonStyle}" Content="Добавить участок"
+                    Command="{Binding AddParcelCommand}"/>
             <Button Style="{StaticResource UniformButtonStyle}" Content="Редактировать участок"
                     Command="{Binding EditParcelCommand}"/>
-            <Button Style="{StaticResource UniformButtonStyle}" Content="Удалить участок"/>
+            <Button Style="{StaticResource UniformButtonStyle}" Content="Удалить участок"
+                    Command="{Binding DeleteParcelCommand}"/>
             <Button Style="{StaticResource UniformButtonStyle}" Content="Добавить садовода"
                     Command="{Binding AddGardenerCommand}"/>
             <Button Style="{StaticResource UniformButtonStyle}" Content="Редактировать садовода"

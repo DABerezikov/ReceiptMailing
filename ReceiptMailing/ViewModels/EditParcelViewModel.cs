@@ -282,8 +282,16 @@ internal class EditParcelViewModel : ViewModel
         get => _Parcel.Gardener;
         set
         {
-            Set(ref _Gardener, value);
+            _Gardener = value ?? new Gardener();
+            Set(ref _Gardener, _Gardener);
             _Parcel.Gardener = value;
+            OnPropertyChanged(nameof(SurName));
+            OnPropertyChanged(nameof(Name));
+            OnPropertyChanged(nameof(Patronymic));
+            OnPropertyChanged(nameof(PhoneNumber));
+            OnPropertyChanged(nameof(FirstEmailAddress));
+            OnPropertyChanged(nameof(SecondEmailAddress));
+            OnPropertyChanged(nameof(Account));
         }
     }
 
@@ -459,7 +467,8 @@ internal class EditParcelViewModel : ViewModel
     public EditParcelViewModel(Parcel parcel, IRepository<Gardener> gardenerRepository)
     {
         _Parcel = parcel;
-        
+        _Gardener = parcel.Gardener ?? new Gardener();
+
         _GardenerRepository = gardenerRepository;
         _GardenerView = new CollectionViewSource
         {
@@ -469,7 +478,15 @@ internal class EditParcelViewModel : ViewModel
             }
         };
         _GardenerView.Filter += _GardenerViewSourceFilter;
-        
+
+        LoadGardenersAsync();
+    }
+
+    private async void LoadGardenersAsync()
+    {
+        var gardeners = await _GardenerRepository.GetAll();
+        _GardenerView.Source = new ObservableCollection<Gardener>(gardeners);
+        OnPropertyChanged(nameof(ListGardener));
     }
     private void _GardenerViewSourceFilter(object sender, FilterEventArgs e)
     {

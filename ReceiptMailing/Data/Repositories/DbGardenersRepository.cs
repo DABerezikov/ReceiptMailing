@@ -13,6 +13,12 @@ public class DbGardenersRepository<T> : DbRepository<T>, IGardenerRepository<T> 
 
     public DbGardenersRepository(ParcelDb db) : base(db) { }
 
+    protected override IQueryable<T> Items => Set
+        .Include("Address")
+        .Include("PostAddress")
+        .Include("Passport")
+        .Include("Parcels");
+
     public async Task<bool> ExistSurName(string surName, CancellationToken cancel = default)
     {
         return await Items.AnyAsync(item => item.SurName == surName, cancel).ConfigureAwait(false);

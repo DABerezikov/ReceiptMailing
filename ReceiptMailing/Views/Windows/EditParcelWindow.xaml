@@ -8,10 +8,10 @@
         Title="{Binding Title}" MaxHeight="640" MaxWidth="870">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
@@ -86,7 +86,16 @@
             </Border>
         </Grid>
 
-
+        <Grid Grid.Row="3">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5" VerticalAlignment="Center">
+                <Button Content="Сохранить" Width="100" Margin="0,0,10,0"
+                        Command="{Binding AcceptCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+                <Button Content="Отменить" Width="100"
+                        Command="{Binding CancelCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+            </StackPanel>
+        </Grid>
 
     </Grid>
 </Window>
