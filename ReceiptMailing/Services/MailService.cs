@@ -12,15 +12,10 @@ using MailKit.Net.Smtp;
 
 namespace ReceiptMailing.Services;
 
-public class MailService : IMailService
+public class MailService(IOptions<MailSettings> settings) : IMailService
 {
-    private readonly MailSettings _settings;
+    private readonly MailSettings _settings = settings.Value;
 
-    public MailService(IOptions<MailSettings> settings)
-    {
-        _settings = settings.Value;
-    }
-    
 
     public async Task<bool> SendAsync(MailData mailData, CancellationToken ct = default)
     {

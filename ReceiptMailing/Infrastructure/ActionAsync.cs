@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
 
-namespace ReceiptMailing.Infrastructure
-{
-    internal delegate Task ActionAsync();
+namespace ReceiptMailing.Infrastructure;
 
-    internal delegate Task ActionAsync<in T>(T parameter);
-}
+internal delegate Task ActionAsync();
+
+internal delegate Task ActionAsync<in T>(T parameter);

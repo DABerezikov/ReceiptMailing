@@ -1,38 +1,36 @@
-﻿namespace ReceiptMailing.Data.Entities.Base
+﻿namespace ReceiptMailing.Data.Entities.Base;
+
+public class Passport : Entity
 {
-    public class Passport : Entity
+    private string? _series;
+
+    public string? Series
     {
-        private string? _series;
+        get => "** **";
+        set => _series = value;
+    }
 
-        public string? Series
-        {
-            get => "** **";
-            set => _series = value;
-        }
+    private string? _number;
 
-        private string? _number;
+    public string? Number
+    {
+        get => "******";
+        set => _number = value;
+    }
 
-        public string? Number
-        {
-            get => "******";
-            set => _number = value;
-        }
+    public override string ToString()
+    {
+        return $"{Series} {Number}";
+    }
 
-        public override string ToString()
-        {
-            return $"{Series} {Number}";
-        }
+    public string? GetPassportSeries() => _series;
+    public string? GetPassportNumber() => _number;
 
-        public string? GetPassportSeries() => _series;
-        public string? GetPassportNumber() => _number;
+    public Passport() { }
 
-        public Passport() { }
-
-        public Passport(string? series, string? number)
-        {
-            _series = series;
-            _number = number;
-        }
-
+    public Passport(string? series, string? number)
+    {
+        _series = series;
+        _number = number;
     }
 }

@@ -5,9 +5,7 @@ using PdfSharpCore.Pdf;
 using PdfSharpCore.Pdf.IO;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using SixLabors.ImageSharp.Formats.Tga;
 using Rectangle = Aspose.Pdf.Rectangle;
 
 namespace ReceiptMailing.Services;
@@ -23,27 +21,33 @@ public class ReceiptsSplitter
     {
         if (Path == string.Empty) return "Не выбран файл с квитанциями";
 
-        if (FileFolderPath==string.Empty)
-            FileFolderPath = GetFolderPath();
-        
+        FileFolderPath = GetFolderPath();
+
         var list = GetListPdf(FileFolderPath);
 
         return RanamePdf(list, FileFolderPath);
-
     }
 
     public string GetFolderPath()
     {
-        var mount = DateTime.Now.ToString("y");
-        var dir = $"pdf {mount}";
+        var date = DateTime.Now.ToString("yyyy-MM-dd");
+        var dir = $"pdf {date}";
         var filesPath = $"{FolderPath}\\{dir}";
 
         if (!Directory.Exists(FolderPath))
             Directory.CreateDirectory(FolderPath);
-        if (!Directory.Exists(filesPath))
-            Directory.CreateDirectory(filesPath);
 
-        return Folder + "\\"+ filesPath;
+        if (Directory.Exists(filesPath))
+        {
+            foreach (var file in Directory.GetFiles(filesPath))
+                File.Delete(file);
+        }
+        else
+        {
+            Directory.CreateDirectory(filesPath);
+        }
+
+        return Folder + "\\" + filesPath;
     }
 
     private List<string> GetListPdf(string filesPath)
@@ -120,8 +124,8 @@ public class ReceiptsSplitter
                 File.Delete(listFile[i]);
                 continue;
             }
-            var fioAccountArray = textArray1[1].Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            var sntAddressArray = textArray1[3].Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var fioAccountArray = textArray1[1].Text.Split([' '], StringSplitOptions.RemoveEmptyEntries);
+            var sntAddressArray = textArray1[3].Text.Split([' '], StringSplitOptions.RemoveEmptyEntries);
            
 
             if (sntAddressArray.Length < 5)

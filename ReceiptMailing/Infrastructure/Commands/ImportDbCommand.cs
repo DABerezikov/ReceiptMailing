@@ -1,14 +1,13 @@
-﻿using ReceiptMailing.Infrastructure.Commands.Base;
+using ReceiptMailing.Infrastructure.Commands.Base;
 using ReceiptMailing.Views.Windows;
 
-namespace ReceiptMailing.Infrastructure.Commands
+namespace ReceiptMailing.Infrastructure.Commands;
+
+internal class ImportDbCommand : Command
 {
-    internal class ImportDbCommand : Command
+    protected override void Execute(object p)
     {
-        protected override void Execute(object p)
-        {
-            var import_window = new ImportDBWindow();
-            import_window.Show();
-        }
+        var import_window = new ImportDBWindow();
+        import_window.Show();
     }
 }

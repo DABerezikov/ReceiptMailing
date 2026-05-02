@@ -1,13 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReceiptMailing.Data.Entities;
 
-namespace ReceiptMailing.Data.Context
-{
-    public class ParcelDb : DbContext
-    {
-        public DbSet<Parcel> Parcels { get; set; }
-        public DbSet<Gardener> Gardeners { get; set; }
+namespace ReceiptMailing.Data.Context;
 
-        public ParcelDb(DbContextOptions<ParcelDb> options) : base(options) { }
-    }
+public class ParcelDb(DbContextOptions<ParcelDb> options) : DbContext(options)
+{
+    public DbSet<Parcel> Parcels { get; set; }
+    public DbSet<Gardener> Gardeners { get; set; }
 }

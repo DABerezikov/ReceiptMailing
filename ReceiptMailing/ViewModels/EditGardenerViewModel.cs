@@ -1,7 +1,6 @@
 ﻿using ReceiptMailing.Data.Entities;
 using ReceiptMailing.Infrastructure.Commands;
 using ReceiptMailing.ViewModels.Base;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -177,7 +176,7 @@ internal class EditGardenerViewModel:ViewModel
         get => _Gardener.Account;
         set
         {
-            _Gardener.Account = value;
+            _Gardener.Account = value ?? string.Empty;
             Set(ref _Account, value);
         }
     }
@@ -492,7 +491,7 @@ internal class EditGardenerViewModel:ViewModel
     #region Command MatchAddressCommand - Команда приравнивания адресов проживания и прописки
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    private ICommand _MatchAddressCommand;
+    private ICommand? _MatchAddressCommand;
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
     public ICommand MatchAddressCommand => _MatchAddressCommand
@@ -512,19 +511,19 @@ internal class EditGardenerViewModel:ViewModel
     #region Command AcceptCommand - Команда приравнивания адресов проживания и прописки
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    private ICommand _AcceptCommand;
+    private ICommand? _AcceptCommand;
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
     public ICommand AcceptCommand => _AcceptCommand
         ??= new LambdaCommandAsync(OnAcceptCommandExecuted, CanAcceptCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private bool CanAcceptCommandExecute(object p) => !string.IsNullOrWhiteSpace(Account);
+    private bool CanAcceptCommandExecute(object? p) => !string.IsNullOrWhiteSpace(Account);
 
     /// <summary> Логика выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private async Task OnAcceptCommandExecuted(object p)
+    private async Task OnAcceptCommandExecuted(object? p)
     {
-        ((Window)p).DialogResult = true;
+        ((Window)p!).DialogResult = true;
     }
 
     #endregion
@@ -532,19 +531,19 @@ internal class EditGardenerViewModel:ViewModel
     #region Command CancelCommand - Команда приравнивания адресов проживания и прописки
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    private ICommand _CancelCommand;
+    private ICommand? _CancelCommand;
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
     public ICommand CancelCommand => _CancelCommand
         ??= new LambdaCommandAsync(OnCancelCommandExecuted, CanCancelCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private bool CanCancelCommandExecute(object p) => true;
+    private bool CanCancelCommandExecute(object? p) => true;
 
     /// <summary> Логика выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private async Task OnCancelCommandExecuted(object p)
+    private async Task OnCancelCommandExecuted(object? p)
     {
-        ((Window)p).DialogResult = false;
+        ((Window)p!).DialogResult = false;
     }
 
     #endregion

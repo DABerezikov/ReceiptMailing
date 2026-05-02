@@ -1,15 +1,14 @@
-﻿using ReceiptMailing.Services.Interfaces.Base;
 using System.Threading;
 using System.Threading.Tasks;
+using ReceiptMailing.Services.Interfaces.Base;
 
-namespace ReceiptMailing.Services.Interfaces.Repositories
+namespace ReceiptMailing.Services.Interfaces.Repositories;
+
+public interface IParcelRepository<T> : IRepository<T> where T : IParcelEntity
 {
-    public interface IParcelRepository<T> : IRepository<T> where T : IParcelEntity
-    {
-        Task<bool> ExistNumber(string number, CancellationToken cancel = default);
+    Task<bool> ExistNumber(string number, CancellationToken cancel = default);
 
-        Task<T> GetByNumber(string number, CancellationToken cancel = default);
+    Task<T?> GetByNumber(string number, CancellationToken cancel = default);
 
-        Task<T> DeleteByNumber(string number, CancellationToken cancel = default);
-    }
+    Task<T?> DeleteByNumber(string number, CancellationToken cancel = default);
 }

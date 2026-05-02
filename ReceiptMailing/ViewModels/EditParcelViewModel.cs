@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -62,7 +61,7 @@ internal class EditParcelViewModel : ViewModel
         set
         {
             Set(ref _Number, value);
-            _Parcel.Number = value;
+            _Parcel.Number = value ?? string.Empty;
         }
     }
 
@@ -236,12 +235,12 @@ internal class EditParcelViewModel : ViewModel
     #region GardenerFilter : string- Фильтр садоводов
 
     /// <summary>Фильтр садоводов</summary>
-    private string _GardenerFilter;
+    private string? _GardenerFilter;
 
 
 
     /// <summary>Фильтр садоводов</summary>
-    public string GardenerFilter
+    public string? GardenerFilter
     {
         get => _GardenerFilter;
         set => Set(ref _GardenerFilter, value);
@@ -271,8 +270,10 @@ internal class EditParcelViewModel : ViewModel
 
     #region Gardener : Gardener- Владелец участка
 
+    private static readonly Gardener NoGardener = new() { SurName = "Нет садовода" };
+
     /// <summary>Владелец участка</summary>
-    private Gardener _Gardener;
+    private Gardener _Gardener = NoGardener;
 
 
 
@@ -282,9 +283,9 @@ internal class EditParcelViewModel : ViewModel
         get => _Parcel.Gardener;
         set
         {
-            _Gardener = value ?? new Gardener();
+            _Gardener = value ?? NoGardener;
             Set(ref _Gardener, _Gardener);
-            _Parcel.Gardener = value;
+            _Parcel.Gardener = _Gardener;
             OnPropertyChanged(nameof(SurName));
             OnPropertyChanged(nameof(Name));
             OnPropertyChanged(nameof(Patronymic));
@@ -417,7 +418,7 @@ internal class EditParcelViewModel : ViewModel
         get => _Gardener.Account;
         set
         {
-            _Gardener.Account = value;
+            _Gardener.Account = value ?? string.Empty;
             Set(ref _Account, value);
         }
     }
@@ -427,19 +428,21 @@ internal class EditParcelViewModel : ViewModel
     #region Command AcceptCommand - Команда приравнивания адресов проживания и прописки
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    private ICommand _AcceptCommand;
+    private ICommand? _AcceptCommand;
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
     public ICommand AcceptCommand => _AcceptCommand
         ??= new LambdaCommandAsync(OnAcceptCommandExecuted, CanAcceptCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private bool CanAcceptCommandExecute(object p) => true;
+    private bool CanAcceptCommandExecute(object? p) => true;
 
     /// <summary> Логика выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private async Task OnAcceptCommandExecuted(object p)
+    private async Task OnAcceptCommandExecuted(object? p)
     {
-        ((Window)p).DialogResult = true;
+        if (ReferenceEquals(_Gardener, NoGardener))
+            _Parcel.Gardener = new Gardener();
+        ((Window)p!).DialogResult = true;
     }
 
     #endregion
@@ -447,19 +450,19 @@ internal class EditParcelViewModel : ViewModel
     #region Command CancelCommand - Команда приравнивания адресов проживания и прописки
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    private ICommand _CancelCommand;
+    private ICommand? _CancelCommand;
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
     public ICommand CancelCommand => _CancelCommand
         ??= new LambdaCommandAsync(OnCancelCommandExecuted, CanCancelCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private bool CanCancelCommandExecute(object p) => true;
+    private bool CanCancelCommandExecute(object? p) => true;
 
     /// <summary> Логика выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private async Task OnCancelCommandExecuted(object p)
+    private async Task OnCancelCommandExecuted(object? p)
     {
-        ((Window)p).DialogResult = false;
+        ((Window)p!).DialogResult = false;
     }
 
     #endregion
@@ -467,7 +470,7 @@ internal class EditParcelViewModel : ViewModel
     public EditParcelViewModel(Parcel parcel, IRepository<Gardener> gardenerRepository)
     {
         _Parcel = parcel;
-        _Gardener = parcel.Gardener ?? new Gardener();
+        _Gardener = parcel.Gardener;
 
         _GardenerRepository = gardenerRepository;
         _GardenerView = new CollectionViewSource
@@ -485,15 +488,21 @@ internal class EditParcelViewModel : ViewModel
     private async void LoadGardenersAsync()
     {
         var gardeners = await _GardenerRepository.GetAll();
-        _GardenerView.Source = new ObservableCollection<Gardener>(gardeners);
+        var list = new ObservableCollection<Gardener>(gardeners.Prepend(NoGardener));
+        _GardenerView.Source = list;
         OnPropertyChanged(nameof(ListGardener));
+
+        if (_Parcel.Gardener.Id == 0)
+            Gardener = NoGardener;
     }
+
     private void _GardenerViewSourceFilter(object sender, FilterEventArgs e)
     {
+        if (ReferenceEquals(e.Item, NoGardener)) return;
         if (!(e.Item is Gardener gardener) || string.IsNullOrEmpty(GardenerFilter)) return;
-        if (!gardener.SurName.Contains(GardenerFilter, StringComparison.OrdinalIgnoreCase) ||
-            !gardener.Name.Contains(GardenerFilter, StringComparison.OrdinalIgnoreCase) ||
-            !gardener.Patronymic.Contains(GardenerFilter, StringComparison.OrdinalIgnoreCase))
+        if (gardener.SurName?.Contains(GardenerFilter, StringComparison.OrdinalIgnoreCase) != true &&
+            gardener.Name?.Contains(GardenerFilter, StringComparison.OrdinalIgnoreCase) != true &&
+            gardener.Patronymic?.Contains(GardenerFilter, StringComparison.OrdinalIgnoreCase) != true)
             e.Accepted = false;
     }
 

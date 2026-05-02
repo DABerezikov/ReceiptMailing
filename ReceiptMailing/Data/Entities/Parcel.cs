@@ -1,9 +1,9 @@
 ﻿using ReceiptMailing.Data.Entities.Base;
 
-namespace ReceiptMailing.Data.Entities
+namespace ReceiptMailing.Data.Entities;
+
+public class Parcel : ParcelEntity
 {
-    public class Parcel: ParcelEntity
-    {
         /// <summary> Владелец участка </summary>
         public Gardener Gardener { get; set; } = new();
 
@@ -36,5 +36,4 @@ namespace ReceiptMailing.Data.Entities
 
         /// <summary> Примечание</summary>
         public string? Description { get; set; }
-    }
 }

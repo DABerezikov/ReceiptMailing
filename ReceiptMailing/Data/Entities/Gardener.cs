@@ -1,17 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using ReceiptMailing.Data.Entities.Base;
 
-namespace ReceiptMailing.Data.Entities
-{
-    public class Gardener : GardenerEntity
-    {
-        private string? _firstEmailAddress;
-        private string? _secondEmailAddress;
+namespace ReceiptMailing.Data.Entities;
 
-        /// <summary> Лицевой счет </summary>
-        [Required]
-        public string? Account { get; set; }
+public class Gardener : GardenerEntity
+{
+    /// <summary> Лицевой счет </summary>
+        public string Account { get; set; } = string.Empty;
 
         /// <summary> Адрес места жительства </summary>
         public Address Address { get; set; } = new();
@@ -30,32 +27,29 @@ namespace ReceiptMailing.Data.Entities
         /// <summary> Адрес основной электронной почты </summary>
         public string? FirstEmailAddress
         {
-            get => _firstEmailAddress;
+            get;
             set
             {
                 var email = new EmailAddressAttribute();
                 if (email.IsValid(value) || value == string.Empty)
-                    _firstEmailAddress = value;
+                    field = value;
             }
         }
 
         /// <summary> Адрес дополнительной электронной почты </summary>
         public string? SecondEmailAddress
         {
-            get => _secondEmailAddress;
+            get;
             set
             {
                 var email = new EmailAddressAttribute();
                 if (email.IsValid(value) || value == string.Empty)
-                    _secondEmailAddress = value;
+                    field = value;
             }
         }
 
-        public override string ToString()
-        {
-            return $"{SurName} {Name} {Patronymic}";
-        }
+        public override string ToString() =>
+            string.Join(" ", new[] { SurName, Name, Patronymic }.Where(s => !string.IsNullOrEmpty(s)));
 
         public ICollection<Parcel> Parcels { get; set; } = new HashSet<Parcel>();
-    }
 }

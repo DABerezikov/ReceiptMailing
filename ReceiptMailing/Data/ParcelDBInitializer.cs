@@ -2,20 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using ReceiptMailing.Data.Context;
 
-namespace ReceiptMailing.Data
+namespace ReceiptMailing.Data;
+
+public class ParcelDbInitializer(ParcelDb db)
 {
-    public class ParcelDbInitializer
+    public void Initialize()
     {
-        private readonly ParcelDb _db;
-
-        public ParcelDbInitializer(ParcelDb db) => _db = db;
-
-        public void Initialize()
-        {
-            _db.Database.Migrate();
-            if (_db.Parcels.Any()) return;
-
-        }
-        
+        db.Database.Migrate();
+        if (db.Parcels.Any()) return;
     }
 }

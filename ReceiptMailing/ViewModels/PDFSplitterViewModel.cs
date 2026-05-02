@@ -1,239 +1,195 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ReceiptMailing.Infrastructure.Commands;
-using ReceiptMailing.Services.Interfaces;
-using ReceiptMailing.Services;
 using System.Windows.Input;
 using ReceiptMailing.Data.Entities;
+using ReceiptMailing.Infrastructure.Commands;
+using ReceiptMailing.Services;
+using ReceiptMailing.Services.Interfaces;
 using ReceiptMailing.Services.Interfaces.Repositories;
 using ReceiptMailing.ViewModels.Base;
-using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace ReceiptMailing.ViewModels
+namespace ReceiptMailing.ViewModels;
+
+internal class PdfSplitterViewModel(
+    IUserDialog userDialog,
+    ReceiptsSplitter splitter,
+    IMailService email,
+    IParcelRepository<Parcel> parcel)
+    : ViewModel
 {
-    internal class PdfSplitterViewModel : ViewModel
+    #region Title : string - Заголовок окна
+
+    /// <summary>Заголовок окна</summary>
+    public string Title
     {
-        private readonly IUserDialog _userDialog;
+        get;
+        set => Set(ref field, value);
+    } = "Биоробот Константин";
 
-        private readonly ReceiptsSplitter _splitter;
-        private readonly IMailService _email;
-        private readonly IParcelRepository<Parcel> _parcel;
+    #endregion
 
+    #region Status : string - Статус
 
-        #region Title : string - Заголовок окна
+    /// <summary>Статус</summary>
+    public string Status
+    {
+        get;
+        set => Set(ref field, value);
+    } = "Готов!";
 
-        /// <summary>Заголовок окна</summary>
-        private string _title = "Биоробот Константин";
+    #endregion
 
-        /// <summary>Заголовок окна</summary>
-        public string Title { get => _title; set => Set(ref _title, value); }
+    #region PDFFilePath : string - Путь к файлу с квитанциями
 
-        #endregion
+    /// <summary>Путь к файлу с квитанциями</summary>
+    public string? PdfFilePath
+    {
+        get;
+        set => Set(ref field, value);
+    } = string.Empty;
 
-        #region Status : string - Статус
+    #endregion
 
-        /// <summary>Статус</summary>
-        private string _status = "Готов!";
+    #region SplitFilePath : string - Путь к папке с квитанциями
 
-        /// <summary>Статус</summary>
-        public string Status { get => _status; set => Set(ref _status, value); }
+    /// <summary>Путь к файлу с квитанциями</summary>
+    public string? SplitFilePath
+    {
+        get;
+        set => Set(ref field, value);
+    } = string.Empty;
 
-        #endregion
+    #endregion
 
-        #region PDFFilePath : string - Путь к файлу с квитанциями
+    #region ListNotSendReceipts : List<string> - Список неотправленных файлов
 
-        /// <summary>Путь к файлу с квитанциями</summary>
-        private string? _pdfFilePath = string.Empty;
+    /// <summary>Список неотправленных файлов</summary>
+    public List<string> ListNotSendReceipts
+    {
+        get;
+        set => Set(ref field, value);
+    } = new();
 
-        /// <summary>Путь к файлу с квитанциями</summary>
-        public string? PdfFilePath
+    #endregion
+
+    #region Command OpenPDFCommand - команда для открытия файла с квитанциями
+
+    /// <summary> команда для открытия файла с квитанциями </summary>
+    public ICommand OpenPdfCommand => field
+        ??= new LambdaCommand(OnOpenPDFCommandExecuted, CanOpenPdfCommandExecute);
+
+    /// <summary> Проверка возможности выполнения - команда для открытия файла с квитанциями </summary>
+    private bool CanOpenPdfCommandExecute() => true;
+
+    /// <summary> Логика выполнения - команда для открытия файла с квитанциями </summary>
+    private void OnOpenPDFCommandExecuted()
+    {
+        var temp = userDialog.OpenFile("Выбор исходного файла с квитанциями");
+        if (temp is null) return;
+        PdfFilePath = temp.DirectoryName + "\\" + temp.Name;
+    }
+
+    #endregion
+
+    #region Command SplitPDFCommand - Команда разделения файла квитанций
+
+    /// <summary> Команда разделения файла квитанций </summary>
+    public ICommand SplitPdfCommand => field
+        ??= new LambdaCommand(OnSplitPDFCommandExecuted, CanSplitPdfCommandExecute);
+
+    /// <summary> Проверка возможности выполнения - Команда разделения файла квитанций </summary>
+    private bool CanSplitPdfCommandExecute() => PdfFilePath != string.Empty;
+
+    /// <summary> Логика выполнения - Команда разделения файла квитанций </summary>
+    private void OnSplitPDFCommandExecuted()
+    {
+        splitter.Path = PdfFilePath;
+        userDialog.Information(splitter.PdfSplit(), "Обрезка квитанций");
+        SplitFilePath = splitter.FileFolderPath;
+    }
+
+    #endregion
+
+    #region Command SendReceiptCommand - Команда разделения файла квитанций
+
+    /// <summary> Команда разделения файла квитанций </summary>
+    public ICommand SendReceiptCommand => field
+        ??= new LambdaCommandAsync(OnSendReceiptCommandExecuted, CanSendReceiptCommandExecute);
+
+    /// <summary> Проверка возможности выполнения - Команда разделения файла квитанций </summary>
+    private bool CanSendReceiptCommandExecute() => SplitFilePath != string.Empty;
+
+    /// <summary> Логика выполнения - Команда разделения файла квитанций </summary>
+    private async Task OnSendReceiptCommandExecuted()
+    {
+        if (string.IsNullOrEmpty(SplitFilePath)) return;
+        var listFiles = new List<string>(Directory.EnumerateFiles(SplitFilePath));
+        int countSendFile = 0;
+
+        foreach (var filePath in listFiles)
         {
-            get => _pdfFilePath;
-            set => Set(ref _pdfFilePath, value);
-        }
-
-        #endregion
-
-        #region SplitFilePath : string - Путь к папке с квитанциями
-
-        /// <summary>Путь к файлу с квитанциями</summary>
-        private string? _splitFilePath = string.Empty;
-
-        /// <summary>Путь к файлу с квитанциями</summary>
-        public string? SplitFilePath
-        {
-            get => _splitFilePath;
-            set => Set(ref _splitFilePath, value);
-        }
-
-        #endregion
-
-        #region ListNotSendReceipts : List<string> - Список неотправленных файлов
-
-        /// <summary>Список неотправленных файлов</summary>
-        private List<string> _ListNotSendReceipts = new ();
-
-        /// <summary>Список неотправленных файлов</summary>
-        public List<string> ListNotSendReceipts
-        {
-            get => _ListNotSendReceipts;
-            set => Set(ref _ListNotSendReceipts, value);
-        }
-
-        #endregion
-        
-        #region Command OpenPDFCommand - команда для открытия файла с квитанциями
-
-        /// <summary> команда для открытия файла с квитанциями </summary>
-        private ICommand _openPdfCommand;
-
-        /// <summary> команда для открытия файла с квитанциями </summary>
-        public ICommand OpenPdfCommand => _openPdfCommand
-            ??= new LambdaCommand(OnOpenPDFCommandExecuted, CanOpenPdfCommandExecute);
-
-        /// <summary> Проверка возможности выполнения - команда для открытия файла с квитанциями </summary>
-        private bool CanOpenPdfCommandExecute() => true;
-
-        /// <summary> Логика выполнения - команда для открытия файла с квитанциями </summary>
-        private void OnOpenPDFCommandExecuted()
-        {
-            var temp = _userDialog.OpenFile("Выбор исходного файла с квитанциями");
-            if (temp != null) ;
-            PdfFilePath = temp?.DirectoryName + "\\" + temp?.Name;
-        }
-
-        #endregion
-        
-        #region Command SplitPDFCommand - Команда разделения файла квитанций
-
-        /// <summary> Команда разделения файла квитанций </summary>
-        private ICommand _splitPdfCommand;
-
-        /// <summary> Команда разделения файла квитанций </summary>
-        public ICommand SplitPdfCommand => _splitPdfCommand
-            ??= new LambdaCommand(OnSplitPDFCommandExecuted, CanSplitPdfCommandExecute);
-
-        /// <summary> Проверка возможности выполнения - Команда разделения файла квитанций </summary>
-        private bool CanSplitPdfCommandExecute() => PdfFilePath != string.Empty;
-
-        /// <summary> Логика выполнения - Команда разделения файла квитанций </summary>
-        private void OnSplitPDFCommandExecuted()
-        {
-            _splitter.Path = PdfFilePath;
-            _userDialog.Information(_splitter.PdfSplit(), "Обрезка квитанций");
-            SplitFilePath = _splitter.FileFolderPath;
-        }
-
-        #endregion
-
-        #region Command SendReceiptCommand - Команда разделения файла квитанций
-
-        /// <summary> Команда разделения файла квитанций </summary>
-        private ICommand _sendReceiptCommand;
-
-        /// <summary> Команда разделения файла квитанций </summary>
-        public ICommand SendReceiptCommand => _sendReceiptCommand
-            ??= new LambdaCommandAsync(OnSendReceiptCommandExecuted, CanSendReceiptCommandExecute);
-
-        /// <summary> Проверка возможности выполнения - Команда разделения файла квитанций </summary>
-        private bool CanSendReceiptCommandExecute() => SplitFilePath != string.Empty;
-
-        /// <summary> Логика выполнения - Команда разделения файла квитанций </summary>
-        private async Task OnSendReceiptCommandExecuted()
-        {
-            var listFiles = GetFileList(SplitFilePath).ToList();
-            int countSendFile = 0;
-
-            foreach (var filePath in listFiles)
+            if (!await SendReceipt(filePath))
             {
-                if (!await SendReceipt(filePath))
-                {
-                    ListNotSendReceipts.Add(filePath);
-                    continue;
-                }
-
-                countSendFile++;
+                ListNotSendReceipts.Add(filePath);
+                continue;
             }
-
-            SaveListFileNotSend();
-
-            _userDialog.Information($"Отправлено {countSendFile} из {listFiles.Count}", "Почтальон");
-            
+            countSendFile++;
         }
 
-        #endregion
+        SaveListFileNotSend();
+        userDialog.Information($"Отправлено {countSendFile} из {listFiles.Count}", "Почтальон");
+    }
 
-        private IEnumerable<string> GetFileList(string filePath) => Directory.EnumerateFiles(filePath);
+    #endregion
 
-        private async Task<(string?, string?)> GetEmailCurrentParcel(string filePath)
+    private async Task<(string?, string?)> GetEmailCurrentParcel(string filePath)
+    {
+        var indexStart = filePath.LastIndexOf(" ") + 1;
+        var length = filePath.LastIndexOf(".") - indexStart;
+        var parcelNumber = filePath.Substring(indexStart, length);
+        parcelNumber = parcelNumber.Replace('_', '/');
+        var currentParcel = await parcel.GetByNumber(parcelNumber);
+        if (currentParcel == null) return (null, null);
+        return (currentParcel.Gardener.FirstEmailAddress, currentParcel.Gardener.SecondEmailAddress);
+    }
+
+    private async Task<bool> SendReceipt(string filePath)
+    {
+        var listTo = new List<string>();
+        var email1 = await GetEmailCurrentParcel(filePath).ConfigureAwait(false);
+        if (string.IsNullOrEmpty(email1.Item1)) return false;
+        listTo.Add(email1.Item1);
+        if (email1.Item2 != null)
+            listTo.Add(email1.Item2);
+        var attachment = new List<string> { filePath };
+        var ct = CancellationToken.None;
+        var msg = new MailData(listTo, "Квитанция СНТ \"Тимирязевец\"",
+            "C уважением, \nПравление СНТ \"Тимирязевец\"", attachment);
+        return await email.SendAsync(msg, ct);
+    }
+
+    private void SaveListFileNotSend()
+    {
+        string file = @$"{SplitFilePath}\NotSend.csv";
+        string separator = ",";
+        StringBuilder output = new StringBuilder();
+        foreach (var notSend in ListNotSendReceipts)
         {
-            var inputString = filePath;
-            var indexStart = inputString.LastIndexOf(" ") + 1;
-            var length = inputString.LastIndexOf(".") - indexStart;
-            var parcelNumber = filePath.Substring(indexStart, length);
-            parcelNumber = parcelNumber.Replace('_', '/');
-            var currentParcel = await _parcel.GetByNumber(parcelNumber);
-            if (currentParcel==null) return (null, null);
-            return (currentParcel.Gardener.FirstEmailAddress, currentParcel.Gardener.SecondEmailAddress) ;
-
+            output.AppendLine(string.Join(separator, notSend));
         }
 
-        private async Task<bool> SendReceipt(string filePath)
+        try
         {
-            var listTo = new List<string>();
-            var receipt = filePath;
-            var email = await GetEmailCurrentParcel(receipt).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(email.Item1)) return false;
-            listTo.Add(email.Item1);
-            if (email.Item2 != null)
-                listTo.Add(email.Item2);
-            var attachment = new List<string> { receipt };
-            var ct = CancellationToken.None;
-            var msg = new MailData(listTo, "Квитанция СНТ \"Тимирязевец\"",
-                "C уважением, \nПравление СНТ \"Тимирязевец\"", attachment);
-            return await _email.SendAsync(msg, ct);
+            using var writer = new StreamWriter(file, false, Encoding.UTF8);
+            writer.WriteLineAsync(output);
         }
-
-        private void SaveListFileNotSend()
+        catch (Exception)
         {
-            string file = @$"{SplitFilePath}\NotSend.csv";
-            string separator = ",";
-            StringBuilder output = new StringBuilder();
-            foreach (var notSend in ListNotSendReceipts)
-            {
-               output.AppendLine(string.Join(separator, notSend));
-            }
-
-            try
-            {
-                using (StreamWriter writer = new StreamWriter(file, false, Encoding.UTF8))
-                {
-                    writer.WriteLineAsync(output);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Data could not be written to the CSV file.");
-                return;
-            }
-        }
-
-        public PdfSplitterViewModel(
-            IUserDialog userDialog,
-            ReceiptsSplitter splitter,
-            IMailService email,
-            IParcelRepository<Parcel> parcel)
-        {
-            _userDialog = userDialog;
-            _splitter = splitter;
-            _email = email;
-            _parcel = parcel;
-            
+            Console.WriteLine("Data could not be written to the CSV file.");
         }
     }
 }

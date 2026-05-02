@@ -1,14 +1,13 @@
-﻿using ReceiptMailing.Infrastructure.Commands.Base;
+using ReceiptMailing.Infrastructure.Commands.Base;
 using ReceiptMailing.Views.Windows;
 
-namespace ReceiptMailing.Infrastructure.Commands
+namespace ReceiptMailing.Infrastructure.Commands;
+
+internal class PdfSplitterCommand : Command
 {
-    internal class PdfSplitterCommand : Command
+    protected override void Execute(object p)
     {
-        protected override void Execute(object p)
-        {
-            var pdfSplitter_window = new PdfSplitterWindow();
-            pdfSplitter_window.Show();
-        }
+        var pdfSplitter_window = new PdfSplitterWindow();
+        pdfSplitter_window.Show();
     }
 }

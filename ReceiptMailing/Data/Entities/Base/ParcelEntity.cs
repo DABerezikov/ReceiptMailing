@@ -6,5 +6,5 @@ namespace ReceiptMailing.Data.Entities.Base;
 public abstract class ParcelEntity : Entity, IParcelEntity
 {
     [Required]
-    public string Number { get; set; }
+    public string Number { get; set; } = string.Empty;
 }
