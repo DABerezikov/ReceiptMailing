@@ -1,101 +1,182 @@
-﻿<Window x:Class="ReceiptMailing.Views.Windows.EditParcelWindow"
+<Window x:Class="ReceiptMailing.Views.Windows.EditParcelWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ReceiptMailing.Views.Windows"
-        
-        Title="{Binding Title}" MaxHeight="640" MaxWidth="870">
-    <Grid>
+        Title="{Binding Title}"
+        SizeToContent="Height"
+        Width="720"
+        MinWidth="600"
+        ResizeMode="CanResizeWithGrip"
+        WindowStartupLocation="CenterOwner">
+
+    <Grid Margin="12">
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+
+        <!-- Row 0: Основные данные + Кадастр -->
+        <Grid Grid.Row="0" Margin="0,0,0,8">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="10*"></ColumnDefinition>
-                <ColumnDefinition Width="7*"></ColumnDefinition>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0" Margin="5" Style="{StaticResource BorderEditWindowStyle}">
-                <Grid Margin="5">
-                    <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Улица"/>
-                    <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Street}" />
+            <!-- Основные данные -->
+            <Border Grid.Column="0" Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
 
-                    <TextBlock Margin="170,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Номер"/>
-                    <TextBox Margin="170,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Number}" />
+                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="5"
+                               Style="{StaticResource SectionHeaderStyle}" Text="УЧАСТОК"/>
 
-                    <TextBlock Margin="330,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Площадь"/>
-                    <TextBox Margin="330,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding PlotArea}" />
+                    <StackPanel Grid.Row="1" Grid.Column="0">
+                        <TextBlock Style="{StaticResource FormLabelStyle}" Text="Улица"/>
+                        <TextBox Text="{Binding Street}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="2">
+                        <TextBlock Style="{StaticResource FormLabelStyle}" Text="№ участка"/>
+                        <TextBox Text="{Binding Number}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="4">
+                        <TextBlock Style="{StaticResource FormLabelStyle}" Text="Площадь (м²)"/>
+                        <TextBox Text="{Binding PlotArea}"/>
+                    </StackPanel>
                 </Grid>
             </Border>
 
-            <Border Grid.Column="1" Margin="5" Style="{StaticResource BorderEditWindowStyle}">
-                <Grid Margin="5">
-                    <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Кадастровый номер"/>
-                    <TextBox Margin="10,30,0,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding CadastralNumber}" />
+            <!-- Кадастровые данные -->
+            <Border Grid.Column="2" Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                    <TextBlock Margin="170,10,10,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Прав. документ"/>
-                    <TextBox Margin="170,30,10,0" Style="{StaticResource TextBoxEditWindowStyle}" Text="{Binding Details}" />
+                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                               Style="{StaticResource SectionHeaderStyle}" Text="КАДАСТР"/>
 
+                    <StackPanel Grid.Row="1" Grid.Column="0">
+                        <TextBlock Style="{StaticResource FormLabelStyle}" Text="Кадастровый №"/>
+                        <TextBox Text="{Binding CadastralNumber}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="2">
+                        <TextBlock Style="{StaticResource FormLabelStyle}" Text="Прав. документ"/>
+                        <TextBox Text="{Binding Details}"/>
+                    </StackPanel>
                 </Grid>
             </Border>
         </Grid>
 
-        <Grid Grid.Row="1">
-            <Border Margin="5" Style="{StaticResource BorderEditWindowStyle}">
-                <Grid Margin="5">
-                    
-                    <CheckBox  Margin="10,10,0,0" Content="Наличие дома на участке" IsChecked="{Binding HavingHouse}"/>
-                    <CheckBox  Margin="390,10,0,0" Content="Наличие электричества на участке" IsChecked="{Binding Electrification}"/>
+        <!-- Row 1: Детали -->
+        <Border Grid.Row="1" Style="{StaticResource CardBorderStyle}" Margin="0,0,0,8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                    <TextBlock Margin="10,30,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Номер дома"/>
-                    <TextBox Margin="10,50,0,0" Style="{StaticResource TextBoxEditWindowStyle}"
-                         Text="{Binding HouseNumber}" />
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="7"
+                           Style="{StaticResource SectionHeaderStyle}" Text="ХАРАКТЕРИСТИКИ"/>
 
-                    <TextBlock Margin="170,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Категория участка"/>
-                    <TextBox Margin="170,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}" 
-                         Text="{Binding Category}" />
+                <!-- Чекбоксы -->
+                <CheckBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3"
+                          Content="Наличие дома на участке"
+                          IsChecked="{Binding HavingHouse}"/>
+                <CheckBox Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="3"
+                          Content="Наличие электричества"
+                          IsChecked="{Binding Electrification}"/>
 
-                    <TextBlock Margin="390,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Статус"/>
-                    <TextBox Margin="390,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}"
-                         Text="{Binding Status}" />
+                <!-- Поля -->
+                <StackPanel Grid.Row="3" Grid.Column="0">
+                    <TextBlock Style="{StaticResource FormLabelStyle}" Text="Номер дома"/>
+                    <TextBox Text="{Binding HouseNumber}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="2">
+                    <TextBlock Style="{StaticResource FormLabelStyle}" Text="Категория участка"/>
+                    <TextBox Text="{Binding Category}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="4">
+                    <TextBlock Style="{StaticResource FormLabelStyle}" Text="Статус"/>
+                    <TextBox Text="{Binding Status}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="3" Grid.Column="6">
+                    <TextBlock Style="{StaticResource FormLabelStyle}" Text="Примечание"/>
+                    <TextBox Text="{Binding Description}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
 
-                    <TextBlock Margin="610,30,0,0" Style="{StaticResource TextBlockAddressEditWindowStyle}" Text ="Примечание"/>
-                    <TextBox Margin="610,50,0,0" Style="{StaticResource TextBoxAddressEditWindowStyle}"
-                         Text="{Binding Description}" />
+        <!-- Row 2: Владелец -->
+        <Border Grid.Row="2" Style="{StaticResource CardBorderStyle}" Margin="0,0,0,8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="260"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                   
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                           Style="{StaticResource SectionHeaderStyle}" Text="ВЛАДЕЛЕЦ"/>
 
-                </Grid>
-            </Border>
-
-        </Grid>
-
-        <Grid Grid.Row="2">
-            <Border Margin="5" Style="{StaticResource BorderEditWindowStyle}">
-                <Grid Margin="5">
-                    <TextBlock Margin="10,10,0,0" Style="{StaticResource TextBlockEditWindowStyle}" Text ="Владелец участка"/>
-                    <ComboBox Margin="10,30,0,0" Height="20" Width="150" HorizontalAlignment="Left" ItemsSource="{Binding ListGardener}"
-                              IsEditable="True" StaysOpenOnEdit="True" SelectedItem="{Binding Gardener}"
+                <StackPanel Grid.Row="1" Grid.Column="0">
+                    <TextBlock Style="{StaticResource FormLabelStyle}" Text="Садовод"/>
+                    <ComboBox ItemsSource="{Binding ListGardener}"
+                              IsEditable="True"
+                              StaysOpenOnEdit="True"
+                              SelectedItem="{Binding Gardener}"
                               SelectedIndex="{Binding GardenerIndex}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
 
-                </Grid>
-            </Border>
-        </Grid>
-
-        <Grid Grid.Row="3">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5" VerticalAlignment="Center">
-                <Button Content="Сохранить" Width="100" Margin="0,0,10,0"
-                        Command="{Binding AcceptCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
-                <Button Content="Отменить" Width="100"
-                        Command="{Binding CancelCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
-            </StackPanel>
-        </Grid>
+        <!-- Row 3: Кнопки -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal"
+                    HorizontalAlignment="Right" Margin="0,4,0,0">
+            <Button Style="{StaticResource PrimaryButtonStyle}"
+                    Content="Сохранить" Width="130" IsDefault="True"
+                    Margin="0,0,10,0"
+                    Command="{Binding AcceptCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+            <Button Style="{StaticResource SecondaryButtonStyle}"
+                    Content="Отменить" Width="130" IsCancel="True"
+                    Command="{Binding CancelCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+        </StackPanel>
 
     </Grid>
 </Window>

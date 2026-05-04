@@ -1,4 +1,4 @@
-﻿<Window x:Class="ReceiptMailing.Views.Windows.PdfSplitterWindow"
+<Window x:Class="ReceiptMailing.Views.Windows.PdfSplitterWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,9 +7,14 @@
         xmlns:l="clr-namespace:ReceiptMailing"
         DataContext="{Binding PdfSplitterWindowModel, Source={StaticResource Locator}}"
         Title="{Binding Title}"
-        MaxWidth="600" Width="600" Height="300">
+        Width="580" SizeToContent="Height"
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterOwner">
+
     <DockPanel>
-        <Menu DockPanel.Dock="Top" IsMainMenu="True">
+
+        <!-- Menu -->
+        <Menu IsMainMenu="True">
             <Menu.ItemsPanel>
                 <ItemsPanelTemplate>
                     <DockPanel LastChildFill="False"/>
@@ -20,43 +25,114 @@
             </MenuItem>
         </Menu>
 
-        <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem DockPanel.Dock="Left">
-                <ResizeGrip/>
-            </StatusBarItem>
+        <!-- Status bar -->
+        <StatusBar>
             <StatusBarItem Content="{Binding Status}"/>
         </StatusBar>
-        <Grid>
 
-            <Border Width="540" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,20,0,0"
-                    BorderBrush="{StaticResource GrayBrush}" BorderThickness="1">
-                <TextBlock 
-                           Text="{Binding  PdfFilePath}"/>
+        <!-- Content -->
+        <Grid Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="12"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="16"/>
+            </Grid.RowDefinitions>
+
+            <!-- Блок 1: Исходный PDF -->
+            <Border Grid.Row="0" Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Style="{StaticResource SectionHeaderStyle}"
+                               Text="ФАЙЛ С КВИТАНЦИЯМИ"/>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="32"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0"
+                                BorderBrush="{StaticResource BorderColorBrush}"
+                                BorderThickness="1" CornerRadius="5"
+                                Background="{StaticResource SurfaceSecondaryBrush}"
+                                Padding="8,0">
+                            <TextBlock Text="{Binding PdfFilePath}"
+                                       VerticalAlignment="Center"
+                                       Height="32"
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       TextTrimming="CharacterEllipsis"/>
+                        </Border>
+
+                        <Button Grid.Column="2" Style="{StaticResource IconButtonStyle}"
+                                Width="32" Height="32"
+                                fa5:Awesome.Content="Solid_FilePdf"
+                                Foreground="{StaticResource IndianRedBrush}"
+                                Background="{StaticResource SurfaceSecondaryBrush}"
+                                ToolTip="Выбрать PDF с квитанциями"
+                                Command="{Binding OpenPdfCommand}"/>
+                    </Grid>
+
+                    <Button Grid.Row="3" Style="{StaticResource PrimaryButtonStyle}"
+                            Content="Разделить по страницам"
+                            HorizontalAlignment="Right"
+                            Command="{Binding SplitPdfCommand}"/>
+                </Grid>
             </Border>
 
-            <Button Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="555,20,0,0"
-                    Grid.Column="0" fa5:Awesome.Content="Solid_FilePdf" ToolTip="Выбор файла с квитанциями" Foreground="{StaticResource IndianRedBrush}"
-                    Background="{StaticResource TransparentBrush}" Command="{Binding OpenPdfCommand}"/>
+            <!-- Блок 2: Папка для рассылки -->
+            <Border Grid.Row="2" Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-            <Button Width="100" Height="20" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="450,60,0,0"
-                    Content="Разделить" Command="{Binding SplitPdfCommand}"/>
+                    <TextBlock Grid.Row="0" Style="{StaticResource SectionHeaderStyle}"
+                               Text="ПАПКА С РАЗДЕЛЁННЫМИ КВИТАНЦИЯМИ"/>
 
-            <Border Width="540" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,100,0,0"
-                    BorderBrush="{StaticResource GrayBrush}" BorderThickness="1">
-                <TextBox 
-                    Text="{Binding SplitFilePath}"/>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="8"/>
+                            <ColumnDefinition Width="32"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0"
+                                BorderBrush="{StaticResource BorderColorBrush}"
+                                BorderThickness="1" CornerRadius="5"
+                                Background="{StaticResource SurfaceSecondaryBrush}"
+                                Padding="8,0">
+                            <TextBox Text="{Binding SplitFilePath, UpdateSourceTrigger=PropertyChanged}"
+                                     BorderThickness="0" Background="Transparent"
+                                     Height="32" VerticalContentAlignment="Center"
+                                     Padding="0"/>
+                        </Border>
+
+                        <Button Grid.Column="2" Style="{StaticResource IconButtonStyle}"
+                                Width="32" Height="32"
+                                fa5:Awesome.Content="Regular_FolderOpen"
+                                Foreground="{StaticResource WarningBrush}"
+                                Background="{StaticResource SurfaceSecondaryBrush}"
+                                ToolTip="Выбрать папку с квитанциями"
+                                Command="{Binding OpenFolderCommand}"/>
+                    </Grid>
+
+                    <Button Grid.Row="3" Style="{StaticResource PrimaryButtonStyle}"
+                            Content="Разослать квитанции"
+                            HorizontalAlignment="Right"
+                            Command="{Binding SendReceiptCommand}"/>
+                </Grid>
             </Border>
-
-            <Button Width="20" Height="20" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="555,100,0,0"
-                    Grid.Column="0" fa5:Awesome.Content="Regular_FolderOpen" ToolTip="Выбор файла с садоводами"
-                    Foreground="{StaticResource OrangeBrush}"
-                    Background="{StaticResource TransparentBrush}" Command="{Binding OpenFolderCommand}"/>
-
-            <Button Width="100" Height="20" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="450,140,0,0"
-                    Content="Разослать" Command="{Binding SendReceiptCommand}"/>
-
-
-           
 
         </Grid>
     </DockPanel>

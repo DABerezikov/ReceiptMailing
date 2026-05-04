@@ -5,7 +5,7 @@ namespace ReceiptMailing.Data.Entities;
 public class Parcel : ParcelEntity
 {
         /// <summary> Владелец участка </summary>
-        public Gardener Gardener { get; set; } = new();
+        public Gardener? Gardener { get; set; }
 
         /// <summary> Улица </summary>
         public string? Street { get; set; }

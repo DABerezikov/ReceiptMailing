@@ -192,8 +192,8 @@ internal class MainWindowViewModel : ViewModel
     /// <summary> Логика выполнения - Команда удаления садовода </summary>
     private async Task OnDeleteGardenerCommandExecuted()
     {
-        var question = $"Вы действительно хотите удалить садовода {SelectedParcel.Gardener.SurName}" +
-                       $" {SelectedParcel.Gardener.Name} {SelectedParcel.Gardener.Patronymic}?";
+        var g = SelectedParcel!.Gardener;
+        var question = $"Вы действительно хотите удалить садовода {g?.SurName} {g?.Name} {g?.Patronymic}?";
         if (!_userDialog.OkCancelQuestion(question, "Запрос на удаление садовода")) return;
         await _Gardener.Delete(SelectedParcel.Gardener);
         GardenerCollection = new ObservableCollection<Gardener>(await _Gardener.GetAll());

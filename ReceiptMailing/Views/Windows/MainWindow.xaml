@@ -1,4 +1,4 @@
-﻿<Window x:Class="ReceiptMailing.MainWindow"
+<Window x:Class="ReceiptMailing.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,15 +6,19 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}"
         Title="{Binding Title}"
-        Width="1280" Height="720">
-<i:Interaction.Triggers>
-    <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding GetCollectionsCommand}"></i:InvokeCommandAction>
-    </i:EventTrigger>
-</i:Interaction.Triggers>
+        Width="1280" Height="720"
+        MinWidth="900" MinHeight="500">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding GetCollectionsCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <DockPanel>
-        <Menu>
+
+        <!-- Menu -->
+        <Menu IsMainMenu="True">
             <Menu.ItemsPanel>
                 <ItemsPanelTemplate>
                     <DockPanel LastChildFill="False"/>
@@ -23,59 +27,97 @@
             <MenuItem Header="Файл">
                 <MenuItem Header="Выход" Command="{StaticResource CloseWindowCommand}"/>
             </MenuItem>
-            <MenuItem Header="Импорт БД" Command="{StaticResource ImportDbCommand}"/>
-            <MenuItem Header="Обрезка квитанций" Command="{StaticResource PdfSplitterCommand}"/>
-            
+            <MenuItem Header="Импорт БД"          Command="{StaticResource ImportDbCommand}"/>
+            <MenuItem Header="Обрезка квитанций"  Command="{StaticResource PdfSplitterCommand}"/>
         </Menu>
-       
+
+        <!-- Status bar -->
         <StatusBar>
             <StatusBarItem Content="{Binding Status}"/>
         </StatusBar>
 
-        <UniformGrid DockPanel.Dock="Bottom"  Rows="1" Margin="0,5">
-            <Button Style="{StaticResource UniformButtonStyle}" Content="Добавить участок"
-                    Command="{Binding AddParcelCommand}"/>
-            <Button Style="{StaticResource UniformButtonStyle}" Content="Редактировать участок"
-                    Command="{Binding EditParcelCommand}"/>
-            <Button Style="{StaticResource UniformButtonStyle}" Content="Удалить участок"
-                    Command="{Binding DeleteParcelCommand}"/>
-            <Button Style="{StaticResource UniformButtonStyle}" Content="Добавить садовода"
-                    Command="{Binding AddGardenerCommand}"/>
-            <Button Style="{StaticResource UniformButtonStyle}" Content="Редактировать садовода"
-                    Command="{Binding EditGardenerCommand}"/>
-            <Button Style="{StaticResource UniformButtonStyle}" Content="Удалить садовода"
-                    Command="{Binding DeleteGardenerCommand}"/>
+        <!-- Toolbar -->
+        <Border DockPanel.Dock="Bottom"
+                Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderColorBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="12,7">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="24"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-        </UniformGrid>
+                <!-- Group label: Участки -->
+                <TextBlock Grid.Column="0"
+                           Text="Участки"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0"
+                           FontSize="11" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
 
-        <Grid>
-            <DataGrid ColumnHeaderHeight="40"  AutoGenerateColumns="False" ItemsSource="{Binding ParcelCollection}"
-                      SelectedIndex="{Binding SelectedIndex}" SelectedItem="{Binding SelectedParcel}"
+                <Button Grid.Column="1" Style="{StaticResource AddButtonStyle}"
+                        Content="+ Добавить"
+                        Command="{Binding AddParcelCommand}"/>
+                <Button Grid.Column="2" Style="{StaticResource EditButtonStyle}"
+                        Content="Редактировать"
+                        Command="{Binding EditParcelCommand}"/>
+                <Button Grid.Column="3" Style="{StaticResource DeleteButtonStyle}"
+                        Content="Удалить"
+                        Command="{Binding DeleteParcelCommand}"/>
+
+                <!-- Divider -->
+                <Rectangle Grid.Column="4"
+                           Width="1" VerticalAlignment="Stretch"
+                           Margin="11,4"
+                           Fill="{StaticResource BorderColorBrush}"/>
+
+                <!-- Group label: Садоводы -->
+                <TextBlock Grid.Column="5"
+                           Text="Садоводы"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0"
+                           FontSize="11" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
+
+                <Button Grid.Column="6" Style="{StaticResource AddButtonStyle}"
+                        Content="+ Добавить"
+                        Command="{Binding AddGardenerCommand}"/>
+                <Button Grid.Column="7" Style="{StaticResource EditButtonStyle}"
+                        Content="Редактировать"
+                        Command="{Binding EditGardenerCommand}"/>
+                <Button Grid.Column="8" Style="{StaticResource DeleteButtonStyle}"
+                        Content="Удалить"
+                        Command="{Binding DeleteGardenerCommand}"/>
+            </Grid>
+        </Border>
+
+        <!-- DataGrid -->
+        <Grid Margin="8,8,8,0">
+            <DataGrid ItemsSource="{Binding ParcelCollection}"
+                      SelectedIndex="{Binding SelectedIndex}"
+                      SelectedItem="{Binding SelectedParcel}"
                       IsReadOnly="True">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Width="4*" Header="Улица" Binding="{Binding Street}" />
-
-                    <DataGridTextColumn Width="1.5*" Header="№ участка" Binding="{Binding Number}"/>
-
-                    <DataGridTextColumn Width="1.5*" Header="Площадь участка" Binding="{Binding PlotArea}"/>
-
-                    <DataGridTextColumn Width="3*" Header="Фамилия" Binding="{Binding Gardener.SurName}"/>
-                   
-                    <DataGridTextColumn Width="2*" Header="Имя" Binding="{Binding Gardener.Name}"/>
-                    
-                    <DataGridTextColumn Width="3*" Header="Отчество" Binding="{Binding Gardener.Patronymic}"/>
-
-                        <DataGridTextColumn Width="3*" Header="Основной Email" Binding="{Binding Gardener.FirstEmailAddress}"/>
-                               
-                    <DataGridCheckBoxColumn Width="1.5*" Header="Электричество" Binding="{Binding Electrification}"/>
-
-                    <DataGridCheckBoxColumn Width="1.5*" Header="Дом" Binding="{Binding HavingHouse}"/>
-
+                    <DataGridTextColumn Width="4*"   Header="Улица"           Binding="{Binding Street}"                      ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                    <DataGridTextColumn Width="1.5*" Header="№ участка"       Binding="{Binding Number}"                      ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                    <DataGridTextColumn Width="1.5*" Header="Площадь участка" Binding="{Binding PlotArea}"                    ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                    <DataGridTextColumn Width="3*"   Header="Фамилия"         Binding="{Binding Gardener.SurName}"            ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                    <DataGridTextColumn Width="2*"   Header="Имя"             Binding="{Binding Gardener.Name}"               ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                    <DataGridTextColumn Width="3*"   Header="Отчество"        Binding="{Binding Gardener.Patronymic}"         ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                    <DataGridTextColumn Width="3*"   Header="Основной Email"  Binding="{Binding Gardener.FirstEmailAddress}"  ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                    <DataGridCheckBoxColumn Width="Auto" MinWidth="110" Header="Электричество" Binding="{Binding Electrification}"/>
+                    <DataGridCheckBoxColumn Width="1.5*" Header="Дом"         Binding="{Binding HavingHouse}"/>
                 </DataGrid.Columns>
-                
             </DataGrid>
-            
-
         </Grid>
+
     </DockPanel>
 </Window>

@@ -12,7 +12,7 @@ namespace ReceiptMailing.Data.Repositories;
 
 public class DbRepository<T> : IRepository<T> where T : Entity, new()
 {
-    private readonly ParcelDb _db;
+    protected readonly ParcelDb _db;
 
     protected DbSet<T> Set { get; }
 
@@ -123,7 +123,7 @@ public class DbRepository<T> : IRepository<T> where T : Entity, new()
         return item;
     }
 
-    public async Task<T?> Delete(T item, CancellationToken cancel = default)
+    public virtual async Task<T?> Delete(T item, CancellationToken cancel = default)
     {
         ArgumentNullException.ThrowIfNull(item);
 

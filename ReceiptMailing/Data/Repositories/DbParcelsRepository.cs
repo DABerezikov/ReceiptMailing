@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ReceiptMailing.Data.Context;
+using ReceiptMailing.Data.Entities;
 using ReceiptMailing.Data.Entities.Base;
 using ReceiptMailing.Services.Interfaces.Repositories;
 
@@ -16,6 +17,13 @@ public class DbParcelsRepository<T>(ParcelDb db) : DbRepository<T>(db), IParcelR
         .Include("Gardener.Address")
         .Include("Gardener.PostAddress")
         .Include("Gardener.Passport");
+
+    public override async Task<T?> Delete(T item, CancellationToken cancel = default)
+    {
+        if (item is Parcel { Gardener: not null } parcel)
+            _db.Entry(parcel.Gardener).State = EntityState.Unchanged;
+        return await base.Delete(item, cancel);
+    }
 
     public async Task<bool> ExistNumber(string number, CancellationToken cancel = default)
     {

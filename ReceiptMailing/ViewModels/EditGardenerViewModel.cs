@@ -488,23 +488,53 @@ internal class EditGardenerViewModel:ViewModel
 
     #endregion
 
-    #region Command MatchAddressCommand - Команда приравнивания адресов проживания и прописки
+    #region IsAddressMatched : bool - Адрес прописки совпадает с адресом проживания
 
-    /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    private ICommand? _MatchAddressCommand;
+    private bool _IsAddressMatched;
 
-    /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    public ICommand MatchAddressCommand => _MatchAddressCommand
-        ??= new LambdaCommandAsync(OnMatchAddressCommandExecuted, CanMatchAddressCommandExecute);
-
-    /// <summary> Проверка возможности выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private bool CanMatchAddressCommandExecute() => _Gardener.PostAddress!=_Gardener.Address;
-
-    /// <summary> Логика выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private async Task OnMatchAddressCommandExecuted()
+    public bool IsAddressMatched
     {
-        _Gardener.PostAddress = _Gardener.Address;
+        get => _IsAddressMatched;
+        set
+        {
+            if (!Set(ref _IsAddressMatched, value)) return;
+
+            if (value)
+            {
+                _Gardener.PostAddress.PostalCode = _Gardener.Address.PostalCode;
+                _Gardener.PostAddress.Province   = _Gardener.Address.Province;
+                _Gardener.PostAddress.Region     = _Gardener.Address.Region;
+                _Gardener.PostAddress.City       = _Gardener.Address.City;
+                _Gardener.PostAddress.Street     = _Gardener.Address.Street;
+                _Gardener.PostAddress.House      = _Gardener.Address.House;
+                _Gardener.PostAddress.Building   = _Gardener.Address.Building;
+                _Gardener.PostAddress.Room       = _Gardener.Address.Room;
+            }
+            else
+            {
+                _Gardener.PostAddress.PostalCode = null;
+                _Gardener.PostAddress.Province   = null;
+                _Gardener.PostAddress.Region     = null;
+                _Gardener.PostAddress.City       = null;
+                _Gardener.PostAddress.Street     = null;
+                _Gardener.PostAddress.House      = null;
+                _Gardener.PostAddress.Building   = null;
+                _Gardener.PostAddress.Room       = null;
+            }
+
+            OnPropertyChanged(nameof(PostPostalCode));
+            OnPropertyChanged(nameof(PostProvince));
+            OnPropertyChanged(nameof(PostRegion));
+            OnPropertyChanged(nameof(PostCity));
+            OnPropertyChanged(nameof(PostStreet));
+            OnPropertyChanged(nameof(PostHouse));
+            OnPropertyChanged(nameof(PostBuilding));
+            OnPropertyChanged(nameof(PostRoom));
+            OnPropertyChanged(nameof(IsPostAddressEditable));
+        }
     }
+
+    public bool IsPostAddressEditable => !_IsAddressMatched;
 
     #endregion
 

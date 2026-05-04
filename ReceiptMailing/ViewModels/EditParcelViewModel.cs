@@ -280,7 +280,7 @@ internal class EditParcelViewModel : ViewModel
     /// <summary>Владелец участка</summary>
     public Gardener Gardener
     {
-        get => _Parcel.Gardener;
+        get => _Parcel.Gardener ?? NoGardener;
         set
         {
             _Gardener = value ?? NoGardener;
@@ -441,7 +441,7 @@ internal class EditParcelViewModel : ViewModel
     private async Task OnAcceptCommandExecuted(object? p)
     {
         if (ReferenceEquals(_Gardener, NoGardener))
-            _Parcel.Gardener = new Gardener();
+            _Parcel.Gardener = null;
         ((Window)p!).DialogResult = true;
     }
 
@@ -470,16 +470,10 @@ internal class EditParcelViewModel : ViewModel
     public EditParcelViewModel(Parcel parcel, IRepository<Gardener> gardenerRepository)
     {
         _Parcel = parcel;
-        _Gardener = parcel.Gardener;
+        _Gardener = parcel.Gardener ?? NoGardener;
 
         _GardenerRepository = gardenerRepository;
-        _GardenerView = new CollectionViewSource
-        {
-            SortDescriptions =
-            {
-                new SortDescription(nameof(Gardener.SurName), ListSortDirection.Ascending)
-            }
-        };
+        _GardenerView = new CollectionViewSource();
         _GardenerView.Filter += _GardenerViewSourceFilter;
 
         LoadGardenersAsync();
@@ -488,11 +482,12 @@ internal class EditParcelViewModel : ViewModel
     private async void LoadGardenersAsync()
     {
         var gardeners = await _GardenerRepository.GetAll();
-        var list = new ObservableCollection<Gardener>(gardeners.Prepend(NoGardener));
+        var list = new ObservableCollection<Gardener>(
+            gardeners.OrderBy(g => g.SurName).Prepend(NoGardener));
         _GardenerView.Source = list;
         OnPropertyChanged(nameof(ListGardener));
 
-        if (_Parcel.Gardener.Id == 0)
+        if (_Parcel.Gardener is null || _Parcel.Gardener.Id == 0)
             Gardener = NoGardener;
     }
 

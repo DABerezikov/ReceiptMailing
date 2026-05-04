@@ -140,7 +140,7 @@ namespace ReceiptMailing.Migrations
                     b.Property<bool>("Electrification")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("GardenerId")
+                    b.Property<int?>("GardenerId")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("HavingHouse")
@@ -201,8 +201,7 @@ namespace ReceiptMailing.Migrations
                     b.HasOne("ReceiptMailing.Data.Entities.Gardener", "Gardener")
                         .WithMany("Parcels")
                         .HasForeignKey("GardenerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Gardener");
                 });
