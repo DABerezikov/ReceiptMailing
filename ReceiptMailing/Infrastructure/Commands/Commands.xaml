@@ -5,5 +5,6 @@
     <l:CloseWindow x:Key="CloseWindowCommand"/>
     <l:ImportDbCommand x:Key="ImportDbCommand"/>
     <l:PdfSplitterCommand x:Key="PdfSplitterCommand"/>
+    <l:MailSettingsCommand x:Key="MailSettingsCommand"/>
 
 </ResourceDictionary>

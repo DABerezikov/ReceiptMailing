@@ -17,15 +17,15 @@ public class ReceiptsSplitter
     public string FileFolderPath { get; set; } = string.Empty;
     private const string FolderPath = "documents";
 
-    public string PdfSplit()
+    public string PdfSplit(IProgress<int>? progress = null)
     {
         if (Path == string.Empty) return "Не выбран файл с квитанциями";
 
         FileFolderPath = GetFolderPath();
 
-        var list = GetListPdf(FileFolderPath);
+        var list = GetListPdf(FileFolderPath, progress);
 
-        return RanamePdf(list, FileFolderPath);
+        return RanamePdf(list, FileFolderPath, progress);
     }
 
     public string GetFolderPath()
@@ -50,13 +50,13 @@ public class ReceiptsSplitter
         return Folder + "\\" + filesPath;
     }
 
-    private List<string> GetListPdf(string filesPath)
+    private List<string> GetListPdf(string filesPath, IProgress<int>? progress)
     {
-       
         var listFile = new List<string>();
         var pdf = PdfReader.Open(Path, PdfDocumentOpenMode.Import);
+        var pageCount = pdf.PageCount;
 
-        for (var i = 0; i < pdf.PageCount; i++)
+        for (var i = 0; i < pageCount; i++)
         {
             var page = pdf.Pages[i];
 
@@ -95,15 +95,18 @@ public class ReceiptsSplitter
             
             doc1.Save(file1);
             doc2.Save(file2);
+
+            progress?.Report((i + 1) * 50 / pageCount);
         }
 
         return listFile;
     }
 
-    private string RanamePdf(List<string> listFile, string filesPath)
+    private string RanamePdf(List<string> listFile, string filesPath, IProgress<int>? progress)
     {
         var newFileName = string.Empty;
-        for (var i = 0; i < listFile.Count; i++)
+        var fileCount = listFile.Count;
+        for (var i = 0; i < fileCount; i++)
         {
             if (newFileName != string.Empty && !File.Exists(newFileName))
                 File.Move(listFile[i - 1], newFileName);
@@ -152,6 +155,7 @@ public class ReceiptsSplitter
                   + sntAddressArray[2] + " "
                   + sntAddressArray[5] + ".pdf";
 
+            progress?.Report(50 + (i + 1) * 50 / fileCount);
         }
 
         if (newFileName != string.Empty && !File.Exists(newFileName))

@@ -25,7 +25,9 @@
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
             <MenuItem Header="Файл">
-                <MenuItem Header="Выход" Command="{StaticResource CloseWindowCommand}"/>
+                <MenuItem Header="Настройки почты" Command="{StaticResource MailSettingsCommand}"/>
+                <Separator/>
+                <MenuItem Header="Выход"            Command="{StaticResource CloseWindowCommand}"/>
             </MenuItem>
             <MenuItem Header="Импорт БД"          Command="{StaticResource ImportDbCommand}"/>
             <MenuItem Header="Обрезка квитанций"  Command="{StaticResource PdfSplitterCommand}"/>

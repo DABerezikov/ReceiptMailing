@@ -76,6 +76,50 @@ internal class PdfSplitterViewModel(
 
     #endregion
 
+    #region Прогресс разделения
+
+    public int SplitProgress
+    {
+        get;
+        set => Set(ref field, value);
+    } = 0;
+
+    public bool IsSplitting
+    {
+        get;
+        set => Set(ref field, value);
+    } = false;
+
+    public string SplitProgressText
+    {
+        get;
+        set => Set(ref field, value);
+    } = string.Empty;
+
+    #endregion
+
+    #region Прогресс рассылки
+
+    public int SendProgress
+    {
+        get;
+        set => Set(ref field, value);
+    } = 0;
+
+    public bool IsSending
+    {
+        get;
+        set => Set(ref field, value);
+    } = false;
+
+    public string SendProgressText
+    {
+        get;
+        set => Set(ref field, value);
+    } = string.Empty;
+
+    #endregion
+
     #region Command OpenPDFCommand - команда для открытия файла с квитанциями
 
     /// <summary> команда для открытия файла с квитанциями </summary>
@@ -99,17 +143,34 @@ internal class PdfSplitterViewModel(
 
     /// <summary> Команда разделения файла квитанций </summary>
     public ICommand SplitPdfCommand => field
-        ??= new LambdaCommand(OnSplitPDFCommandExecuted, CanSplitPdfCommandExecute);
+        ??= new LambdaCommandAsync(OnSplitPDFCommandExecuted, CanSplitPdfCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда разделения файла квитанций </summary>
     private bool CanSplitPdfCommandExecute() => PdfFilePath != string.Empty;
 
     /// <summary> Логика выполнения - Команда разделения файла квитанций </summary>
-    private void OnSplitPDFCommandExecuted()
+    private async Task OnSplitPDFCommandExecuted()
     {
         splitter.Path = PdfFilePath;
-        userDialog.Information(splitter.PdfSplit(), "Обрезка квитанций");
+        IsSplitting = true;
+        SplitProgress = 0;
+        SplitProgressText = "0%";
+        Status = "Разделение квитанций...";
+
+        var progress = new Progress<int>(v =>
+        {
+            SplitProgress = v;
+            SplitProgressText = $"{v}%";
+        });
+
+        var result = await Task.Run(() => splitter.PdfSplit(progress));
+
+        IsSplitting = false;
+        SplitProgress = 0;
+        SplitProgressText = string.Empty;
+        Status = "Готов!";
         SplitFilePath = splitter.FileFolderPath;
+        userDialog.Information(result, "Обрезка квитанций");
     }
 
     #endregion
@@ -128,20 +189,39 @@ internal class PdfSplitterViewModel(
     {
         if (string.IsNullOrEmpty(SplitFilePath)) return;
         var listFiles = new List<string>(Directory.EnumerateFiles(SplitFilePath));
+        int total = listFiles.Count;
         int countSendFile = 0;
+        int processed = 0;
+
+        IsSending = true;
+        SendProgress = 0;
+        SendProgressText = $"0 из {total}";
+        Status = $"Отправка: 0 из {total}";
 
         foreach (var filePath in listFiles)
         {
             if (!await SendReceipt(filePath))
             {
                 ListNotSendReceipts.Add(filePath);
-                continue;
             }
-            countSendFile++;
+            else
+            {
+                countSendFile++;
+            }
+
+            processed++;
+            SendProgress = total > 0 ? processed * 100 / total : 0;
+            SendProgressText = $"{processed} из {total}";
+            Status = $"Отправка: {processed} из {total}";
         }
 
+        IsSending = false;
+        SendProgress = 0;
+        SendProgressText = string.Empty;
+        Status = "Готов!";
+
         SaveListFileNotSend();
-        userDialog.Information($"Отправлено {countSendFile} из {listFiles.Count}", "Почтальон");
+        userDialog.Information($"Отправлено {countSendFile} из {total}", "Почтальон");
     }
 
     #endregion

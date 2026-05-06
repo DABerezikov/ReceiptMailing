@@ -12,13 +12,13 @@ using MailKit.Net.Smtp;
 
 namespace ReceiptMailing.Services;
 
-public class MailService(IOptions<MailSettings> settings) : IMailService
+public class MailService(IOptionsMonitor<MailSettings> settings) : IMailService
 {
-    private readonly MailSettings _settings = settings.Value;
-
-
     public async Task<bool> SendAsync(MailData mailData, CancellationToken ct = default)
     {
+        // Читаем актуальные настройки при каждой отправке (поддержка live-reload)
+        var _settings = settings.CurrentValue;
+
         try
         {
             // Initialize a new instance of the MimeKit.MimeMessage class

@@ -11,6 +11,10 @@
         ResizeMode="CanMinimize"
         WindowStartupLocation="CenterOwner">
 
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
+
     <DockPanel>
 
         <!-- Menu -->
@@ -21,7 +25,9 @@
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
             <MenuItem Header="Файл">
-                <MenuItem Header="Выход" Command="{StaticResource CloseWindowCommand}"/>
+                <MenuItem Header="Настройки почты" Command="{StaticResource MailSettingsCommand}"/>
+                <Separator/>
+                <MenuItem Header="Выход"            Command="{StaticResource CloseWindowCommand}"/>
             </MenuItem>
         </Menu>
 
@@ -46,6 +52,8 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
@@ -80,7 +88,25 @@
                                 Command="{Binding OpenPdfCommand}"/>
                     </Grid>
 
-                    <Button Grid.Row="3" Style="{StaticResource PrimaryButtonStyle}"
+                    <!-- Прогресс разделения -->
+                    <StackPanel Grid.Row="3"
+                                Visibility="{Binding IsSplitting, Converter={StaticResource BoolToVis}}">
+                        <ProgressBar Height="6"
+                                     Value="{Binding SplitProgress}" Maximum="100"
+                                     Background="{StaticResource BorderColorBrush}"
+                                     Foreground="{StaticResource PrimaryBrush}"
+                                     BorderThickness="0"/>
+                        <TextBlock Text="{Binding SplitProgressText}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   HorizontalAlignment="Right"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <Border Grid.Row="4" Height="10"
+                            Visibility="{Binding IsSplitting, Converter={StaticResource BoolToVis}}"/>
+
+                    <Button Grid.Row="5" Style="{StaticResource PrimaryButtonStyle}"
                             Content="Разделить по страницам"
                             HorizontalAlignment="Right"
                             Command="{Binding SplitPdfCommand}"/>
@@ -94,6 +120,8 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="10"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
@@ -127,7 +155,25 @@
                                 Command="{Binding OpenFolderCommand}"/>
                     </Grid>
 
-                    <Button Grid.Row="3" Style="{StaticResource PrimaryButtonStyle}"
+                    <!-- Прогресс рассылки -->
+                    <StackPanel Grid.Row="3"
+                                Visibility="{Binding IsSending, Converter={StaticResource BoolToVis}}">
+                        <ProgressBar Height="6"
+                                     Value="{Binding SendProgress}" Maximum="100"
+                                     Background="{StaticResource BorderColorBrush}"
+                                     Foreground="{StaticResource PrimaryBrush}"
+                                     BorderThickness="0"/>
+                        <TextBlock Text="{Binding SendProgressText}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                   HorizontalAlignment="Right"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <Border Grid.Row="4" Height="10"
+                            Visibility="{Binding IsSending, Converter={StaticResource BoolToVis}}"/>
+
+                    <Button Grid.Row="5" Style="{StaticResource PrimaryButtonStyle}"
                             Content="Разослать квитанции"
                             HorizontalAlignment="Right"
                             Command="{Binding SendReceiptCommand}"/>

@@ -1,0 +1,235 @@
+<Window x:Class="ReceiptMailing.Views.Windows.MailSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        mc:Ignorable="d"
+        Title="{Binding Title}"
+        Width="460" SizeToContent="Height"
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterOwner">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
+
+    <DockPanel>
+
+        <!-- Menu -->
+        <Menu IsMainMenu="True">
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <DockPanel LastChildFill="False"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
+            <MenuItem Header="Файл">
+                <MenuItem Header="Выход" Command="{StaticResource CloseWindowCommand}"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Content -->
+        <Grid Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="12"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="16"/>
+            </Grid.RowDefinitions>
+
+            <!-- Карточка настроек SMTP -->
+            <Border Grid.Row="0" Style="{StaticResource CardBorderStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="12"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="8"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Style="{StaticResource SectionHeaderStyle}"
+                               Text="НАСТРОЙКИ SMTP"/>
+
+                    <!-- Имя отправителя -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Style="{StaticResource FormLabelStyle}"
+                                   VerticalAlignment="Center"
+                                   Text="Имя отправителя"/>
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding DisplayName, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+
+                    <!-- Email отправителя -->
+                    <Grid Grid.Row="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Style="{StaticResource FormLabelStyle}"
+                                   VerticalAlignment="Center"
+                                   Text="Email отправителя"/>
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding From, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+
+                    <!-- Пользователь SMTP -->
+                    <Grid Grid.Row="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Style="{StaticResource FormLabelStyle}"
+                                   VerticalAlignment="Center"
+                                   Text="Пользователь"/>
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+
+                    <!-- Пароль -->
+                    <Grid Grid.Row="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Style="{StaticResource FormLabelStyle}"
+                                   VerticalAlignment="Center"
+                                   Text="Пароль"/>
+
+                        <!-- Контейнер поля пароля (имитирует TextBox) -->
+                        <Border Grid.Column="1"
+                                Height="32"
+                                Background="{StaticResource SurfaceBrush}"
+                                BorderBrush="{StaticResource BorderColorBrush}"
+                                BorderThickness="1"
+                                CornerRadius="0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="32"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Скрытый режим: PasswordBox -->
+                                <PasswordBox x:Name="PasswordInput"
+                                             Grid.Column="0"
+                                             BorderThickness="0"
+                                             Background="Transparent"
+                                             Padding="8,0"
+                                             FontFamily="Segoe UI" FontSize="13"
+                                             PasswordChanged="PasswordInput_PasswordChanged">
+                                    <PasswordBox.Style>
+                                        <Style TargetType="PasswordBox">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPasswordVisible}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </PasswordBox.Style>
+                                </PasswordBox>
+
+                                <!-- Открытый режим: TextBox -->
+                                <TextBox Grid.Column="0"
+                                         BorderThickness="0"
+                                         Background="Transparent"
+                                         Padding="8,0"
+                                         VerticalContentAlignment="Center"
+                                         FontFamily="Segoe UI" FontSize="13"
+                                         Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
+                                         Visibility="{Binding IsPasswordVisible, Converter={StaticResource BoolToVis}}"/>
+
+                                <!-- Кнопка глаза -->
+                                <Button Grid.Column="1"
+                                        ToolTip="Показать / скрыть пароль"
+                                        Foreground="{StaticResource TextSecondaryBrush}"
+                                        Command="{Binding TogglePasswordVisibilityCommand}">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource IconButtonStyle}">
+                                            <Setter Property="fa5:Awesome.Content" Value="Solid_Eye"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPasswordVisible}" Value="True">
+                                                    <Setter Property="fa5:Awesome.Content" Value="Solid_EyeSlash"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- SMTP сервер + Порт -->
+                    <Grid Grid.Row="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Style="{StaticResource FormLabelStyle}"
+                                   VerticalAlignment="Center"
+                                   Text="SMTP сервер"/>
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding Host, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBox Grid.Column="3"
+                                 Text="{Binding Port, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Порт"/>
+                    </Grid>
+
+                    <!-- Разделитель перед чекбоксами -->
+                    <Rectangle Grid.Row="12"
+                               Height="1"
+                               Fill="{StaticResource BorderColorBrush}"
+                               Margin="0,2"/>
+
+                    <!-- Чекбоксы SSL / StartTLS -->
+                    <StackPanel Grid.Row="14" Orientation="Horizontal" Margin="0,4,0,0">
+                        <CheckBox Content="Использовать SSL"
+                                  IsChecked="{Binding UseSsl}"
+                                  Margin="0,0,24,0"/>
+                        <CheckBox Content="Использовать StartTLS"
+                                  IsChecked="{Binding UseStartTls}"/>
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+
+            <!-- Кнопки -->
+            <StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Style="{StaticResource SecondaryButtonStyle}"
+                        Content="Отмена"
+                        Margin="0,0,8,0"
+                        Command="{Binding CancelCommand}"/>
+                <Button Style="{StaticResource PrimaryButtonStyle}"
+                        Content="Сохранить"
+                        Command="{Binding SaveCommand}"/>
+            </StackPanel>
+
+        </Grid>
+    </DockPanel>
+</Window>
