@@ -14,6 +14,9 @@ public interface IUserDialog
     /// <summary>Открыть диалога выбора файла для записи</summary>
     FileInfo? SaveFile(string title, string filter = "Все файлы (*.*)|*.*", string? defaultFilePath = null);
 
+    /// <summary>Открыть диалог выбора папки</summary>
+    string? OpenFolder(string title, string? defaultPath = null);
+
     /// <summary>Диалог с текстовым вопросом и вариантами выбора Yes/No</summary>
     bool YesNoQuestion(string text, string title = "Вопрос...");
 

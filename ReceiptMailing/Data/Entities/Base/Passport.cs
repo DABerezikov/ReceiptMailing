@@ -23,8 +23,8 @@ public class Passport : Entity
         return $"{Series} {Number}";
     }
 
-    public string? GetPassportSeries() => _series;
-    public string? GetPassportNumber() => _number;
+    public string? RevealedSeries => _series;
+    public string? RevealedNumber => _number;
 
     public Passport() { }
 

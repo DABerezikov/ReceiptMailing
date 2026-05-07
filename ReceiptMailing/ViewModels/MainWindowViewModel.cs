@@ -1,49 +1,61 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using ReceiptMailing.Data.Entities;
 using ReceiptMailing.Infrastructure.Commands;
+using ReceiptMailing.Services;
 using ReceiptMailing.Services.Interfaces;
 using ReceiptMailing.Services.Interfaces.Repositories;
 using ReceiptMailing.ViewModels.Base;
 
 namespace ReceiptMailing.ViewModels;
 
-internal class MainWindowViewModel : ViewModel
+internal class MainWindowViewModel(
+    IUserDialog userDialog,
+    IParcelRepository<Parcel> parcel,
+    IRepository<Gardener> gardener)
+    : ViewModel
 {
-    private readonly IUserDialog _userDialog;
-    private readonly IParcelRepository<Parcel> _Parcel;
-    private readonly IRepository<Gardener> _Gardener;
+    static MainWindowViewModel()
+    {
+        // Подписка на событие импорта — перезагружаем список участков
+        DataEvents.ParcelsChanged += async (_, _) =>
+        {
+            if (Application.Current.MainWindow?.DataContext is MainWindowViewModel vm)
+                await vm.OnGetCollectionsCommandExecuted();
+        };
+    }
 
     #region Title : string - Заголовок окна
 
     /// <summary>Заголовок окна</summary>
-    private string _title = "СНТ Тимирязевец";
-
-    /// <summary>Заголовок окна</summary>
-    public string Title { get => _title; set => Set(ref _title, value); }
+    public string Title
+    {
+        get;
+        set => Set(ref field, value);
+    } = "СНТ Тимирязевец";
 
     #endregion
 
     #region Status : string - Статус
 
     /// <summary>Статус</summary>
-    private string _status = "Готов!";
-
-    /// <summary>Статус</summary>
-    public string Status { get => _status; set => Set(ref _status, value); }
+    public string Status
+    {
+        get;
+        set => Set(ref field, value);
+    } = "Готов!";
 
     #endregion
 
     #region ParcelCollection : ObservableCollection<Parcel> - Description
 
-    /// <summary>Коллекция участков</summary>
-    private ObservableCollection<Parcel>? _ParcelCollection;
-
     public ObservableCollection<Parcel>? ParcelCollection
     {
-        get => _ParcelCollection;
-        set => Set(ref _ParcelCollection, value);
+        get;
+        set => Set(ref field, value);
     }
 
     #endregion
@@ -51,13 +63,10 @@ internal class MainWindowViewModel : ViewModel
     #region SelectedParcel : Parcel - Выбранный участок
 
     /// <summary>Выбранный участок</summary>
-    private Parcel? _SelectedParcel;
-
-    /// <summary>Выбранный участок</summary>
     public Parcel? SelectedParcel
     {
-        get => _SelectedParcel;
-        set => Set(ref _SelectedParcel, value);
+        get;
+        set => Set(ref field, value);
     }
 
     #endregion
@@ -65,13 +74,10 @@ internal class MainWindowViewModel : ViewModel
     #region SelectedIndex : int - Выбранный участок
 
     /// <summary>Выбранный участок</summary>
-    private int _SelectedIndex;
-
-    /// <summary>Выбранный участок</summary>
     public int SelectedIndex
     {
-        get => _SelectedIndex;
-        set => Set(ref _SelectedIndex, value);
+        get;
+        set => Set(ref field, value);
     }
 
     #endregion
@@ -92,10 +98,8 @@ internal class MainWindowViewModel : ViewModel
     #region Command GetCollectionsCommand - Команда получения коллекции участков
 
     /// <summary> Команда получения коллекции участков </summary>
-    private ICommand? _GetCollectionsCommand;
-
-    /// <summary> Команда получения коллекции участков </summary>
-    public ICommand GetCollectionsCommand => _GetCollectionsCommand
+    [field: AllowNull, MaybeNull]
+    public ICommand GetCollectionsCommand => field
         ??= new LambdaCommandAsync(OnGetCollectionsCommandExecuted, CanGetCollectionsCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда получения коллекции участков </summary>
@@ -104,8 +108,8 @@ internal class MainWindowViewModel : ViewModel
     /// <summary> Логика выполнения - Команда получения коллекции участков </summary>
     private async Task OnGetCollectionsCommandExecuted()
     {
-        ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
-        GardenerCollection = new ObservableCollection<Gardener>(await _Gardener.GetAll());
+        ParcelCollection = new ObservableCollection<Parcel>(await parcel.GetAll());
+        GardenerCollection = new ObservableCollection<Gardener>(await gardener.GetAll());
     }
 
     #endregion
@@ -113,10 +117,8 @@ internal class MainWindowViewModel : ViewModel
     #region Command EditGardenerCommand - Команда редактирования данных садовода
 
     /// <summary> Команда редактирования данных садовода </summary>
-    private ICommand? _EditGardenerCommand;
-
-    /// <summary> Команда редактирования данных садовода </summary>
-    public ICommand EditGardenerCommand => _EditGardenerCommand
+    [field: AllowNull, MaybeNull]
+    public ICommand EditGardenerCommand => field
         ??= new LambdaCommandAsync(OnEditGardenerCommandExecuted, CanEditGardenerCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда редактирования данных садовода </summary>
@@ -128,11 +130,11 @@ internal class MainWindowViewModel : ViewModel
         var tempGardener = new Gardener();
         var selectedGardener = SelectedParcel.Gardener;
         CopyInfoGardener(selectedGardener, tempGardener);
-        if (!_userDialog.CreateOrEditGardener(tempGardener)) return;
+        if (!userDialog.CreateOrEditGardener(tempGardener)) return;
         CopyInfoGardener(tempGardener, selectedGardener);
-        await _Gardener.Update(selectedGardener);
-        GardenerCollection = new ObservableCollection<Gardener>(await _Gardener.GetAll());
-        ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
+        await gardener.Update(selectedGardener);
+        GardenerCollection = new ObservableCollection<Gardener>(await gardener.GetAll());
+        ParcelCollection = new ObservableCollection<Parcel>(await parcel.GetAll());
     }
 
     #endregion
@@ -156,10 +158,8 @@ internal class MainWindowViewModel : ViewModel
     #region Command AddGardenerCommand - Команда добавления садовода
 
     /// <summary> Команда добавления садовода </summary>
-    private ICommand? _AddGardenerCommand;
-
-    /// <summary> Команда добавления садовода </summary>
-    public ICommand AddGardenerCommand => _AddGardenerCommand
+    [field: AllowNull, MaybeNull]
+    public ICommand AddGardenerCommand => field
         ??= new LambdaCommandAsync(OnAddGardenerCommandExecuted, CanAddGardenerCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда добавления садовода </summary>
@@ -169,10 +169,10 @@ internal class MainWindowViewModel : ViewModel
     private async Task OnAddGardenerCommandExecuted()
     {
         var tempGardener = new Gardener();
-        if (!_userDialog.CreateOrEditGardener(tempGardener)) return;
-        await _Gardener.Add(tempGardener);
-        GardenerCollection = new ObservableCollection<Gardener>(await _Gardener.GetAll());
-        ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
+        if (!userDialog.CreateOrEditGardener(tempGardener)) return;
+        await gardener.Add(tempGardener);
+        GardenerCollection = new ObservableCollection<Gardener>(await gardener.GetAll());
+        ParcelCollection = new ObservableCollection<Parcel>(await parcel.GetAll());
     }
 
     #endregion
@@ -180,10 +180,8 @@ internal class MainWindowViewModel : ViewModel
     #region Command DeleteGardenerCommand - Команда удаления садовода
 
     /// <summary> Команда удаления садовода </summary>
-    private ICommand? _DeleteGardenerCommand;
-
-    /// <summary> Команда удаления садовода </summary>
-    public ICommand DeleteGardenerCommand => _DeleteGardenerCommand
+    [field: AllowNull, MaybeNull]
+    public ICommand DeleteGardenerCommand => field
         ??= new LambdaCommandAsync(OnDeleteGardenerCommandExecuted, CanDeleteGardenerCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда удаления садовода </summary>
@@ -194,10 +192,10 @@ internal class MainWindowViewModel : ViewModel
     {
         var g = SelectedParcel!.Gardener;
         var question = $"Вы действительно хотите удалить садовода {g?.SurName} {g?.Name} {g?.Patronymic}?";
-        if (!_userDialog.OkCancelQuestion(question, "Запрос на удаление садовода")) return;
-        await _Gardener.Delete(SelectedParcel.Gardener);
-        GardenerCollection = new ObservableCollection<Gardener>(await _Gardener.GetAll());
-        ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
+        if (!userDialog.OkCancelQuestion(question, "Запрос на удаление садовода")) return;
+        await gardener.Delete(SelectedParcel.Gardener);
+        GardenerCollection = new ObservableCollection<Gardener>(await gardener.GetAll());
+        ParcelCollection = new ObservableCollection<Parcel>(await parcel.GetAll());
     }
 
     #endregion
@@ -205,10 +203,8 @@ internal class MainWindowViewModel : ViewModel
     #region Command EditParcelCommand - Команда редактирования данных садовода
 
     /// <summary> Команда редактирования данных садовода </summary>
-    private ICommand? _EditParcelCommand;
-
-    /// <summary> Команда редактирования данных садовода </summary>
-    public ICommand EditParcelCommand => _EditParcelCommand
+    [field: AllowNull, MaybeNull]
+    public ICommand EditParcelCommand => field
         ??= new LambdaCommandAsync(OnEditParcelCommandExecuted, CanEditParcelCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда редактирования данных садовода </summary>
@@ -220,10 +216,10 @@ internal class MainWindowViewModel : ViewModel
         var tempParcel = new Parcel();
         var selectedParcel = SelectedParcel;
         CopyInfoParcel(selectedParcel, tempParcel);
-        if (!_userDialog.CreateOrEditParcel(tempParcel, _Gardener)) return;
+        if (!userDialog.CreateOrEditParcel(tempParcel, gardener)) return;
         CopyInfoParcel(tempParcel, selectedParcel);
-        await _Parcel.Update(selectedParcel);
-        ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
+        await parcel.Update(selectedParcel);
+        ParcelCollection = new ObservableCollection<Parcel>(await parcel.GetAll());
     }
 
     #endregion
@@ -231,10 +227,8 @@ internal class MainWindowViewModel : ViewModel
     #region Command AddParcelCommand - Команда добавления участка
 
     /// <summary> Команда добавления участка </summary>
-    private ICommand? _AddParcelCommand;
-
-    /// <summary> Команда добавления участка </summary>
-    public ICommand AddParcelCommand => _AddParcelCommand
+    [field: AllowNull, MaybeNull]
+    public ICommand AddParcelCommand => field
         ??= new LambdaCommandAsync(OnAddParcelCommandExecuted, CanAddParcelCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда добавления участка </summary>
@@ -244,9 +238,9 @@ internal class MainWindowViewModel : ViewModel
     private async Task OnAddParcelCommandExecuted()
     {
         var newParcel = new Parcel();
-        if (!_userDialog.CreateOrEditParcel(newParcel, _Gardener)) return;
-        await _Parcel.Add(newParcel);
-        ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
+        if (!userDialog.CreateOrEditParcel(newParcel, gardener)) return;
+        await parcel.Add(newParcel);
+        ParcelCollection = new ObservableCollection<Parcel>(await parcel.GetAll());
     }
 
     #endregion
@@ -254,10 +248,8 @@ internal class MainWindowViewModel : ViewModel
     #region Command DeleteParcelCommand - Команда удаления участка
 
     /// <summary> Команда удаления участка </summary>
-    private ICommand? _DeleteParcelCommand;
-
-    /// <summary> Команда удаления участка </summary>
-    public ICommand DeleteParcelCommand => _DeleteParcelCommand
+    [field: AllowNull, MaybeNull]
+    public ICommand DeleteParcelCommand => field
         ??= new LambdaCommandAsync(OnDeleteParcelCommandExecuted, CanDeleteParcelCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда удаления участка </summary>
@@ -268,9 +260,9 @@ internal class MainWindowViewModel : ViewModel
     {
         var question = $"Вы действительно хотите удалить участок №{SelectedParcel.Number}" +
                        $" ({SelectedParcel.Street})?";
-        if (!_userDialog.OkCancelQuestion(question, "Запрос на удаление участка")) return;
-        await _Parcel.Delete(SelectedParcel);
-        ParcelCollection = new ObservableCollection<Parcel>(await _Parcel.GetAll());
+        if (!userDialog.OkCancelQuestion(question, "Запрос на удаление участка")) return;
+        await parcel.Delete(SelectedParcel);
+        ParcelCollection = new ObservableCollection<Parcel>(await parcel.GetAll());
     }
 
     #endregion
@@ -290,15 +282,5 @@ internal class MainWindowViewModel : ViewModel
         destinationParcel.Street = sourceParcel.Street;
         destinationParcel.Id = sourceParcel.Id;
         destinationParcel.Number = sourceParcel.Number;
-    }
-
-    public MainWindowViewModel(
-        IUserDialog userDialog,
-        IParcelRepository<Parcel> parcel,
-        IRepository<Gardener> gardener)
-    {
-        _userDialog = userDialog;
-        _Parcel = parcel;
-        _Gardener = gardener;
     }
 }

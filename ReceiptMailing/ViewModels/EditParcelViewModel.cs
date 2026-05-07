@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,17 +25,15 @@ internal class EditParcelViewModel : ViewModel
     #region Title : string - Заголовок окна
 
     /// <summary>Заголовок окна</summary>
-    private string _title = "Добавление/редактирование участка";
-
-    /// <summary>Заголовок окна</summary>
-    public string Title { get => _title; set => Set(ref _title, value); }
+    public string Title
+    {
+        get;
+        set => Set(ref field, value);
+    } = "Добавление/редактирование участка";
 
     #endregion
 
     #region Street : string - Улица участка
-
-    /// <summary>Улица участка</summary>
-    private string? _Street;
 
     /// <summary>Улица участка</summary>
     public string? Street
@@ -42,7 +41,7 @@ internal class EditParcelViewModel : ViewModel
         get => _Parcel.Street;
         set
         {
-            Set(ref _Street, value);
+            Set(ref field, value);
             _Parcel.Street = value;
         }
     }
@@ -52,15 +51,12 @@ internal class EditParcelViewModel : ViewModel
     #region Number : string - Номер участка
 
     /// <summary>Номер участка</summary>
-    private string? _Number;
-
-    /// <summary>Номер участка</summary>
     public string? Number
     {
         get => _Parcel.Number;
         set
         {
-            Set(ref _Number, value);
+            Set(ref field, value);
             _Parcel.Number = value ?? string.Empty;
         }
     }
@@ -70,15 +66,12 @@ internal class EditParcelViewModel : ViewModel
     #region PlotArea : string - Площадь участка
 
     /// <summary>Площадь участка</summary>
-    private string? _PlotArea;
-
-    /// <summary>Площадь участка</summary>
     public string? PlotArea
     {
         get => _Parcel.PlotArea.ToString(CultureInfo.CurrentCulture);
         set
         {
-            Set(ref _PlotArea, value);
+            Set(ref field, value);
             double.TryParse(value, out var result);
             _Parcel.PlotArea = result;
         }
@@ -89,15 +82,12 @@ internal class EditParcelViewModel : ViewModel
     #region CadastralNumber : string - кадастровый номер участка
 
     /// <summary>кадастровый номер участка</summary>
-    private string? _CadastralNumber;
-
-    /// <summary>кадастровый номер участка</summary>
     public string? CadastralNumber
     {
         get => _Parcel.CadastralNumber;
         set
         {
-            Set(ref _CadastralNumber, value);
+            Set(ref field, value);
             _Parcel.CadastralNumber = value;
         }
     }
@@ -107,15 +97,12 @@ internal class EditParcelViewModel : ViewModel
     #region Details : string - Реквизиты правоустанавливающего документа участка
 
     /// <summary>Реквизиты правоустанавливающего документа участка</summary>
-    private string? _Details;
-
-    /// <summary>Реквизиты правоустанавливающего документа участка</summary>
     public string? Details
     {
         get => _Parcel.Details;
         set
         {
-            Set(ref _Details, value);
+            Set(ref field, value);
             _Parcel.Details = value;
         }
     }
@@ -125,15 +112,12 @@ internal class EditParcelViewModel : ViewModel
     #region HouseNumber : string - Номер дома по внутренней нумерации СНТ
 
     /// <summary>Номер дома по внутренней нумерации СНТ</summary>
-    private string? _HouseNumber;
-
-    /// <summary>Номер дома по внутренней нумерации СНТ</summary>
     public string? HouseNumber
     {
         get => _Parcel.HouseNumber;
         set
         {
-            Set(ref _HouseNumber, value);
+            Set(ref field, value);
             _Parcel.HouseNumber = value;
         }
     }
@@ -143,15 +127,12 @@ internal class EditParcelViewModel : ViewModel
     #region Category : string - Категория участка
 
     /// <summary>Категория участка</summary>
-    private string? _Category;
-
-    /// <summary>Категория участка</summary>
     public string? Category
     {
         get => _Parcel.Category;
         set
         {
-            Set(ref _Category, value);
+            Set(ref field, value);
             _Parcel.Category = value;
         }
     }
@@ -161,15 +142,12 @@ internal class EditParcelViewModel : ViewModel
     #region Status : string - Статус участка
 
     /// <summary>Статус участка</summary>
-    private string? _Status;
-
-    /// <summary>Статус участка</summary>
     public string? Status
     {
         get => _Parcel.Status;
         set
         {
-            Set(ref _Status, value);
+            Set(ref field, value);
             _Parcel.Status = value;
         }
     }
@@ -179,15 +157,12 @@ internal class EditParcelViewModel : ViewModel
     #region Description : string - Примечание
 
     /// <summary>Примечание</summary>
-    private string? _Description;
-
-    /// <summary>Примечание</summary>
     public string? Description
     {
         get => _Parcel.Description;
         set
         {
-            Set(ref _Description, value);
+            Set(ref field, value);
             _Parcel.Description = value;
         }
     }
@@ -197,15 +172,12 @@ internal class EditParcelViewModel : ViewModel
     #region HavingHouse : bool- Наличие дома
 
     /// <summary>Наличие дома</summary>
-    private bool _HavingHouse;
-
-    /// <summary>Наличие дома</summary>
     public bool HavingHouse
     {
         get => _Parcel.HavingHouse;
         set
         {
-            Set(ref _HavingHouse, value);
+            Set(ref field, value);
             _Parcel.HavingHouse = value;
         }
     }
@@ -215,17 +187,12 @@ internal class EditParcelViewModel : ViewModel
     #region Electrification : bool- Наличие электричества на участке
 
     /// <summary>Наличие электричества на участке</summary>
-    private bool _Electrification;
-
-   
-
-    /// <summary>Наличие электричества на участке</summary>
     public bool Electrification
     {
         get => _Parcel.Electrification;
         set
         {
-            Set(ref _Electrification, value);
+            Set(ref field, value);
             _Parcel.Electrification = value;
         }
     }
@@ -235,15 +202,10 @@ internal class EditParcelViewModel : ViewModel
     #region GardenerFilter : string- Фильтр садоводов
 
     /// <summary>Фильтр садоводов</summary>
-    private string? _GardenerFilter;
-
-
-
-    /// <summary>Фильтр садоводов</summary>
     public string? GardenerFilter
     {
-        get => _GardenerFilter;
-        set => Set(ref _GardenerFilter, value);
+        get;
+        set => Set(ref field, value);
     }
 
     #endregion
@@ -251,19 +213,10 @@ internal class EditParcelViewModel : ViewModel
     #region GardenerIndex : int - Фильтр садоводов
 
     /// <summary>Фильтр садоводов</summary>
-    private int _GardenerIndex;
-
-
-
-    /// <summary>Фильтр садоводов</summary>
     public int GardenerIndex
     {
-        get => _GardenerIndex;
-        set
-        {
-            Set(ref _GardenerIndex, value);
-           
-        }
+        get;
+        set { Set(ref field, value); }
     }
 
     #endregion
@@ -301,16 +254,13 @@ internal class EditParcelViewModel : ViewModel
     #region SurName : string - Фамилия садовода
 
     /// <summary>Фамилия садовода</summary>
-    private string? _SurName;
-
-    /// <summary>Фамилия садовода</summary>
     public string? SurName
     {
         get => _Gardener.SurName;
         set
         {
             _Gardener.SurName = value;
-            Set(ref _SurName, value);
+            Set(ref field, value);
         }
     }
 
@@ -319,16 +269,13 @@ internal class EditParcelViewModel : ViewModel
     #region Name : string - Имя садовода
 
     /// <summary>Имя садовода</summary>
-    private string? _Name;
-
-    /// <summary>Имя садовода</summary>
     public string? Name
     {
         get => _Gardener.Name;
         set
         {
             _Gardener.Name = value;
-            Set(ref _Name, value);
+            Set(ref field, value);
         }
     }
 
@@ -337,16 +284,13 @@ internal class EditParcelViewModel : ViewModel
     #region Patronymic : string - Отчество садовода
 
     /// <summary>Отчество садовода</summary>
-    private string? _Patronymic;
-
-    /// <summary>Отчество садовода</summary>
     public string? Patronymic
     {
         get => _Gardener.Patronymic;
         set
         {
             _Gardener.Patronymic = value;
-            Set(ref _Patronymic, value);
+            Set(ref field, value);
         }
     }
 
@@ -356,16 +300,13 @@ internal class EditParcelViewModel : ViewModel
     #region PhoneNumber : string - Номер телефона садовода
 
     /// <summary>Номер телефона садовода</summary>
-    private string? _PhoneNumber;
-
-    /// <summary>Номер телефона садовода</summary>
     public string? PhoneNumber
     {
         get => _Gardener.PhoneNumber;
         set
         {
             _Gardener.PhoneNumber = value;
-            Set(ref _PhoneNumber, value);
+            Set(ref field, value);
         }
     }
 
@@ -374,16 +315,13 @@ internal class EditParcelViewModel : ViewModel
     #region FirstEmailAddress : string - Адрес основной электронной почты садовода
 
     /// <summary>Адрес основной электронной почты садовода</summary>
-    private string? _FirstEmailAddress;
-
-    /// <summary>Адрес основной электронной почты садовода</summary>
     public string? FirstEmailAddress
     {
         get => _Gardener.FirstEmailAddress;
         set
         {
             _Gardener.FirstEmailAddress = value;
-            Set(ref _FirstEmailAddress, value);
+            Set(ref field, value);
         }
     }
 
@@ -392,16 +330,13 @@ internal class EditParcelViewModel : ViewModel
     #region SecondEmailAddress : string - Адрес дополнительной электронной почты садовода
 
     /// <summary>Адрес дополнительной электронной почты садовода</summary>
-    private string? _SecondEmailAddress;
-
-    /// <summary>Адрес дополнительной электронной почты садовода</summary>
     public string? SecondEmailAddress
     {
         get => _Gardener.SecondEmailAddress;
         set
         {
             _Gardener.SecondEmailAddress = value;
-            Set(ref _SecondEmailAddress, value);
+            Set(ref field, value);
         }
     }
 
@@ -410,16 +345,13 @@ internal class EditParcelViewModel : ViewModel
     #region Account : string - Лицевой счет садовода
 
     /// <summary>Лицевой счет садовода</summary>
-    private string? _Account;
-
-    /// <summary>Лицевой счет садовода</summary>
     public string? Account
     {
         get => _Gardener.Account;
         set
         {
             _Gardener.Account = value ?? string.Empty;
-            Set(ref _Account, value);
+            Set(ref field, value);
         }
     }
 
@@ -428,21 +360,20 @@ internal class EditParcelViewModel : ViewModel
     #region Command AcceptCommand - Команда приравнивания адресов проживания и прописки
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    private ICommand? _AcceptCommand;
-
-    /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    public ICommand AcceptCommand => _AcceptCommand
+    [field: AllowNull, MaybeNull]
+    public ICommand AcceptCommand => field
         ??= new LambdaCommandAsync(OnAcceptCommandExecuted, CanAcceptCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда приравнивания адресов проживания и прописки </summary>
     private bool CanAcceptCommandExecute(object? p) => true;
 
     /// <summary> Логика выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private async Task OnAcceptCommandExecuted(object? p)
+    private Task OnAcceptCommandExecuted(object? p)
     {
         if (ReferenceEquals(_Gardener, NoGardener))
             _Parcel.Gardener = null;
         ((Window)p!).DialogResult = true;
+        return Task.CompletedTask;
     }
 
     #endregion
@@ -450,19 +381,18 @@ internal class EditParcelViewModel : ViewModel
     #region Command CancelCommand - Команда приравнивания адресов проживания и прописки
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    private ICommand? _CancelCommand;
-
-    /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    public ICommand CancelCommand => _CancelCommand
+    [field: AllowNull, MaybeNull]
+    public ICommand CancelCommand => field
         ??= new LambdaCommandAsync(OnCancelCommandExecuted, CanCancelCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда приравнивания адресов проживания и прописки </summary>
     private bool CanCancelCommandExecute(object? p) => true;
 
     /// <summary> Логика выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private async Task OnCancelCommandExecuted(object? p)
+    private Task OnCancelCommandExecuted(object? p)
     {
         ((Window)p!).DialogResult = false;
+        return Task.CompletedTask;
     }
 
     #endregion

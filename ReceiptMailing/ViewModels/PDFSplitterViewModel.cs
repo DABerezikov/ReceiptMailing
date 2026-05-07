@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -139,6 +140,25 @@ internal class PdfSplitterViewModel(
 
     #endregion
 
+    #region Command OpenFolderCommand - Команда выбора папки с квитанциями
+
+    /// <summary> Команда выбора папки с разделёнными квитанциями </summary>
+    [field: AllowNull, MaybeNull]
+    public ICommand OpenFolderCommand => field
+        ??= new LambdaCommand(OnOpenFolderCommandExecuted);
+
+    /// <summary> Логика выполнения - выбор папки с квитанциями </summary>
+    private void OnOpenFolderCommandExecuted()
+    {
+        var path = userDialog.OpenFolder(
+            "Выбор папки с разделёнными квитанциями",
+            SplitFilePath);
+        if (path is null) return;
+        SplitFilePath = path;
+    }
+
+    #endregion
+
     #region Command SplitPDFCommand - Команда разделения файла квитанций
 
     /// <summary> Команда разделения файла квитанций </summary>
@@ -178,6 +198,7 @@ internal class PdfSplitterViewModel(
     #region Command SendReceiptCommand - Команда разделения файла квитанций
 
     /// <summary> Команда разделения файла квитанций </summary>
+    [field: AllowNull, MaybeNull]
     public ICommand SendReceiptCommand => field
         ??= new LambdaCommandAsync(OnSendReceiptCommandExecuted, CanSendReceiptCommandExecute);
 

@@ -1,0 +1,362 @@
+<Window x:Class="ReceiptMailing.Views.Windows.GardenersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        mc:Ignorable="d"
+        Title="{Binding Title}"
+        Width="1100" Height="650"
+        MinWidth="800" MinHeight="450"
+        WindowStartupLocation="CenterOwner">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadGardenersCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <DockPanel>
+
+        <!-- Toolbar -->
+        <Border DockPanel.Dock="Bottom"
+                Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderColorBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="12,7">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Садоводы"
+                           VerticalAlignment="Center"
+                           Margin="0,0,10,0"
+                           FontSize="11" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
+                <Button Style="{StaticResource AddButtonStyle}"
+                        Content="+ Добавить"
+                        Command="{Binding AddGardenerCommand}"/>
+                <Button Style="{StaticResource EditButtonStyle}"
+                        Content="Редактировать"
+                        Command="{Binding EditGardenerCommand}"/>
+                <Button Style="{StaticResource DeleteButtonStyle}"
+                        Content="Удалить"
+                        Command="{Binding DeleteGardenerCommand}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- DataGrid -->
+        <Grid Margin="8,8,8,0">
+            <DataGrid ItemsSource="{Binding GardenerCollection}"
+                      SelectedItem="{Binding SelectedGardener}"
+                      IsReadOnly="True"
+                      RowDetailsVisibilityMode="VisibleWhenSelected">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="2.5*" Header="Фамилия"
+                                        Binding="{Binding SurName}"
+                                        ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                    <DataGridTextColumn Width="2*"   Header="Имя"
+                                        Binding="{Binding Name}"
+                                        ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                    <DataGridTextColumn Width="2.5*" Header="Отчество"
+                                        Binding="{Binding Patronymic}"
+                                        ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                    <DataGridTextColumn Width="1.5*" Header="Лицевой счёт"
+                                        Binding="{Binding Account}"
+                                        ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                    <DataGridTextColumn Width="3*"   Header="Основной Email"
+                                        Binding="{Binding FirstEmailAddress}"
+                                        ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                    <DataGridTextColumn Width="3*"   Header="Дополнительный Email"
+                                        Binding="{Binding SecondEmailAddress}"
+                                        ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                    <DataGridTextColumn Width="2*"   Header="Телефон"
+                                        Binding="{Binding PhoneNumber}"
+                                        ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                    <DataGridTextColumn Width="2.5*" Header="Документ о приёме"
+                                        Binding="{Binding Document}"
+                                        ElementStyle="{StaticResource DataGridCenterCellStyle}"/>
+                </DataGrid.Columns>
+
+                <!-- Раскрывающаяся панель при выборе строки -->
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <Border Background="{StaticResource SurfaceSecondaryBrush}"
+                                BorderBrush="{StaticResource BorderColorBrush}"
+                                BorderThickness="0,1,0,1"
+                                Padding="10,10,10,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="220"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- ===== ПАСПОРТ ===== -->
+                                <Border Grid.Column="0" Style="{StaticResource CardBorderStyle}">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Заголовок + кнопка глаза -->
+                                        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                                                    Orientation="Horizontal" Margin="0,0,0,8">
+                                            <TextBlock Style="{StaticResource SectionHeaderStyle}"
+                                                       Text="ПАСПОРТ"
+                                                       Margin="0,0,6,0"
+                                                       VerticalAlignment="Center"/>
+                                            <Button ToolTip="Показать / скрыть паспортные данные"
+                                                    Foreground="{StaticResource TextSecondaryBrush}"
+                                                    Command="{Binding DataContext.TogglePassportVisibilityCommand,
+                                                              RelativeSource={RelativeSource AncestorType=Window}}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource IconButtonStyle}">
+                                                        <Setter Property="fa5:Awesome.Content" Value="Solid_Eye"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding DataContext.IsPassportVisible,
+                                                                         RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                         Value="True">
+                                                                <Setter Property="fa5:Awesome.Content" Value="Solid_EyeSlash"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </StackPanel>
+
+                                        <!-- Серия -->
+                                        <StackPanel Grid.Row="1" Grid.Column="0">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Серия"/>
+                                            <!-- Маскированное значение -->
+                                            <TextBlock Text="{Binding Passport.Series}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding DataContext.IsPassportVisible,
+                                                                         RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                         Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <!-- Реальное значение -->
+                                            <TextBlock Text="{Binding Passport.RevealedSeries}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                                       Visibility="{Binding DataContext.IsPassportVisible,
+                                                                    RelativeSource={RelativeSource AncestorType=Window},
+                                                                    Converter={StaticResource BoolToVis}}"/>
+                                        </StackPanel>
+
+                                        <!-- Номер -->
+                                        <StackPanel Grid.Row="1" Grid.Column="2">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Номер"/>
+                                            <!-- Маскированное значение -->
+                                            <TextBlock Text="{Binding Passport.Number}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding DataContext.IsPassportVisible,
+                                                                         RelativeSource={RelativeSource AncestorType=Window}}"
+                                                                         Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <!-- Реальное значение -->
+                                            <TextBlock Text="{Binding Passport.RevealedNumber}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"
+                                                       Visibility="{Binding DataContext.IsPassportVisible,
+                                                                    RelativeSource={RelativeSource AncestorType=Window},
+                                                                    Converter={StaticResource BoolToVis}}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- ===== АДРЕС ПРОЖИВАНИЯ ===== -->
+                                <Border Grid.Column="2" Style="{StaticResource CardBorderStyle}">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="8"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="7"
+                                                   Style="{StaticResource SectionHeaderStyle}"
+                                                   Text="АДРЕС ПРОЖИВАНИЯ"/>
+
+                                        <!-- Строка 1 -->
+                                        <StackPanel Grid.Row="1" Grid.Column="0">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Индекс"/>
+                                            <TextBlock Text="{Binding Address.PostalCode}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" Grid.Column="2">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Область"/>
+                                            <TextBlock Text="{Binding Address.Province}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" Grid.Column="4">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Округ / Район"/>
+                                            <TextBlock Text="{Binding Address.Region}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" Grid.Column="6">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Нас. пункт"/>
+                                            <TextBlock Text="{Binding Address.City}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+
+                                        <!-- Строка 2 -->
+                                        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Улица"/>
+                                            <TextBlock Text="{Binding Address.Street}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="3" Grid.Column="4">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Дом"/>
+                                            <TextBlock Text="{Binding Address.House}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="3" Grid.Column="6">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Корпус / Кв."/>
+                                            <TextBlock FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} / {1}">
+                                                        <Binding Path="Address.Building"/>
+                                                        <Binding Path="Address.Room"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- ===== АДРЕС ПРОПИСКИ ===== -->
+                                <Border Grid.Column="4" Style="{StaticResource CardBorderStyle}">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="8"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="8"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="7"
+                                                   Style="{StaticResource SectionHeaderStyle}"
+                                                   Text="АДРЕС ПРОПИСКИ"/>
+
+                                        <!-- Строка 1 -->
+                                        <StackPanel Grid.Row="1" Grid.Column="0">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Индекс"/>
+                                            <TextBlock Text="{Binding PostAddress.PostalCode}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" Grid.Column="2">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Область"/>
+                                            <TextBlock Text="{Binding PostAddress.Province}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" Grid.Column="4">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Округ / Район"/>
+                                            <TextBlock Text="{Binding PostAddress.Region}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="1" Grid.Column="6">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Нас. пункт"/>
+                                            <TextBlock Text="{Binding PostAddress.City}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+
+                                        <!-- Строка 2 -->
+                                        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Улица"/>
+                                            <TextBlock Text="{Binding PostAddress.Street}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="3" Grid.Column="4">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Дом"/>
+                                            <TextBlock Text="{Binding PostAddress.House}"
+                                                       FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Row="3" Grid.Column="6">
+                                            <TextBlock Style="{StaticResource FormLabelStyle}" Text="Корпус / Кв."/>
+                                            <TextBlock FontFamily="Segoe UI" FontSize="13"
+                                                       Foreground="{StaticResource TextPrimaryBrush}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0} / {1}">
+                                                        <Binding Path="PostAddress.Building"/>
+                                                        <Binding Path="PostAddress.Room"/>
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+
+            </DataGrid>
+        </Grid>
+
+    </DockPanel>
+</Window>

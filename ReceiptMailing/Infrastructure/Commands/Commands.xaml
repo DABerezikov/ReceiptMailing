@@ -6,5 +6,7 @@
     <l:ImportDbCommand x:Key="ImportDbCommand"/>
     <l:PdfSplitterCommand x:Key="PdfSplitterCommand"/>
     <l:MailSettingsCommand x:Key="MailSettingsCommand"/>
+    <l:GardenersWindowCommand x:Key="GardenersWindowCommand"/>
+    <l:ExportDbCommand x:Key="ExportDbCommand"/>
 
 </ResourceDictionary>

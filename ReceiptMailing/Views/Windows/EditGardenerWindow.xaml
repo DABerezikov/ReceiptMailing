@@ -3,12 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" mc:Ignorable="d"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
         Title="{Binding Title}"
         SizeToContent="Height"
         Width="860"
         MinWidth="700"
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterOwner">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
 
     <Grid Margin="12">
         <Grid.RowDefinitions>
@@ -73,16 +78,38 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
-                               Style="{StaticResource SectionHeaderStyle}" Text="ПАСПОРТ"/>
+                    <!-- Заголовок + глаз -->
+                    <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                                Orientation="Horizontal" Margin="0,0,0,8">
+                        <TextBlock Style="{StaticResource SectionHeaderStyle}"
+                                   Text="ПАСПОРТ"
+                                   Margin="0,0,6,0"
+                                   VerticalAlignment="Center"/>
+                        <Button ToolTip="Показать / скрыть паспортные данные"
+                                Foreground="{StaticResource TextSecondaryBrush}"
+                                Command="{Binding TogglePassportVisibilityCommand}">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource IconButtonStyle}">
+                                    <Setter Property="fa5:Awesome.Content" Value="Solid_Eye"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsPassportVisible}" Value="True">
+                                            <Setter Property="fa5:Awesome.Content" Value="Solid_EyeSlash"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
 
                     <StackPanel Grid.Row="1" Grid.Column="0">
                         <TextBlock Style="{StaticResource FormLabelStyle}" Text="Серия"/>
-                        <TextBox Text="{Binding PassportSeries}"/>
+                        <TextBox Text="{Binding PassportSeries, UpdateSourceTrigger=PropertyChanged}"
+                                 IsReadOnly="{Binding IsPassportReadOnly}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="2">
                         <TextBlock Style="{StaticResource FormLabelStyle}" Text="Номер"/>
-                        <TextBox Text="{Binding PassportNumber}"/>
+                        <TextBox Text="{Binding PassportNumber, UpdateSourceTrigger=PropertyChanged}"
+                                 IsReadOnly="{Binding IsPassportReadOnly}"/>
                     </StackPanel>
                 </Grid>
             </Border>

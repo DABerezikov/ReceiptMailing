@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +16,8 @@ namespace ReceiptMailing;
 
 public partial class App
 {
-    private static IHost? _host;
-
-    public static IHost Host => _host ??= Program
+    [field: AllowNull, MaybeNull]
+    public static IHost Host => field ??= Program
         .CreateHostBuilder(Environment.GetCommandLineArgs())
         .ConfigureAppConfiguration(cfg => cfg.AddJsonFile("appsettings.json", true, true))
         .Build();

@@ -1,4 +1,5 @@
-﻿using ReceiptMailing.Data.Entities;
+﻿using System.Diagnostics.CodeAnalysis;
+using ReceiptMailing.Data.Entities;
 using ReceiptMailing.Infrastructure.Commands;
 using ReceiptMailing.ViewModels.Base;
 using System.Threading.Tasks;
@@ -7,33 +8,29 @@ using System.Windows.Input;
 
 namespace ReceiptMailing.ViewModels;
 
-internal class EditGardenerViewModel:ViewModel
+internal class EditGardenerViewModel(Gardener gardener) : ViewModel
 {
-    private readonly Gardener _Gardener;
-
     #region Title : string - Заголовок окна
 
     /// <summary>Заголовок окна</summary>
-    private string _title = "Добавление/редактирование садовода";
-
-    /// <summary>Заголовок окна</summary>
-    public string Title { get => _title; set => Set(ref _title, value); }
+    public string Title
+    {
+        get;
+        set => Set(ref field, value);
+    } = "Добавление/редактирование садовода";
 
     #endregion
 
     #region SurName : string - Фамилия садовода
 
     /// <summary>Фамилия садовода</summary>
-    private string? _SurName;
-
-    /// <summary>Фамилия садовода</summary>
     public string? SurName
     {
-        get => _Gardener.SurName;
+        get => gardener.SurName;
         set
         {
-            _Gardener.SurName = value;
-            Set(ref _SurName, value);
+            gardener.SurName = value;
+            Set(ref field, value);
         }
     }
 
@@ -42,16 +39,13 @@ internal class EditGardenerViewModel:ViewModel
     #region Name : string - Имя садовода
 
     /// <summary>Имя садовода</summary>
-    private string? _Name;
-
-    /// <summary>Имя садовода</summary>
     public string? Name
     {
-        get => _Gardener.Name;
+        get => gardener.Name;
         set
         {
-            _Gardener.Name = value;
-            Set(ref _Name, value);
+            gardener.Name = value;
+            Set(ref field, value);
         }
     }
 
@@ -60,52 +54,76 @@ internal class EditGardenerViewModel:ViewModel
     #region Patronymic : string - Отчество садовода
 
     /// <summary>Отчество садовода</summary>
-    private string? _Patronymic;
-
-    /// <summary>Отчество садовода</summary>
     public string? Patronymic
     {
-        get => _Gardener.Patronymic;
+        get => gardener.Patronymic;
         set
         {
-            _Gardener.Patronymic = value;
-            Set(ref _Patronymic, value);
+            gardener.Patronymic = value;
+            Set(ref field, value);
         }
     }
 
     #endregion
     
-    #region PassportSeries : string - Серия паспорта садовода
+    #region IsPassportVisible : bool - Видимость паспортных данных
 
-    /// <summary>Серия паспорта садовода</summary>
-    private string? _PassportSeries;
+    private bool _IsPassportVisible;
+
+    public bool IsPassportVisible
+    {
+        get => _IsPassportVisible;
+        set
+        {
+            if (!Set(ref _IsPassportVisible, value)) return;
+            OnPropertyChanged(nameof(PassportSeries));
+            OnPropertyChanged(nameof(PassportNumber));
+            OnPropertyChanged(nameof(IsPassportReadOnly));
+        }
+    }
+
+    /// <summary>Поля паспорта доступны только для чтения пока скрыты</summary>
+    public bool IsPassportReadOnly => !_IsPassportVisible;
+
+    #endregion
+
+    #region Command TogglePassportVisibilityCommand
+
+    [field: AllowNull, MaybeNull]
+    public ICommand TogglePassportVisibilityCommand => field
+        ??= new LambdaCommand(() => IsPassportVisible = !IsPassportVisible);
+
+    #endregion
+
+    #region PassportSeries : string - Серия паспорта садовода
 
     /// <summary>Серия паспорта садовода</summary>
     public string? PassportSeries
     {
-        get => _Gardener.Passport.Series;
+        get => _IsPassportVisible
+            ? gardener.Passport.RevealedSeries
+            : gardener.Passport.Series;
         set
         {
-            _Gardener.Passport.Series = value;
-            Set(ref _PassportSeries, value);
+            gardener.Passport.Series = value;
+            Set(ref field, value);
         }
     }
 
     #endregion
-    
-    #region PassportNumber : string - Номер паспорта садовода
 
-    /// <summary>Номер паспорта садовода</summary>
-    private string? _PassportNumber;
+    #region PassportNumber : string - Номер паспорта садовода
 
     /// <summary>Номер паспорта садовода</summary>
     public string? PassportNumber
     {
-        get => _Gardener.Passport.Number;
+        get => _IsPassportVisible
+            ? gardener.Passport.RevealedNumber
+            : gardener.Passport.Number;
         set
         {
-            _Gardener.Passport.Number = value;
-            Set(ref _PassportNumber, value);
+            gardener.Passport.Number = value;
+            Set(ref field, value);
         }
     }
 
@@ -114,16 +132,13 @@ internal class EditGardenerViewModel:ViewModel
     #region PhoneNumber : string - Номер телефона садовода
 
     /// <summary>Номер телефона садовода</summary>
-    private string? _PhoneNumber;
-
-    /// <summary>Номер телефона садовода</summary>
     public string? PhoneNumber
     {
-        get => _Gardener.PhoneNumber;
+        get => gardener.PhoneNumber;
         set
         {
-            _Gardener.PhoneNumber = value;
-            Set(ref _PhoneNumber, value);
+            gardener.PhoneNumber = value;
+            Set(ref field, value);
         }
     }
 
@@ -132,16 +147,13 @@ internal class EditGardenerViewModel:ViewModel
     #region FirstEmailAddress : string - Адрес основной электронной почты садовода
 
     /// <summary>Адрес основной электронной почты садовода</summary>
-    private string? _FirstEmailAddress;
-
-    /// <summary>Адрес основной электронной почты садовода</summary>
     public string? FirstEmailAddress
     {
-        get => _Gardener.FirstEmailAddress;
+        get => gardener.FirstEmailAddress;
         set
         {
-            _Gardener.FirstEmailAddress = value;
-            Set(ref _FirstEmailAddress, value);
+            gardener.FirstEmailAddress = value;
+            Set(ref field, value);
         }
     }
 
@@ -150,16 +162,13 @@ internal class EditGardenerViewModel:ViewModel
     #region SecondEmailAddress : string - Адрес дополнительной электронной почты садовода
 
     /// <summary>Адрес дополнительной электронной почты садовода</summary>
-    private string? _SecondEmailAddress;
-
-    /// <summary>Адрес дополнительной электронной почты садовода</summary>
     public string? SecondEmailAddress
     {
-        get => _Gardener.SecondEmailAddress;
+        get => gardener.SecondEmailAddress;
         set
         {
-            _Gardener.SecondEmailAddress = value;
-            Set(ref _SecondEmailAddress, value);
+            gardener.SecondEmailAddress = value;
+            Set(ref field, value);
         }
     }
 
@@ -168,16 +177,13 @@ internal class EditGardenerViewModel:ViewModel
     #region Account : string - Лицевой счет садовода
 
     /// <summary>Лицевой счет садовода</summary>
-    private string? _Account;
-
-    /// <summary>Лицевой счет садовода</summary>
     public string? Account
     {
-        get => _Gardener.Account;
+        get => gardener.Account;
         set
         {
-            _Gardener.Account = value ?? string.Empty;
-            Set(ref _Account, value);
+            gardener.Account = value ?? string.Empty;
+            Set(ref field, value);
         }
     }
 
@@ -186,16 +192,13 @@ internal class EditGardenerViewModel:ViewModel
     #region Document : string - Документ о приеме в члены СНТ
 
     /// <summary>Документ о приеме в члены СНТ</summary>
-    private string? _Document;
-
-    /// <summary>Документ о приеме в члены СНТ</summary>
     public string? Document
     {
-        get => _Gardener.Document;
+        get => gardener.Document;
         set
         {
-            _Gardener.Document = value;
-            Set(ref _Document, value);
+            gardener.Document = value;
+            Set(ref field, value);
         }
     }
 
@@ -204,16 +207,13 @@ internal class EditGardenerViewModel:ViewModel
     #region PostPostPostalCode : string - Индекс прописки
 
     /// <summary>Индекс прописки</summary>
-    private string? _PostPostalCode;
-
-    /// <summary>Индекс прописки</summary>
     public string? PostPostalCode
     {
-        get => _Gardener.PostAddress.PostalCode;
+        get => gardener.PostAddress.PostalCode;
         set
         {
-            _Gardener.PostAddress.PostalCode = value;
-            Set(ref _PostPostalCode, value);
+            gardener.PostAddress.PostalCode = value;
+            Set(ref field, value);
         }
     }
 
@@ -222,16 +222,13 @@ internal class EditGardenerViewModel:ViewModel
     #region PostProvince : string - Область прописки
 
     /// <summary>Область прописки</summary>
-    private string? _PostProvince;
-
-    /// <summary>Область прописки</summary>
     public string? PostProvince
     {
-        get => _Gardener.PostAddress.Province;
+        get => gardener.PostAddress.Province;
         set
         {
-            _Gardener.PostAddress.Province = value;
-            Set(ref _PostProvince, value);
+            gardener.PostAddress.Province = value;
+            Set(ref field, value);
         }
     }
 
@@ -240,16 +237,13 @@ internal class EditGardenerViewModel:ViewModel
     #region PostRegion : string - Округ прописки
 
     /// <summary>Округ прописки</summary>
-    private string? _PostRegion;
-
-    /// <summary>Округ прописки</summary>
     public string? PostRegion
     {
-        get => _Gardener.PostAddress.Region;
+        get => gardener.PostAddress.Region;
         set
         {
-            _Gardener.PostAddress.Region = value;
-            Set(ref _PostRegion, value);
+            gardener.PostAddress.Region = value;
+            Set(ref field, value);
         }
     }
 
@@ -258,34 +252,28 @@ internal class EditGardenerViewModel:ViewModel
     #region PostCity : string - Населенный пункт прописки
 
     /// <summary>Населенный пункт прописки</summary>
-    private string? _PostCity;
-
-    /// <summary>Населенный пункт прописки</summary>
     public string? PostCity
     {
-        get => _Gardener.PostAddress.City;
+        get => gardener.PostAddress.City;
         set
         {
-            _Gardener.PostAddress.City = value;
-            Set(ref _PostCity, value);
+            gardener.PostAddress.City = value;
+            Set(ref field, value);
         }
     }
 
     #endregion
 
-    #region PostStreet : string - Улица прописки 
-
-    /// <summary>Улица прописки</summary>
-    private string? _PostStreet;
+    #region PostStreet : string - Улица прописки
 
     /// <summary>Улица прописки</summary>
     public string? PostStreet
     {
-        get => _Gardener.PostAddress.Street;
+        get => gardener.PostAddress.Street;
         set
         {
-            _Gardener.PostAddress.Street = value;
-            Set(ref _PostStreet, value);
+            gardener.PostAddress.Street = value;
+            Set(ref field, value);
         }
     }
 
@@ -294,16 +282,13 @@ internal class EditGardenerViewModel:ViewModel
     #region PostHouse : string - Дом прописки
 
     /// <summary>Дом прописки</summary>
-    private string? _PostHouse;
-
-    /// <summary>Дом прописки</summary>
     public string? PostHouse
     {
-        get => _Gardener.PostAddress.House;
+        get => gardener.PostAddress.House;
         set
         {
-            _Gardener.PostAddress.House = value;
-            Set(ref _PostHouse, value);
+            gardener.PostAddress.House = value;
+            Set(ref field, value);
         }
     }
 
@@ -312,16 +297,13 @@ internal class EditGardenerViewModel:ViewModel
     #region PostBuilding : string - Корпус прописки
 
     /// <summary>Корпус прописки</summary>
-    private string? _PostBuilding;
-
-    /// <summary>Корпус прописки</summary>
     public string? PostBuilding
     {
-        get => _Gardener.PostAddress.Building;
+        get => gardener.PostAddress.Building;
         set
         {
-            _Gardener.PostAddress.Building = value;
-            Set(ref _PostBuilding, value);
+            gardener.PostAddress.Building = value;
+            Set(ref field, value);
         }
     }
 
@@ -330,33 +312,27 @@ internal class EditGardenerViewModel:ViewModel
     #region PostRoom : string - Квартира прописки
 
     /// <summary>Квартира прописки</summary>
-    private string? _PostRoom;
-
-    /// <summary>Квартира прописки</summary>
     public string? PostRoom
     {
-        get => _Gardener.PostAddress.Room;
+        get => gardener.PostAddress.Room;
         set
         {
-            _Gardener.PostAddress.Room = value;
-            Set(ref _PostRoom, value);
+            gardener.PostAddress.Room = value;
+            Set(ref field, value);
         }
     }
 
     #endregion
      #region PostalCode : string - Индекс
 
-    /// <summary>Индекс</summary>
-    private string? _PostalCode;
-
-    /// <summary>Индекс</summary>
+     /// <summary>Индекс</summary>
     public string? PostalCode
     {
-        get => _Gardener.Address.PostalCode;
+        get => gardener.Address.PostalCode;
         set
         {
-            _Gardener.Address.PostalCode = value;
-            Set(ref _PostalCode, value);
+            gardener.Address.PostalCode = value;
+            Set(ref field, value);
         }
     }
 
@@ -365,16 +341,13 @@ internal class EditGardenerViewModel:ViewModel
     #region Province : string - Область
 
     /// <summary>Область</summary>
-    private string? _Province;
-
-    /// <summary>Область</summary>
     public string? Province
     {
-        get => _Gardener.Address.Province;
+        get => gardener.Address.Province;
         set
         {
-            _Gardener.Address.Province = value;
-            Set(ref _Province, value);
+            gardener.Address.Province = value;
+            Set(ref field, value);
         }
     }
 
@@ -383,16 +356,13 @@ internal class EditGardenerViewModel:ViewModel
     #region Region : string - Округ
 
     /// <summary>Округ</summary>
-    private string? _Region;
-
-    /// <summary>Округ</summary>
     public string? Region
     {
-        get => _Gardener.Address.Region;
+        get => gardener.Address.Region;
         set
         {
-            _Gardener.Address.Region = value;
-            Set(ref _Region, value);
+            gardener.Address.Region = value;
+            Set(ref field, value);
         }
     }
 
@@ -401,16 +371,13 @@ internal class EditGardenerViewModel:ViewModel
     #region City : string - Населенный пункт
 
     /// <summary>Населенный пункт</summary>
-    private string? _City;
-
-    /// <summary>Населенный пункт</summary>
     public string? City
     {
-        get => _Gardener.Address.City;
+        get => gardener.Address.City;
         set
         {
-            _Gardener.Address.City = value;
-            Set(ref _City, value);
+            gardener.Address.City = value;
+            Set(ref field, value);
         }
     }
 
@@ -419,16 +386,13 @@ internal class EditGardenerViewModel:ViewModel
     #region Street : string - Улица
 
     /// <summary>Улица</summary>
-    private string? _Street;
-
-    /// <summary>Улица</summary>
     public string? Street
     {
-        get => _Gardener.Address.Street;
+        get => gardener.Address.Street;
         set
         {
-            _Gardener.Address.Street = value;
-            Set(ref _Street, value);
+            gardener.Address.Street = value;
+            Set(ref field, value);
         }
     }
 
@@ -437,16 +401,13 @@ internal class EditGardenerViewModel:ViewModel
     #region House : string - Дом
 
     /// <summary>Дом</summary>
-    private string? _House;
-
-    /// <summary>Дом</summary>
     public string? House
     {
-        get => _Gardener.Address.House;
+        get => gardener.Address.House;
         set
         {
-            _Gardener.Address.House = value;
-            Set(ref _House, value);
+            gardener.Address.House = value;
+            Set(ref field, value);
         }
     }
 
@@ -455,16 +416,13 @@ internal class EditGardenerViewModel:ViewModel
     #region Building : string - Корпус
 
     /// <summary>Корпус</summary>
-    private string? _Building;
-
-    /// <summary>Корпус</summary>
     public string? Building
     {
-        get => _Gardener.Address.Building;
+        get => gardener.Address.Building;
         set
         {
-            _Gardener.Address.Building = value;
-            Set(ref _Building, value);
+            gardener.Address.Building = value;
+            Set(ref field, value);
         }
     }
 
@@ -473,16 +431,13 @@ internal class EditGardenerViewModel:ViewModel
     #region Room : string - Квартира
 
     /// <summary>Квартира</summary>
-    private string? _Room;
-
-    /// <summary>Квартира</summary>
     public string? Room
     {
-        get => _Gardener.Address.Room;
+        get => gardener.Address.Room;
         set
         {
-            _Gardener.Address.Room = value;
-            Set(ref _Room, value);
+            gardener.Address.Room = value;
+            Set(ref field, value);
         }
     }
 
@@ -490,7 +445,7 @@ internal class EditGardenerViewModel:ViewModel
 
     #region IsAddressMatched : bool - Адрес прописки совпадает с адресом проживания
 
-    private bool _IsAddressMatched;
+    private bool _IsAddressMatched = AddressesEqual(gardener.Address, gardener.PostAddress);
 
     public bool IsAddressMatched
     {
@@ -501,25 +456,25 @@ internal class EditGardenerViewModel:ViewModel
 
             if (value)
             {
-                _Gardener.PostAddress.PostalCode = _Gardener.Address.PostalCode;
-                _Gardener.PostAddress.Province   = _Gardener.Address.Province;
-                _Gardener.PostAddress.Region     = _Gardener.Address.Region;
-                _Gardener.PostAddress.City       = _Gardener.Address.City;
-                _Gardener.PostAddress.Street     = _Gardener.Address.Street;
-                _Gardener.PostAddress.House      = _Gardener.Address.House;
-                _Gardener.PostAddress.Building   = _Gardener.Address.Building;
-                _Gardener.PostAddress.Room       = _Gardener.Address.Room;
+                gardener.PostAddress.PostalCode = gardener.Address.PostalCode;
+                gardener.PostAddress.Province   = gardener.Address.Province;
+                gardener.PostAddress.Region     = gardener.Address.Region;
+                gardener.PostAddress.City       = gardener.Address.City;
+                gardener.PostAddress.Street     = gardener.Address.Street;
+                gardener.PostAddress.House      = gardener.Address.House;
+                gardener.PostAddress.Building   = gardener.Address.Building;
+                gardener.PostAddress.Room       = gardener.Address.Room;
             }
             else
             {
-                _Gardener.PostAddress.PostalCode = null;
-                _Gardener.PostAddress.Province   = null;
-                _Gardener.PostAddress.Region     = null;
-                _Gardener.PostAddress.City       = null;
-                _Gardener.PostAddress.Street     = null;
-                _Gardener.PostAddress.House      = null;
-                _Gardener.PostAddress.Building   = null;
-                _Gardener.PostAddress.Room       = null;
+                gardener.PostAddress.PostalCode = null;
+                gardener.PostAddress.Province   = null;
+                gardener.PostAddress.Region     = null;
+                gardener.PostAddress.City       = null;
+                gardener.PostAddress.Street     = null;
+                gardener.PostAddress.House      = null;
+                gardener.PostAddress.Building   = null;
+                gardener.PostAddress.Room       = null;
             }
 
             OnPropertyChanged(nameof(PostPostalCode));
@@ -541,19 +496,18 @@ internal class EditGardenerViewModel:ViewModel
     #region Command AcceptCommand - Команда приравнивания адресов проживания и прописки
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    private ICommand? _AcceptCommand;
-
-    /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    public ICommand AcceptCommand => _AcceptCommand
+    [field: AllowNull, MaybeNull]
+    public ICommand AcceptCommand => field
         ??= new LambdaCommandAsync(OnAcceptCommandExecuted, CanAcceptCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда приравнивания адресов проживания и прописки </summary>
     private bool CanAcceptCommandExecute(object? p) => !string.IsNullOrWhiteSpace(Account);
 
     /// <summary> Логика выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private async Task OnAcceptCommandExecuted(object? p)
+    private Task OnAcceptCommandExecuted(object? p)
     {
         ((Window)p!).DialogResult = true;
+        return Task.CompletedTask;
     }
 
     #endregion
@@ -561,25 +515,31 @@ internal class EditGardenerViewModel:ViewModel
     #region Command CancelCommand - Команда приравнивания адресов проживания и прописки
 
     /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    private ICommand? _CancelCommand;
-
-    /// <summary> Команда приравнивания адресов проживания и прописки </summary>
-    public ICommand CancelCommand => _CancelCommand
+    [field: AllowNull, MaybeNull]
+    public ICommand CancelCommand => field
         ??= new LambdaCommandAsync(OnCancelCommandExecuted, CanCancelCommandExecute);
 
     /// <summary> Проверка возможности выполнения - Команда приравнивания адресов проживания и прописки </summary>
     private bool CanCancelCommandExecute(object? p) => true;
 
     /// <summary> Логика выполнения - Команда приравнивания адресов проживания и прописки </summary>
-    private async Task OnCancelCommandExecuted(object? p)
+    private Task OnCancelCommandExecuted(object? p)
     {
         ((Window)p!).DialogResult = false;
+        return Task.CompletedTask;
     }
 
     #endregion
 
-    public EditGardenerViewModel(Gardener gardener)
-    {
-        _Gardener = gardener;
-    }
+    private static bool AddressesEqual(
+        Data.Entities.Base.Address a,
+        Data.Entities.Base.Address b) =>
+        a.PostalCode  == b.PostalCode  &&
+        a.Province    == b.Province    &&
+        a.Region      == b.Region      &&
+        a.City        == b.City        &&
+        a.Street      == b.Street      &&
+        a.House       == b.House       &&
+        a.Building    == b.Building    &&
+        a.Room        == b.Room;
 }

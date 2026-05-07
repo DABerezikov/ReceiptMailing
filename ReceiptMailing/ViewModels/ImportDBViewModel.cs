@@ -1,20 +1,44 @@
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ReceiptMailing.Data.Entities;
 using ReceiptMailing.Infrastructure.Commands;
+using ReceiptMailing.Models;
 using ReceiptMailing.Services;
 using ReceiptMailing.Services.Interfaces;
 using ReceiptMailing.Services.Interfaces.Repositories;
 using ReceiptMailing.ViewModels.Base;
+using ReceiptMailing.Views.Windows;
 
 namespace ReceiptMailing.ViewModels;
 
+// Порядок столбцов соответствует структуре ExcelExporter
+// Col  0  Номер участка          Col 19  Номер паспорта
+// Col  1  Улица СНТ              Col 20  Документ
+// Col  2  Номер дома СНТ         Col 21  Индекс (проживание)
+// Col  3  Площадь (соток)        Col 22  Область (проживание)
+// Col  4  Кадастровый номер      Col 23  Округ (проживание)
+// Col  5  Подробности            Col 24  Населённый пункт (проживание)
+// Col  6  Электрификация         Col 25  Улица (проживание)
+// Col  7  Есть дом               Col 26  Дом (проживание)
+// Col  8  Категория              Col 27  Корпус (проживание)
+// Col  9  Статус                 Col 28  Квартира (проживание)
+// Col 10  Примечание             Col 29  Индекс (прописка)
+// Col 11  Фамилия                Col 30  Область (прописка)
+// Col 12  Имя                    Col 31  Округ (прописка)
+// Col 13  Отчество               Col 32  Нас. пункт (прописка)
+// Col 14  Лицевой счёт           Col 33  Улица (прописка)
+// Col 15  Телефон                Col 34  Дом (прописка)
+// Col 16  Email 1                Col 35  Корпус (прописка)
+// Col 17  Email 2                Col 36  Квартира (прописка)
+// Col 18  Серия паспорта
+
 internal class ImportDBViewModel(
     IUserDialog userDialog,
-    IParcelRepository<Parcel> parcels,
-    ExcelReader reader)
+    IParcelRepository<Parcel> parcels)
     : ViewModel
 {
     #region Title : string - Заголовок окна
@@ -39,9 +63,9 @@ internal class ImportDBViewModel(
 
     #endregion
 
-    #region XLSXFilePath : string - Путь к файлу с садоводами
+    #region XLSXFilePath : string - Путь к файлу
 
-    /// <summary>Путь к файлу с садоводами</summary>
+    /// <summary>Путь к выбранному файлу Excel</summary>
     public string? XlsxFilePath
     {
         get;
@@ -50,120 +74,187 @@ internal class ImportDBViewModel(
 
     #endregion
 
-    #region Command OpenXLSXCommand - команда для открытия файла с садоводами
+    #region Command OpenXLSXCommand
 
-    /// <summary> команда для открытия файла с садоводами </summary>
+    /// <summary>Открыть файл Excel</summary>
     public ICommand OpenXlsxCommand => field
-        ??= new LambdaCommand(OnOpenXLSXCommandExecuted, CanOpenXlsxCommandExecute);
+        ??= new LambdaCommand(OnOpenXLSXCommandExecuted);
 
-    /// <summary> Проверка возможности выполнения - команда для открытия файла с садоводами </summary>
-    private bool CanOpenXlsxCommandExecute() => true;
-
-    /// <summary> Логика выполнения - команда для открытия файла с садоводами </summary>
     private void OnOpenXLSXCommandExecuted()
     {
-        var temp = userDialog.OpenFile("Выбор исходного файла с садоводами");
+        var temp = userDialog.OpenFile(
+            "Выбор файла Excel с базой участков",
+            "Excel (*.xlsx)|*.xlsx|Все файлы (*.*)|*.*");
         if (temp is null) return;
-        XlsxFilePath = temp.DirectoryName + "\\" + temp.Name;
+        XlsxFilePath = temp.FullName;
     }
 
     #endregion
 
-    #region Command ImportParcelsCommand - Команда импорта БД участков
+    #region Command ImportParcelsCommand
 
-    /// <summary> Команда импорта БД участков </summary>
+    /// <summary>Запустить анализ и импорт</summary>
     public ICommand ImportParcelsCommand => field
         ??= new LambdaCommandAsync(OnImportParcelsCommandExecuted, CanImportParcelsCommandExecute);
 
-    /// <summary> Проверка возможности выполнения - Команда импорта БД участков </summary>
-    private bool CanImportParcelsCommandExecute() => XlsxFilePath != null;
+    private bool CanImportParcelsCommandExecute() => !string.IsNullOrEmpty(XlsxFilePath);
 
-    /// <summary> Логика выполнения - Команда импорта БД участков </summary>
     private async Task OnImportParcelsCommandExecuted()
     {
-        if (XlsxFilePath != null) await ImportParcels(XlsxFilePath);
-        XlsxFilePath = null;
+        if (string.IsNullOrEmpty(XlsxFilePath)) return;
+
+        var entries  = new List<ParcelImportEntry>();
+        int identical = 0;
+
+        try
+        {
+            Status = "Чтение файла...";
+
+            var data      = ExcelReader.GetDataSet(XlsxFilePath);
+            var table     = data.Tables[0];
+            int totalRows = table.Rows.Count;
+
+            for (int i = 1; i < totalRows; i++) // i=0 — строка заголовков, пропускаем
+            {
+                var row    = table.Rows[i];
+                var number = Cell(row, 0);
+
+                // Строки без номера участка (заголовки, пустые строки) — пропускаем
+                if (string.IsNullOrWhiteSpace(number)) continue;
+
+                Status = $"Проверка: {i + 1} из {totalRows}...";
+
+                var imported = BuildParcel(row);
+                var existing = await parcels.GetByNumber(number);
+
+                if (existing is null)
+                {
+                    entries.Add(new ParcelImportEntry
+                    {
+                        Status   = ImportStatus.New,
+                        Imported = imported,
+                    });
+                }
+                else
+                {
+                    var diffs = ParcelComparer.Compare(existing, imported);
+                    if (diffs.Count == 0)
+                    {
+                        identical++;
+                        continue;
+                    }
+
+                    entries.Add(new ParcelImportEntry
+                    {
+                        Status      = ImportStatus.Changed,
+                        Imported    = imported,
+                        Existing    = existing,
+                        Differences = diffs,
+                    });
+                }
+            }
+
+            Status = "Готов!";
+
+            if (entries.Count == 0)
+            {
+                userDialog.Information(
+                    $"Нет новых или изменённых записей.\nИдентичных пропущено: {identical}",
+                    "Импорт БД");
+                return;
+            }
+
+            // Открываем окно проверки
+            var vm     = new ImportReviewViewModel(entries, parcels, userDialog, identical);
+            var window = new ImportReviewWindow { DataContext = vm };
+            window.ShowDialog();
+
+            XlsxFilePath = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            Status = "Ошибка!";
+            userDialog.Error($"Не удалось прочитать файл:\n{ex.Message}", "Импорт БД");
+        }
+        finally
+        {
+            Status = "Готов!";
+        }
     }
 
     #endregion
 
-    private async Task ImportParcels(string path)
+    // ── Построение объекта Parcel из строки DataTable ─────────────────────────
+
+    private static Parcel BuildParcel(DataRow row)
     {
-        var data = ExcelReader.GetDataSet(path);
-        var data_tables = data.Tables[0];
-        for (int i = 1; i < data_tables.Rows.Count - 1; i++)
+        var p = new Parcel
         {
-            var new_parcel = new Parcel();
+            Number          = Cell(row, 0)  ?? string.Empty,
+            Street          = Cell(row, 1),
+            HouseNumber     = Cell(row, 2),
+            PlotArea        = ParseDouble(Cell(row, 3)),
+            CadastralNumber = Cell(row, 4),
+            Details         = Cell(row, 5),
+            Electrification = IsYes(Cell(row, 6)),
+            HavingHouse     = IsYes(Cell(row, 7)),
+            Category        = Cell(row, 8),
+            Status          = Cell(row, 9),
+            Description     = Cell(row, 10),
+        };
 
-            string?[]? fio = data_tables.Rows[i][0].ToString()?.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            new_parcel.Gardener.Name = fio?[1];
-            new_parcel.Gardener.SurName = fio?[0];
-            new_parcel.Gardener.Patronymic = fio?[2];
+        p.Gardener ??= new Gardener();
+        p.Gardener.SurName            = Cell(row, 11);
+        p.Gardener.Name               = Cell(row, 12);
+        p.Gardener.Patronymic         = Cell(row, 13);
+        p.Gardener.Account            = Cell(row, 14) ?? string.Empty;
+        p.Gardener.PhoneNumber        = Cell(row, 15);
+        p.Gardener.FirstEmailAddress  = Cell(row, 16);
+        p.Gardener.SecondEmailAddress = Cell(row, 17);
+        p.Gardener.Passport.Series    = Cell(row, 18);
+        p.Gardener.Passport.Number    = Cell(row, 19);
+        p.Gardener.Document           = Cell(row, 20);
 
-            var account = data_tables.Rows[i][1].ToString();
-            new_parcel.Gardener.Account = account ?? string.Empty;
+        p.Gardener.Address.PostalCode = Cell(row, 21);
+        p.Gardener.Address.Province   = Cell(row, 22);
+        p.Gardener.Address.Region     = Cell(row, 23);
+        p.Gardener.Address.City       = Cell(row, 24);
+        p.Gardener.Address.Street     = Cell(row, 25);
+        p.Gardener.Address.House      = Cell(row, 26);
+        p.Gardener.Address.Building   = Cell(row, 27);
+        p.Gardener.Address.Room       = Cell(row, 28);
 
-            var electric = data_tables.Rows[i][2].ToString();
-            new_parcel.Electrification = electric == "С ЭЭ";
+        p.Gardener.PostAddress.PostalCode = Cell(row, 29);
+        p.Gardener.PostAddress.Province   = Cell(row, 30);
+        p.Gardener.PostAddress.Region     = Cell(row, 31);
+        p.Gardener.PostAddress.City       = Cell(row, 32);
+        p.Gardener.PostAddress.Street     = Cell(row, 33);
+        p.Gardener.PostAddress.House      = Cell(row, 34);
+        p.Gardener.PostAddress.Building   = Cell(row, 35);
+        p.Gardener.PostAddress.Room       = Cell(row, 36);
 
-            var document = data_tables.Rows[i][3].ToString();
-            new_parcel.Gardener.Document = document;
-
-            string[]? passport = data_tables.Rows[i][4].ToString()?.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            if (passport?.Length > 0)
-            {
-                new_parcel.Gardener.Passport.Series = passport[0];
-                new_parcel.Gardener.Passport.Number = passport.Length > 1 ? passport[1] : null;
-            }
-
-            var email = data_tables.Rows[i][7].ToString()?.Split(new char[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
-            switch (email?.Length)
-            {
-                case 2:
-                    new_parcel.Gardener.FirstEmailAddress = email?[0].Trim();
-                    new_parcel.Gardener.SecondEmailAddress = email?[1].Trim();
-                    break;
-                case 1:
-                    new_parcel.Gardener.FirstEmailAddress = email?[0].Trim();
-                    break;
-            }
-
-            var phone = data_tables.Rows[i][9].ToString();
-            new_parcel.Gardener.PhoneNumber = phone;
-
-            var street = data_tables.Rows[i][10].ToString();
-            new_parcel.Street = street;
-
-            var number = data_tables.Rows[i][11].ToString();
-            new_parcel.Number = number!;
-
-            var area = data_tables.Rows[i][12].ToString();
-            IFormatProvider formatter = new NumberFormatInfo { NumberDecimalSeparator = "," };
-            if (!double.TryParse(area, NumberStyles.AllowDecimalPoint, formatter, out var plotArea))
-            {
-                new_parcel.PlotArea = 0.0;
-            }
-            new_parcel.PlotArea = plotArea;
-
-            var cadasdral = data_tables.Rows[i][13].ToString();
-            new_parcel.CadastralNumber = cadasdral;
-
-            var details = data_tables.Rows[i][14].ToString();
-            new_parcel.Details = details;
-
-            var house = data_tables.Rows[i][16].ToString();
-            new_parcel.HavingHouse = house != "";
-
-            var address_SNT = data_tables.Rows[i][17].ToString();
-            new_parcel.HouseNumber = address_SNT;
-
-            var category = data_tables.Rows[i][18].ToString();
-            new_parcel.Category = category;
-
-            var status = data_tables.Rows[i][19].ToString();
-            new_parcel.Status = status;
-
-            await parcels.Add(new_parcel);
-        }
+        return p;
     }
+
+    // ── Вспомогательные ──────────────────────────────────────────────────────
+
+    /// <summary>Безопасно читает ячейку; возвращает null для пустых значений.</summary>
+    private static string? Cell(DataRow row, int col)
+    {
+        if (col >= row.Table.Columns.Count) return null;
+        var val = row[col]?.ToString()?.Trim();
+        return string.IsNullOrEmpty(val) ? null : val;
+    }
+
+    /// <summary>Разбирает double; принимает '.' и ',' как разделитель.</summary>
+    private static double ParseDouble(string? s)
+    {
+        if (string.IsNullOrWhiteSpace(s)) return 0d;
+        s = s.Replace(',', '.');
+        return double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var v) ? v : 0d;
+    }
+
+    /// <summary>true, если значение "Да" (без учёта регистра).</summary>
+    private static bool IsYes(string? s) =>
+        string.Equals(s, "Да", StringComparison.OrdinalIgnoreCase);
 }

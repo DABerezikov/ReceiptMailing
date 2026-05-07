@@ -8,5 +8,7 @@ internal static class ViewModelRegistrator
        .AddTransient<MainWindowViewModel>()
        .AddTransient<PdfSplitterViewModel>()
        .AddTransient<ImportDBViewModel>()
-       .AddTransient<MailSettingsViewModel>();
+       .AddTransient<MailSettingsViewModel>()
+       .AddTransient<GardenersViewModel>()
+       .AddTransient<ExportDBViewModel>();
 }

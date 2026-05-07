@@ -9,5 +9,5 @@ internal static class ServiceRegistrator
         .AddTransient<IUserDialog, UserDialog>()
         .AddTransient<ReceiptsSplitter>()
         .AddTransient<IMailService, MailService>()
-        .AddTransient<ExcelReader>();
+        .AddTransient<ExcelExporter>();
 }

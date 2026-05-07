@@ -29,7 +29,9 @@
                 <Separator/>
                 <MenuItem Header="Выход"            Command="{StaticResource CloseWindowCommand}"/>
             </MenuItem>
-            <MenuItem Header="Импорт БД"          Command="{StaticResource ImportDbCommand}"/>
+            <MenuItem Header="Список садоводов" Command="{StaticResource GardenersWindowCommand}"/>
+            <MenuItem Header="Импорт БД"           Command="{StaticResource ImportDbCommand}"/>
+            <MenuItem Header="Экспорт БД"           Command="{StaticResource ExportDbCommand}"/>
             <MenuItem Header="Обрезка квитанций"  Command="{StaticResource PdfSplitterCommand}"/>
         </Menu>
 

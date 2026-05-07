@@ -22,6 +22,23 @@ public class UserDialog : IUserDialog
     /// <summary>Текущее окно приложения</summary>
     protected static Window? CurrentWindow => FocusedWindow ?? ActiveWindow;
 
+    /// <summary>Открыть диалог выбора папки</summary>
+    public virtual string? OpenFolder(string title, string? defaultPath = null)
+    {
+        var dialog = new Microsoft.Win32.OpenFolderDialog
+        {
+            Title      = title,
+            Multiselect = false,
+        };
+
+        if (defaultPath is { Length: > 0 })
+            dialog.InitialDirectory = defaultPath;
+
+        return dialog.ShowDialog(CurrentWindow) == true
+            ? dialog.FolderName
+            : null;
+    }
+
     /// <summary>Открыть диалога выбора файла для чтения</summary>
     public virtual FileInfo? OpenFile(string title, string filter = "Исходные файлы (*.pdf, *.xls, *.xlsx)|*.pdf; *.xls; *.xlsx|" +
                                                                     " PDF(*.pdf)|*.pdf| Excel(*.xls,*.xlsx)|*.xls;*.xlsx|" +
