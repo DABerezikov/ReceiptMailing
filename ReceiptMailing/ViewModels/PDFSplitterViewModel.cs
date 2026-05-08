@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Microsoft.Extensions.Options;
 using ReceiptMailing.Data.Entities;
 using ReceiptMailing.Infrastructure.Commands;
 using ReceiptMailing.Services;
@@ -19,7 +21,8 @@ internal class PdfSplitterViewModel(
     IUserDialog userDialog,
     ReceiptsSplitter splitter,
     IMailService email,
-    IParcelRepository<Parcel> parcel)
+    IParcelRepository<Parcel> parcel,
+    IOptionsMonitor<MailSettings> mailOptions)
     : ViewModel
 {
     #region Title : string - Заголовок окна
@@ -209,31 +212,41 @@ internal class PdfSplitterViewModel(
     private async Task OnSendReceiptCommandExecuted()
     {
         if (string.IsNullOrEmpty(SplitFilePath)) return;
+
+        // Один запрос — все участки с email
+        var allParcels = await parcel.GetAll();
+        var emailsByNumber = allParcels
+            .Where(p => !string.IsNullOrWhiteSpace(p.Gardener?.FirstEmailAddress))
+            .ToDictionary(
+                p => p.Number,
+                p => (First: p.Gardener!.FirstEmailAddress, Second: p.Gardener.SecondEmailAddress));
+
         var listFiles = new List<string>(Directory.EnumerateFiles(SplitFilePath));
         int total = listFiles.Count;
         int countSendFile = 0;
         int processed = 0;
+        int delayMs = mailOptions.CurrentValue.SendDelaySeconds * 1000;
 
         IsSending = true;
         SendProgress = 0;
         SendProgressText = $"0 из {total}";
         Status = $"Отправка: 0 из {total}";
 
-        foreach (var filePath in listFiles)
+        for (int i = 0; i < listFiles.Count; i++)
         {
-            if (!await SendReceipt(filePath))
-            {
+            var filePath = listFiles[i];
+            if (!await SendReceipt(filePath, emailsByNumber))
                 ListNotSendReceipts.Add(filePath);
-            }
             else
-            {
                 countSendFile++;
-            }
 
             processed++;
             SendProgress = total > 0 ? processed * 100 / total : 0;
             SendProgressText = $"{processed} из {total}";
             Status = $"Отправка: {processed} из {total}";
+
+            if (delayMs > 0 && i < listFiles.Count - 1)
+                await Task.Delay(delayMs);
         }
 
         IsSending = false;
@@ -247,30 +260,29 @@ internal class PdfSplitterViewModel(
 
     #endregion
 
-    private async Task<(string?, string?)> GetEmailCurrentParcel(string filePath)
+    private static string? ExtractParcelNumber(string filePath)
     {
-        var indexStart = filePath.LastIndexOf(" ") + 1;
-        var length = filePath.LastIndexOf(".") - indexStart;
-        var parcelNumber = filePath.Substring(indexStart, length);
-        parcelNumber = parcelNumber.Replace('_', '/');
-        var currentParcel = await parcel.GetByNumber(parcelNumber);
-        if (currentParcel == null) return (null, null);
-        return (currentParcel.Gardener.FirstEmailAddress, currentParcel.Gardener.SecondEmailAddress);
+        var indexStart = filePath.LastIndexOf(' ') + 1;
+        var indexDot   = filePath.LastIndexOf('.');
+        if (indexDot <= indexStart) return null;
+        return filePath.Substring(indexStart, indexDot - indexStart).Replace('_', '/');
     }
 
-    private async Task<bool> SendReceipt(string filePath)
+    private async Task<bool> SendReceipt(
+        string filePath,
+        Dictionary<string, (string? First, string? Second)> emailsByNumber)
     {
-        var listTo = new List<string>();
-        var email1 = await GetEmailCurrentParcel(filePath).ConfigureAwait(false);
-        if (string.IsNullOrEmpty(email1.Item1)) return false;
-        listTo.Add(email1.Item1);
-        if (email1.Item2 != null)
-            listTo.Add(email1.Item2);
-        var attachment = new List<string> { filePath };
-        var ct = CancellationToken.None;
+        var number = ExtractParcelNumber(filePath);
+        if (number is null || !emailsByNumber.TryGetValue(number, out var emails)) return false;
+
+        var listTo = new List<string> { emails.First! };
+        if (!string.IsNullOrWhiteSpace(emails.Second))
+            listTo.Add(emails.Second!);
+
         var msg = new MailData(listTo, "Квитанция СНТ \"Тимирязевец\"",
-            "C уважением, \nПравление СНТ \"Тимирязевец\"", attachment);
-        return await email.SendAsync(msg, ct);
+            "C уважением, \nПравление СНТ \"Тимирязевец\"",
+            new List<string> { filePath });
+        return await email.SendAsync(msg, CancellationToken.None);
     }
 
     private void SaveListFileNotSend()
