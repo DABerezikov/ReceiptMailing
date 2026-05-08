@@ -24,8 +24,9 @@ internal class MailSettingsViewModel : ViewModel
         Password     = s.Password     ?? string.Empty;
         Host         = s.Host         ?? string.Empty;
         Port         = s.Port;
-        UseSsl       = s.UseSsl;
-        UseStartTls  = s.UseStartTls;
+        UseSsl           = s.UseSsl;
+        UseStartTls      = s.UseStartTls;
+        SendDelaySeconds = s.SendDelaySeconds;
     }
 
     #region Title : string - Заголовок окна
@@ -114,6 +115,16 @@ internal class MailSettingsViewModel : ViewModel
 
     #endregion
 
+    #region SendDelaySeconds : int - Задержка между письмами (секунды)
+
+    public int SendDelaySeconds
+    {
+        get;
+        set => Set(ref field, value);
+    } = 2;
+
+    #endregion
+
     #region IsPasswordVisible : bool - Видимость пароля
 
     public bool IsPasswordVisible
@@ -150,8 +161,9 @@ internal class MailSettingsViewModel : ViewModel
         ms["Password"]     = Password;
         ms["Host"]         = Host;
         ms["Port"]         = Port;
-        ms["UseSSL"]       = UseSsl;
-        ms["UseStartTls"]  = UseStartTls;
+        ms["UseSSL"]           = UseSsl;
+        ms["UseStartTls"]      = UseStartTls;
+        ms["SendDelaySeconds"] = SendDelaySeconds;
 
         File.WriteAllText(settingsPath,
             root.ToJsonString(new JsonSerializerOptions

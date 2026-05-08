@@ -6,7 +6,6 @@ using MimeKit;
 using System.Linq;
 using System;
 using System.Diagnostics;
-using System.IO;
 using MailKit.Net.Smtp;
 
 
@@ -64,12 +63,7 @@ public class MailService(IOptionsMonitor<MailSettings> settings) : IMailService
 
             if (mailData.Attachment != null)
                 foreach (var filePath in mailData.Attachment)
-                {
-                    var buffer = File.ReadAllBytes(filePath);
-                    
-                    bodyBuilder.Attachments.Add(Path.GetFileName(filePath), buffer, new ContentType("AdobePDF", "pdf"));
-
-                }
+                    bodyBuilder.Attachments.Add(filePath);
             mail.Body = bodyBuilder.ToMessageBody();
 
             #endregion

@@ -103,13 +103,11 @@
 
                     <StackPanel Grid.Row="1" Grid.Column="0">
                         <TextBlock Style="{StaticResource FormLabelStyle}" Text="Серия"/>
-                        <TextBox Text="{Binding PassportSeries, UpdateSourceTrigger=PropertyChanged}"
-                                 IsReadOnly="{Binding IsPassportReadOnly}"/>
+                        <TextBox Text="{Binding PassportSeries, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="2">
                         <TextBlock Style="{StaticResource FormLabelStyle}" Text="Номер"/>
-                        <TextBox Text="{Binding PassportNumber, UpdateSourceTrigger=PropertyChanged}"
-                                 IsReadOnly="{Binding IsPassportReadOnly}"/>
+                        <TextBox Text="{Binding PassportNumber, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                 </Grid>
             </Border>

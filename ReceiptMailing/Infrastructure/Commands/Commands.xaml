@@ -8,5 +8,6 @@
     <l:MailSettingsCommand x:Key="MailSettingsCommand"/>
     <l:GardenersWindowCommand x:Key="GardenersWindowCommand"/>
     <l:ExportDbCommand x:Key="ExportDbCommand"/>
+    <l:SendMessageCommand x:Key="SendMessageCommand"/>
 
 </ResourceDictionary>

@@ -69,10 +69,10 @@
         <Setter Property="BorderThickness"         Value="1"/>
         <Setter Property="SelectionMode"           Value="Single"/>
         <Setter Property="Foreground"              Value="{StaticResource TextPrimaryBrush}"/>
-        <Setter Property="FontFamily"              Value="Segoe UI"/>
-        <Setter Property="FontSize"                Value="13"/>
+        <Setter Property="FontFamily"              Value="Calibri"/>
+        <Setter Property="FontSize"                Value="14"/>
         <Setter Property="ColumnHeaderHeight"      Value="40"/>
-        <Setter Property="RowHeight"               Value="36"/>
+        <Setter Property="RowHeight"               Value="34"/>
         <!-- Переопределяем системные цвета выделения строк -->
         <Style.Resources>
             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
@@ -120,7 +120,7 @@
 
     <DataTemplate x:Key="HeaderTemplate">
         <TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center"
-                   FontWeight="SemiBold" FontSize="11"
+                   FontWeight="SemiBold" FontSize="15"
                    Foreground="{StaticResource TextSecondaryBrush}"/>
     </DataTemplate>
 
@@ -132,7 +132,7 @@
         <Setter Property="BorderBrush"              Value="{StaticResource BorderColorBrush}"/>
         <Setter Property="BorderThickness"          Value="0,0,1,1"/>
         <Setter Property="FontWeight"               Value="SemiBold"/>
-        <Setter Property="FontSize"                 Value="11"/>
+        <Setter Property="FontSize"                 Value="15"/>
         <Setter Property="Foreground"               Value="{StaticResource TextSecondaryBrush}"/>
         <Setter Property="SeparatorBrush"           Value="{StaticResource BorderColorBrush}"/>
     </Style>

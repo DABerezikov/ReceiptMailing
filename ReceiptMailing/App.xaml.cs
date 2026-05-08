@@ -44,6 +44,7 @@ public partial class App
 
     internal static void ConfigureServices(HostBuilderContext host, IServiceCollection services) => services
         .Configure<MailSettings>(host.Configuration.GetSection(nameof(MailSettings)))
+        .Configure<MessageSettings>(host.Configuration.GetSection(nameof(MessageSettings)))
         .AddViews()
         .AddServices()
         .AddDbContext<ParcelDb>(

@@ -38,8 +38,8 @@
 
     <!-- ===== DATAGRID ===== -->
     <SolidColorBrush x:Key="DataGridHeaderBrush"       Color="#F1F5F9" p:Freeze="true"/>
-    <SolidColorBrush x:Key="DataGridAlternateRowBrush" Color="#F8FAFC"  p:Freeze="true"/>
-    <SolidColorBrush x:Key="DataGridHoverRowBrush"     Color="#EFF6FF"  p:Freeze="true"/>
+    <SolidColorBrush x:Key="DataGridAlternateRowBrush" Color="#F1F5F9"  p:Freeze="true"/>
+    <SolidColorBrush x:Key="DataGridHoverRowBrush"     Color="#DBEAFE"  p:Freeze="true"/>
     <SolidColorBrush x:Key="DataGridSelectedRowBrush"  Color="#DBEAFE"  p:Freeze="true"/>
     <SolidColorBrush x:Key="DataGridGridLineBrush"     Color="#E2E8F0"  p:Freeze="true"/>
 

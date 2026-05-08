@@ -82,9 +82,8 @@ internal class MainWindowViewModel(
 
     #endregion
 
-    #region GardenerCollection : ObservableCollection<Gardener> - Description
+    #region GardenerCollection : ObservableCollection<Gardener>
 
-    /// <summary>Коллекция садоводов</summary>
     public ObservableCollection<Gardener>? _GardenerCollection;
 
     public ObservableCollection<Gardener>? GardenerCollection
@@ -92,6 +91,67 @@ internal class MainWindowViewModel(
         get => _GardenerCollection;
         set => Set(ref _GardenerCollection, value);
     }
+
+    #endregion
+
+    #region SelectedGardener : Gardener? - Выбранный садовод
+
+    public Gardener? SelectedGardener
+    {
+        get;
+        set
+        {
+            if (Set(ref field, value))
+                IsGardenerPassportVisible = false;
+        }
+    }
+
+    #endregion
+
+    #region IsGardenersView : bool - Текущее представление
+
+    private bool _IsGardenersView;
+
+    public bool IsGardenersView
+    {
+        get => _IsGardenersView;
+        set
+        {
+            if (!Set(ref _IsGardenersView, value)) return;
+            OnPropertyChanged(nameof(IsParcelView));
+            OnPropertyChanged(nameof(ViewToggleHeader));
+            CommandManager.InvalidateRequerySuggested();
+        }
+    }
+
+    public bool IsParcelView => !_IsGardenersView;
+    public string ViewToggleHeader => _IsGardenersView ? "Список участков" : "Список садоводов";
+
+    #endregion
+
+    #region IsGardenerPassportVisible : bool - Показать паспорт в списке садоводов
+
+    public bool IsGardenerPassportVisible
+    {
+        get;
+        set => Set(ref field, value);
+    }
+
+    #endregion
+
+    #region Command ToggleViewCommand - Переключить представление
+
+    [field: AllowNull, MaybeNull]
+    public ICommand ToggleViewCommand => field
+        ??= new LambdaCommand(() => IsGardenersView = !IsGardenersView);
+
+    #endregion
+
+    #region Command ToggleGardenerPassportVisibilityCommand
+
+    [field: AllowNull, MaybeNull]
+    public ICommand ToggleGardenerPassportVisibilityCommand => field
+        ??= new LambdaCommand(() => IsGardenerPassportVisible = !IsGardenerPassportVisible);
 
     #endregion
 
@@ -121,20 +181,19 @@ internal class MainWindowViewModel(
     public ICommand EditGardenerCommand => field
         ??= new LambdaCommandAsync(OnEditGardenerCommandExecuted, CanEditGardenerCommandExecute);
 
-    /// <summary> Проверка возможности выполнения - Команда редактирования данных садовода </summary>
-    private bool CanEditGardenerCommandExecute() => SelectedParcel != null;
+    private bool CanEditGardenerCommandExecute() =>
+        _IsGardenersView ? SelectedGardener != null : SelectedParcel != null;
 
-    /// <summary> Логика выполнения - Команда редактирования данных садовода </summary>
     private async Task OnEditGardenerCommandExecuted()
     {
+        var target = _IsGardenersView ? SelectedGardener! : SelectedParcel!.Gardener;
         var tempGardener = new Gardener();
-        var selectedGardener = SelectedParcel.Gardener;
-        CopyInfoGardener(selectedGardener, tempGardener);
+        CopyInfoGardener(target, tempGardener);
         if (!userDialog.CreateOrEditGardener(tempGardener)) return;
-        CopyInfoGardener(tempGardener, selectedGardener);
-        await gardener.Update(selectedGardener);
+        CopyInfoGardener(tempGardener, target);
+        await gardener.Update(target);
         GardenerCollection = new ObservableCollection<Gardener>(await gardener.GetAll());
-        ParcelCollection = new ObservableCollection<Parcel>(await parcel.GetAll());
+        ParcelCollection   = new ObservableCollection<Parcel>(await parcel.GetAll());
     }
 
     #endregion
@@ -184,18 +243,17 @@ internal class MainWindowViewModel(
     public ICommand DeleteGardenerCommand => field
         ??= new LambdaCommandAsync(OnDeleteGardenerCommandExecuted, CanDeleteGardenerCommandExecute);
 
-    /// <summary> Проверка возможности выполнения - Команда удаления садовода </summary>
-    private bool CanDeleteGardenerCommandExecute() => SelectedParcel != null;
+    private bool CanDeleteGardenerCommandExecute() =>
+        _IsGardenersView ? SelectedGardener != null : SelectedParcel != null;
 
-    /// <summary> Логика выполнения - Команда удаления садовода </summary>
     private async Task OnDeleteGardenerCommandExecuted()
     {
-        var g = SelectedParcel!.Gardener;
+        var g = _IsGardenersView ? SelectedGardener! : SelectedParcel!.Gardener;
         var question = $"Вы действительно хотите удалить садовода {g?.SurName} {g?.Name} {g?.Patronymic}?";
         if (!userDialog.OkCancelQuestion(question, "Запрос на удаление садовода")) return;
-        await gardener.Delete(SelectedParcel.Gardener);
+        await gardener.Delete(g!);
         GardenerCollection = new ObservableCollection<Gardener>(await gardener.GetAll());
-        ParcelCollection = new ObservableCollection<Parcel>(await parcel.GetAll());
+        ParcelCollection   = new ObservableCollection<Parcel>(await parcel.GetAll());
     }
 
     #endregion

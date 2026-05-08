@@ -48,8 +48,13 @@ public class Gardener : GardenerEntity
             }
         }
 
-        public override string ToString() =>
-            string.Join(" ", new[] { SurName, Name, Patronymic }.Where(s => !string.IsNullOrEmpty(s)));
+        public override string ToString()
+        {
+            var name = string.Join(" ", new[] { SurName, Name, Patronymic }.Where(s => !string.IsNullOrEmpty(s)));
+            return string.IsNullOrWhiteSpace(Account)
+                ? name
+                : $"{name} (сч. {Account})";
+        }
 
         public ICollection<Parcel> Parcels { get; set; } = new HashSet<Parcel>();
 }

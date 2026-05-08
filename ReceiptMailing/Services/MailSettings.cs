@@ -10,4 +10,5 @@ public class MailSettings
     public int Port { get; set; }
     public bool UseSsl { get; set; }
     public bool UseStartTls { get; set; }
+    public int SendDelaySeconds { get; set; } = 2;
 }

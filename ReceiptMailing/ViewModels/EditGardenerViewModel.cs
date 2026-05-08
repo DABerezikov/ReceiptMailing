@@ -78,12 +78,8 @@ internal class EditGardenerViewModel(Gardener gardener) : ViewModel
             if (!Set(ref _IsPassportVisible, value)) return;
             OnPropertyChanged(nameof(PassportSeries));
             OnPropertyChanged(nameof(PassportNumber));
-            OnPropertyChanged(nameof(IsPassportReadOnly));
         }
     }
-
-    /// <summary>Поля паспорта доступны только для чтения пока скрыты</summary>
-    public bool IsPassportReadOnly => !_IsPassportVisible;
 
     #endregion
 
@@ -106,7 +102,12 @@ internal class EditGardenerViewModel(Gardener gardener) : ViewModel
         set
         {
             gardener.Passport.Series = value;
-            Set(ref field, value);
+            if (!_IsPassportVisible)
+            {
+                _IsPassportVisible = true;
+                OnPropertyChanged(nameof(IsPassportVisible));
+            }
+            OnPropertyChanged(nameof(PassportSeries));
         }
     }
 
@@ -123,7 +124,12 @@ internal class EditGardenerViewModel(Gardener gardener) : ViewModel
         set
         {
             gardener.Passport.Number = value;
-            Set(ref field, value);
+            if (!_IsPassportVisible)
+            {
+                _IsPassportVisible = true;
+                OnPropertyChanged(nameof(IsPassportVisible));
+            }
+            OnPropertyChanged(nameof(PassportNumber));
         }
     }
 
@@ -445,7 +451,7 @@ internal class EditGardenerViewModel(Gardener gardener) : ViewModel
 
     #region IsAddressMatched : bool - Адрес прописки совпадает с адресом проживания
 
-    private bool _IsAddressMatched = AddressesEqual(gardener.Address, gardener.PostAddress);
+    private bool _IsAddressMatched = !IsAddressEmpty(gardener.Address) && AddressesEqual(gardener.Address, gardener.PostAddress);
 
     public bool IsAddressMatched
     {
@@ -542,4 +548,14 @@ internal class EditGardenerViewModel(Gardener gardener) : ViewModel
         a.House       == b.House       &&
         a.Building    == b.Building    &&
         a.Room        == b.Room;
+
+    private static bool IsAddressEmpty(Data.Entities.Base.Address a) =>
+        string.IsNullOrEmpty(a.PostalCode) &&
+        string.IsNullOrEmpty(a.Province)   &&
+        string.IsNullOrEmpty(a.Region)     &&
+        string.IsNullOrEmpty(a.City)       &&
+        string.IsNullOrEmpty(a.Street)     &&
+        string.IsNullOrEmpty(a.House)      &&
+        string.IsNullOrEmpty(a.Building)   &&
+        string.IsNullOrEmpty(a.Room);
 }

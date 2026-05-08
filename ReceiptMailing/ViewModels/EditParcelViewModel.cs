@@ -427,7 +427,8 @@ internal class EditParcelViewModel : ViewModel
         if (!(e.Item is Gardener gardener) || string.IsNullOrEmpty(GardenerFilter)) return;
         if (gardener.SurName?.Contains(GardenerFilter, StringComparison.OrdinalIgnoreCase) != true &&
             gardener.Name?.Contains(GardenerFilter, StringComparison.OrdinalIgnoreCase) != true &&
-            gardener.Patronymic?.Contains(GardenerFilter, StringComparison.OrdinalIgnoreCase) != true)
+            gardener.Patronymic?.Contains(GardenerFilter, StringComparison.OrdinalIgnoreCase) != true &&
+            gardener.Account?.Contains(GardenerFilter, StringComparison.OrdinalIgnoreCase) != true)
             e.Accepted = false;
     }
 
